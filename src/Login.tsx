@@ -1,7 +1,3 @@
-// type Props = {
-//   name: string;
-// };
-
 import "./Login.css";
 
 export default function Login() {
@@ -21,16 +17,8 @@ export default function Login() {
           placeholder="Password"
           name="password"
         />
-        <input type="button" value="Log In" />
+        <input type="button" value="Log In" id="loginBtn" className="button" />
       </form>
     </div>
   );
 }
-
-// export function helloWorld({ name }: Props) {
-//   return (
-//     <>
-//       <h1>Hello {name}</h1>
-//     </>
-//   );
-// }

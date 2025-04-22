@@ -1,0 +1,17 @@
+@import "tailwindcss";
+
+* {
+  font-family: 'Inter', Arial, Verdana, sans-serif;
+}
+
+.button {
+  border: none;
+  background-color: #FFFFFF;
+  padding: 0.6rem 1.75rem;
+  box-shadow:
+    0.4px 0.5px 0.7px hsl(#f2f2f2 / 0.41),
+    1.4px 1.8px 2.7px -0.7px hsl(#f2f2f2 / 0.43),
+    3.4px 4.4px 6.5px -1.5px hsl(#f2f2f2 / 0.46),
+    8.3px 10.5px 15.7px -2.2px hsl(#f2f2f2 / 0.49);
+}
+
