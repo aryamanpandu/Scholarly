@@ -6,33 +6,53 @@ export default function Signup() {
         <div id="loginBox" className="w-full max-w-md bg-white/80 backdrop-blur rounded-2xl shadow-2xl p-10 flex flex-col gap-5">
           <p id="title" className="text-xl">New here? Let’s make this official.</p>
           <form action="">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="firstName">
+                First Name
+            </label>
             <input
               type="text"
               placeholder="John"
+              id="firstName"
               name="firstName"
               className="w-full px-4 py-3 mb-3 rounded-lg border border-gray-300 focus:ring-indigo-500"
             />
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="lastName">
+                Last Name
+            </label>
             <input
               type="text"
               placeholder="Doe"
+              id="lastName"
               name="lastName"
               className="w-full px-4 py-3 mb-3 rounded-lg border border-gray-300 focus:ring-indigo-500"
             />
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
+                Email
+            </label>
             <input
               type="text"
               placeholder="example@email.com"
+              id="email"
               name="email"
               className="w-full px-4 py-3 mb-3 rounded-lg border border-gray-300 focus:ring-indigo-500"
             />
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
+                Password
+            </label>
             <input
               type="text"
-              placeholder="Password"
+              placeholder="ex@mplePwd"
+              id="password"
               name="password"
               className="w-full px-4 py-3 mb-4 rounded-lg border border-gray-300 focus:ring-indigo-500"
             />
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="confirmPassword">
+                Confirm Password
+            </label>
             <input
               type="text"
-              placeholder="Confirm Password"
+              placeholder="ex@mplePwd"
+              id="confirmPassword"
               name="confirmPassword"
               className="w-full px-4 py-3 mb-4 rounded-lg border border-gray-300 focus:ring-indigo-500"
             />
