@@ -7,18 +7,44 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
+# Dependency directories (for both client and server)
+# Use leading / to ensure it's only top-level client/server dirs
+/client/node_modules
+/server/node_modules
+# node_modules # You can optionally keep this if you have root devDeps like concurrently
+
+# Build output directories (for both client and server)
+/client/dist
+/client/dist-ssr # If client uses SSR build output
+/server/dist
+# dist # Keep this if you might have a root-level build process
+# dist-ssr # Keep this if you might have a root-level build process
+
+# Vite cache directory (within client)
+/client/.vite
+
+# Environment variables - DO NOT COMMIT ACTUAL SECRETS
+.env
+.env.*
+!.env.example
+!.env.template
+
+# Local settings files
 *.local
 
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
 .idea
-.DS_Store
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+
+# OS generated files
+.DS_Store
+
+# Test coverage reports (add if you plan to have tests)
+coverage
+*.lcov
