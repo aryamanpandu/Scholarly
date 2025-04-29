@@ -3,9 +3,9 @@ import { Link } from "react-router-dom";
 export default function Signup() {
     return (
         <div className="min-h-screen flex items-center justify-center ">
-        <div id="loginBox" className="w-full max-w-md bg-white/80 backdrop-blur rounded-2xl shadow-2xl p-10 flex flex-col gap-5">
+        <div id="signupBox" className="w-full max-w-md bg-white/80 backdrop-blur rounded-2xl shadow-2xl p-10 flex flex-col gap-5">
           <p id="title" className="text-xl">New here? Let’s make this official.</p>
-          <form action="">
+          <form action="/signup">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="firstName">
                 First Name
             </label>

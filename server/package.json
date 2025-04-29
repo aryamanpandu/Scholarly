@@ -2,8 +2,9 @@
   "name": "server",
   "version": "1.0.0",
   "main": "app.js",
+  "type": "module",
   "scripts": {
-    "dev": "ts-node src/app.ts",
+    "dev": "tsx src/app.ts",
     "build": "tsc",
     "start": "node dist/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -13,15 +14,17 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "cors": "^2.8.5",
     "dotenv": "^16.5.0",
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "mysql2": "^3.14.1"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.1",
-    "@types/node": "^22.14.1",
+    "@types/node": "^22.15.3",
     "nodemon": "^3.1.10",
-    "ts-node": "^10.9.2",
+    "tsx": "^4.19.3",
     "typescript": "^5.8.3"
   }
 }
