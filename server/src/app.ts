@@ -72,6 +72,7 @@ app.post('/signup', async (req: Request, res: Response) => {
 
     if (!firstName || !lastName || !email || !password || !confirmPassword) {
         res.status(400).send("All fields are required");
+        return;
     }
 
     const [rows] = await conn.execute<User[]>('SELECT * FROM users WHERE email = ?', [email]);
@@ -125,23 +126,65 @@ app.post('/login', async (req: Request, res: Response) => {
     
     if (!email || !password) {
         res.status(400).send("All fields are required");
+        return;
     }
 
 
     const [rows] = await conn.execute<User[]>(
-        `SELECT l.password_hash, l.failed_attempts, l.locked_until 
+        `SELECT u.user_id, l.password_hash, l.failed_attempts, l.locked_until 
              FROM u.users INNER JOIN l.logins ON u.user_id = l.user_id WHERE u.email = ?`, [email]
     );
     //user with this email does not exist
     if (!rows.length) {
         res.status(409).send({message: `user with the email: ${email} does not yet exist.`});
+        return;
     }
 
     const user = rows[0];
-    
-    // First you would check if the account is locked until a certain time. 
-    // If it is, then you would not allow login.
-    // If is not, then you would check
-    
+
+    if (user.locked_until && user.locked_until > new Date()) {
+        res.status(401).send("Account is locked. Please wait for 30 minutes before trying again.");
+        return;
+    }
+
+    bcrypt.compare(password, user.password_hash, async (err, result) => {
+        if (err) {
+            res.status(500).send("Error with checking password");
+            return;
+        }
+
+        if (result) {
+            console.log("User authenticated!");
+            await conn.execute(
+                `UPDATE logins
+                SET failed_attempts = 0,
+                locked_until = NULL
+                WHERE user_id = ?`, [user.user_id]
+            );
+
+        } else {
+            console.log("User not allowed!");
+
+            if (user.failed_attempts + 1 >= 5) {
+                const lockUntil = new Date(Date.now() + 30 * 60 * 1000); //30 minutes in ms
+                await conn.execute(
+                    `UPDATE logins
+                    SET failed_attempts = failed_attempts + 1,
+                    locked_until = ? WHERE user_id = ?`, [lockUntil, user.user_id]
+                );
+
+            } else {
+                await conn.execute(
+                    `UPDATE logins 
+                    SET failed_attempts = failed_attempts + 1 
+                    WHERE user_id = ?`, [user.user_id]
+                );
+            }
+            
+            res.status(401).send("Incorrect email or password");
+            return;
+        }
+
+    });
 
 });
