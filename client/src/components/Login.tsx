@@ -6,7 +6,7 @@ export default function Login() {
     <div className="min-h-screen flex items-center justify-center ">
       <div id="loginBox" className="w-full max-w-md bg-white/80 backdrop-blur rounded-2xl shadow-2xl p-10 flex flex-col gap-5">
         <p id="title" className="text-2xl">Welcome back, shall we enter?</p>
-        <form action="">
+        <form action="" method="POST">
           <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
             Email
           </label>
