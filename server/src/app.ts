@@ -43,7 +43,7 @@ app.use(session.default({
     //Set secure to true if you want it in production for https access only
 }));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 app.use(cors()); //allows cross origin requests for all ip addresses.
 
 app.get('/', (req: Request, res: Response) => {
@@ -63,10 +63,7 @@ interface User extends RowDataPacket {
     updated_at: Date
 }
 
-//1. Check if there is a user already with the same email
-//2. If there is not, check if confirmPassword and passwords match
-//3. If they do, create a hash probably using bcrypt
-//4. Then add the important password details to login,
+//Use cookies and sessionsx
 app.post('/signup', async (req: Request, res: Response) => {
     const {firstName, lastName, email, password, confirmPassword} = req.body;
 
@@ -112,15 +109,12 @@ app.post('/signup', async (req: Request, res: Response) => {
 
         console.log("Completed Sign Up");
         console.log(loginRes);
+        res.status(200).send({message: `Completed user sign up for ${firstName} ${lastName} with email: ${email}`});
     });
 
 });
 
-//Login now
-//First I would check if a user with that email even exists
-//Next, I would get password_hash, failed_attempts, locked_until
-// from logins where user_id is the same in users, logins and email is the provided email
-//Next, I would need to check the password with its hash
+//TODO: use cookies and sessions 
 app.post('/login', async (req: Request, res: Response) => {
     const {email, password} = req.body;
     
@@ -132,7 +126,7 @@ app.post('/login', async (req: Request, res: Response) => {
 
     const [rows] = await conn.execute<User[]>(
         `SELECT u.user_id, l.password_hash, l.failed_attempts, l.locked_until 
-             FROM u.users INNER JOIN l.logins ON u.user_id = l.user_id WHERE u.email = ?`, [email]
+             FROM users u INNER JOIN logins l ON u.user_id = l.user_id WHERE u.email = ?`, [email]
     );
     //user with this email does not exist
     if (!rows.length) {
@@ -161,7 +155,8 @@ app.post('/login', async (req: Request, res: Response) => {
                 locked_until = NULL
                 WHERE user_id = ?`, [user.user_id]
             );
-
+            res.status(200).send({message: `User with email: ${email} has been authorized`});
+            return;
         } else {
             console.log("User not allowed!");
 

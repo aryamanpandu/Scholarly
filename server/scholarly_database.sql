@@ -4,7 +4,7 @@ USE Scholarly;
 
 CREATE TABLE IF NOT EXISTS users (
     user_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    email VARCHAR(120) UNIQUE NOT NULL, -- cannot have two users with the same email
+    email VARCHAR(120) UNIQUE NOT NULL, /*cannot have two users with the same email */
     first_name VARCHAR(80),
     last_name VARCHAR(80),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE TABLE IF NOT EXISTS logins (
     user_id INT NOT NULL PRIMARY KEY,
     password_hash TEXT NOT NULL,
-    failed_attempts INT DEFAULT 0, --if 5 failed_attempts, lock the account and then reset failed attempts
+    failed_attempts INT DEFAULT 0, /* if 5 failed_attempts, lock the account and then reset failed attempts */
     locked_until TIMESTAMP NULL,
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );

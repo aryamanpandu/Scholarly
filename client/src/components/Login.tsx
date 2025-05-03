@@ -1,9 +1,9 @@
-import "./Login.css";
+import "./index.css";
 import { Link } from "react-router-dom";
 
 export default function Login() {
   return (
-    <div className="min-h-screen flex items-center justify-center ">
+    <div className="min-h-screen flex items-center justify-center">
       <div id="loginBox" className="w-full max-w-md bg-white/80 backdrop-blur rounded-2xl shadow-2xl p-10 flex flex-col gap-5">
         <p id="title" className="text-2xl">Welcome back, shall we enter?</p>
         <form action="" method="POST">
@@ -30,7 +30,7 @@ export default function Login() {
 
       <div className="flex justify-center">
           <input
-            type="button"
+            type="submit"
             value="Log In"
             className="px-6 py-2 rounded shadow-md bg-purple-700 text-white hover:bg-purple-800"
           />

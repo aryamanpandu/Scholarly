@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import "./index.css";
 
 export default function Signup() {
     return (
@@ -59,7 +60,7 @@ export default function Signup() {
   
         <div className="flex justify-center">
             <input
-              type="button"
+              type="submit"
               value="Sign up"
               className="px-6 py-2 rounded shadow-md bg-purple-700 text-white hover:bg-purple-800"
             />
