@@ -24,14 +24,14 @@ Now I need to use useEffect react hook to get data from API so that I know if I 
 Then I can use that loginSuccess boolean to show the message using a toast. 
 Do I need the loginSuccess boolean for that? If I am showing the message anyway.
 */
-export default function Login() {
+export default function SignupTest() {
     const { register, handleSubmit, formState: { errors } } = useForm<FormData>();
     let navigate = useNavigate();
 
     const onSubmit: SubmitHandler<FormData> = async (data) => {
         try {
-            console.log(`Data provided to the api/login: ${data}`);
-            const res = await fetch("http://localhost:3000/api/login", {
+            console.log(`Data provided to the api/signup: ${data}`);
+            const res = await fetch("http://localhost:3000/api/signup", {
                 method: "POST",
                 body: JSON.stringify(data),
                 headers: {
@@ -42,7 +42,7 @@ export default function Login() {
             const resData = await res.json();
             
             if (resData.loginSuccess) {
-                navigate("/home");
+                navigate("/login");
                 toast.success(resData.message);
             } else {
                 toast.info(resData.message);

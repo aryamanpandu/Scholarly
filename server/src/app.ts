@@ -26,6 +26,7 @@ const conn = await mysql.createConnection(access);
 
 
 console.log("Connected to Mysql!");
+
 app.use(session.default({
     name: 'SessionCookie',
     genid: function(req) {
@@ -46,10 +47,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors()); //allows cross origin requests for all ip addresses.
 
-app.get('/', (req: Request, res: Response) => {
-    res.send('Hello, typescript express!');
-});
-
 app.listen(port, () => {
     console.log(`server running at localhost:${port}`);
 });
@@ -63,8 +60,13 @@ interface User extends RowDataPacket {
     updated_at: Date
 }
 
+app.get('/test', (req: Request, res: Response) => {
+    console.log("Hello");
+    res.status(200).send("Testing! The server is working as intended.");
+}); 
+
 //Use cookies and sessionsx
-app.post('/signup', async (req: Request, res: Response) => {
+app.post('/api/signup', async (req: Request, res: Response) => {
     const {firstName, lastName, email, password, confirmPassword} = req.body;
 
     if (!firstName || !lastName || !email || !password || !confirmPassword) {
@@ -113,13 +115,13 @@ app.post('/signup', async (req: Request, res: Response) => {
     });
 
 });
-
+//loginSuccess is a boolean value that can be used to check whether the user has been logged in or not in the frontend
 //TODO: use cookies and sessions 
-app.post('/login', async (req: Request, res: Response) => {
+app.post('/api/login', async (req: Request, res: Response) => {
     const {email, password} = req.body;
     
     if (!email || !password) {
-        res.status(400).send("All fields are required");
+        res.status(400).send({message: "All fields are required", loginSuccess: false});
         return;
     }
 
@@ -130,20 +132,20 @@ app.post('/login', async (req: Request, res: Response) => {
     );
     //user with this email does not exist
     if (!rows.length) {
-        res.status(409).send({message: `user with the email: ${email} does not yet exist.`});
+        res.status(409).send({message: `user with the email: ${email} does not yet exist.`, loginSuccess: false});
         return;
     }
 
     const user = rows[0];
 
     if (user.locked_until && user.locked_until > new Date()) {
-        res.status(401).send("Account is locked. Please wait for 30 minutes before trying again.");
+        res.status(401).send({message: "Account is locked. Please wait for 30 minutes before trying again.", loginSuccess: false});
         return;
     }
 
     bcrypt.compare(password, user.password_hash, async (err, result) => {
         if (err) {
-            res.status(500).send("Error with checking password");
+            res.status(500).send({message: "Error with checking password", loginSuccess: false});
             return;
         }
 
@@ -155,7 +157,8 @@ app.post('/login', async (req: Request, res: Response) => {
                 locked_until = NULL
                 WHERE user_id = ?`, [user.user_id]
             );
-            res.status(200).send({message: `User with email: ${email} has been authorized`});
+            res.status(200).send({message: `User with email: ${email} has been authorized`, loginSuccess: true});
+            // req.session.user = user;
             return;
         } else {
             console.log("User not allowed!");
@@ -176,10 +179,11 @@ app.post('/login', async (req: Request, res: Response) => {
                 );
             }
             
-            res.status(401).send("Incorrect email or password");
+            res.status(401).send({message: "Incorrect email or password", loginSuccess: false});
             return;
         }
 
     });
 
 });
+
