@@ -6,6 +6,7 @@ import Signup from "../components/Signup"
 import LoginPage from "./LoginPage";
 import Login from "../components/Login";
 import Home from "./Home";
+import SignupTest from "@/components/SignupTest";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route path="/signup" element= {<Signup />} /> 
         <Route path="/home" element= { <Home /> } />
         <Route path="/login" element= { <Login /> } />
+        <Route path="/signuptest" element= { <SignupTest /> } />
       </Routes>
     </BrowserRouter>
     </>

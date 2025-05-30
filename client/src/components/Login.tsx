@@ -7,11 +7,11 @@ import { useNavigate } from "react-router-dom";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { Link } from "react-router-dom";
 
 type FormData = {
     email: string, 
@@ -26,7 +26,7 @@ Do I need the loginSuccess boolean for that? If I am showing the message anyway.
 */
 export default function Login() {
     const { register, handleSubmit, formState: { errors } } = useForm<FormData>();
-    let navigate = useNavigate();
+    const navigate = useNavigate();
 
     const onSubmit: SubmitHandler<FormData> = async (data) => {
         try {
@@ -55,8 +55,10 @@ export default function Login() {
 
     return (
         <div className="min-h-screen flex items-center justify-center">
-            <Card >
-                <CardHeader className="text-lg w-[400px] ">Welcome back, shall we enter?</CardHeader>
+            <Card className="w-[400px]">
+                <CardHeader>
+                    <CardTitle className="text-xl">Welcome back, shall we enter?</CardTitle>
+                </CardHeader>
                 <CardContent>
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <div>
@@ -74,6 +76,9 @@ export default function Login() {
                         </div>
                     </form>
                 </CardContent>
+                <CardFooter className="flex justify-center">
+                    <Link to="/signup" className="text-blue-500 hover:text-blue-600">Don't have an account? Sign up</Link>
+                </CardFooter>
             </Card>
         </div>
     )
