@@ -33,6 +33,7 @@ export default function Login() {
             console.log(`Data provided to the api/login: ${data}`);
             const res = await fetch("http://localhost:3000/api/login", {
                 method: "POST",
+                credentials: "include",
                 body: JSON.stringify(data),
                 headers: {
                     "Content-type": "application/json"
@@ -82,5 +83,4 @@ export default function Login() {
             </Card>
         </div>
     )
-    
 }

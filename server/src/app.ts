@@ -7,6 +7,16 @@ import * as session from 'express-session';
 import { v4 as uuidv4 } from 'uuid';
 import connectMySQL from 'express-mysql-session';
 
+
+declare module 'express-session' {
+    interface SessionData {
+        user?: {
+            id: number;
+            email: string;
+        };
+    }
+}
+
 dotenv.config();
 const app = express();
 const port = 3000;
@@ -24,13 +34,19 @@ const access: ConnectionOptions = {
 const sessionStore = new MySQLStore(access);
 const conn = await mysql.createConnection(access);
 
+app.use(cors({
+    origin: "http://localhost:5173",
+    credentials: true
+})); //allows cross origin requests for localhost:5173 vite react frontend
 
 console.log("Connected to Mysql!");
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.use(session.default({
     name: 'SessionCookie',
     genid: function(req) {
-        console.log('session id created');
         return uuidv4();
     },
     saveUninitialized: false,
@@ -43,9 +59,8 @@ app.use(session.default({
     }
     //Set secure to true if you want it in production for https access only
 }));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(cors()); //allows cross origin requests for all ip addresses.
+
+
 
 app.listen(port, () => {
     console.log(`server running at localhost:${port}`);
@@ -110,11 +125,10 @@ app.post('/api/signup', async (req: Request, res: Response) => {
         );
 
         console.log("Completed Sign Up");
-        console.log(loginRes);
         res.status(200).send({message: `Completed user sign up for ${firstName} ${lastName} with email: ${email}`});
     });
-
 });
+
 //loginSuccess is a boolean value that can be used to check whether the user has been logged in or not in the frontend
 //TODO: use cookies and sessions 
 app.post('/api/login', async (req: Request, res: Response) => {
@@ -127,7 +141,7 @@ app.post('/api/login', async (req: Request, res: Response) => {
 
 
     const [rows] = await conn.execute<User[]>(
-        `SELECT u.user_id, l.password_hash, l.failed_attempts, l.locked_until 
+        `SELECT u.user_id, u.email, l.password_hash, l.failed_attempts, l.locked_until 
              FROM users u INNER JOIN logins l ON u.user_id = l.user_id WHERE u.email = ?`, [email]
     );
     //user with this email does not exist
@@ -150,6 +164,12 @@ app.post('/api/login', async (req: Request, res: Response) => {
         }
 
         if (result) {
+
+            req.session.user = { //saving the session value to use it later on.
+                id: user.user_id,
+                email: user.email
+            }
+
             console.log("User authenticated!");
             await conn.execute(
                 `UPDATE logins
@@ -157,9 +177,10 @@ app.post('/api/login', async (req: Request, res: Response) => {
                 locked_until = NULL
                 WHERE user_id = ?`, [user.user_id]
             );
+
             res.status(200).send({message: `User with email: ${email} has been authorized`, loginSuccess: true});
-            // req.session.user = user;
             return;
+
         } else {
             console.log("User not allowed!");
 
@@ -187,3 +208,97 @@ app.post('/api/login', async (req: Request, res: Response) => {
 
 });
 
+// Now I need to CRUD with Topics
+
+// Make sure to test these APIs dude, you're only testing if they are successfull
+// SO my thinking is, we setup the a value in session like email, and user id and check if they are part of the database before giving access in express, woudl that work with sessions?
+
+// Retrieve Topics
+
+interface Topic extends RowDataPacket{
+    topicId: number,
+    topicName: string,
+    topicDesc: string,
+    topicCreatedAt: Date
+}
+
+app.get('/api/topics', async (req: Request, res: Response) => {
+    
+    if (!req.session?.user || !req.session.user.email || !req.session.user.id) {
+        res.status(401).send({message: "User is not authorized for this data"});
+        return;
+    }
+    const userId = req.session.user.id;
+    const email = req.session.user.email;
+
+    // get all the topics from topics table where the user has the user_id and the email
+    try {
+        const [result] = await conn.execute<Topic[]>(
+            `SELECT t.topic_id, t.topic_name, t.topic_desc, t.created_at
+                FROM topics t INNER JOIN users u
+                ON t.user_id = u.user_id
+                WHERE u.user_id = ? and u.email = ?`, [userId, email]
+        );
+
+        console.log(`Topics received for user with id: ${userId} result: ${result}`);
+        console.log(`JSON Res: ${JSON.stringify(result)}`);
+
+        res.status(200).send(JSON.stringify(result));
+        return;
+
+    } catch (e) {
+
+        console.log(e);
+        return;
+
+    }    
+});
+
+// I want to create a topic, update a topic, and delete a topic so add those apis
+
+app.post('/api/topics', async (req: Request, res: Response) => {
+
+    if (!req.session?.user || !req.session.user.id || !req.session.user.email) {
+        res.status(401).send({ message: "User is not authorized to create new topics."});
+        return;
+    }
+
+    // I am assuming that the user will send a topic with the same things as the interface
+    // The user will not send createdAt cause that will just be auto generated in database.
+    const { topicName, topicDesc } = req.body;
+
+    if (!topicName || !topicDesc) {
+        res.status(400).send({message: "All fields are required to create a new topic." });
+        return;
+    }
+
+    try {
+        //insert the topic into the topic with user_id = session.user.id
+        const [result] = await conn.execute(
+            `INSERT INTO topics (user_id, topic_name, topic_desc)
+                VALUES (?,?,?)`, [req.session.user.id, topicName, topicDesc]
+        );
+
+        console.log(`New topic created with name ${topicName}`);
+        
+    res.status(200).send({ message: `Successfully created topic with name: ${topicName}` });
+    return; 
+
+    } catch (e) {
+
+        console.log(e);
+        return;
+
+    }
+});
+
+// update an existing topic
+// I dont need to change the updated_at, as that will be updated on its own
+// use params for id and everything else we send through
+app.put('/api/topics', async (req: Request, res: Response) => {
+
+}); 
+
+// What do I need to send from topics table?
+// topic_id so that we can access the decks related to that topic
+// topic_name, topic_desc, created_at 

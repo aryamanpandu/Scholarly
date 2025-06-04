@@ -1,12 +1,10 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./App.css";
-import Signup from "../components/Signup"
-// import LoginCard from "@/components/LoginCard";
-
 import LoginPage from "./LoginPage";
 import Login from "../components/Login";
 import Home from "./Home";
-import SignupTest from "@/components/SignupTest";
+import Topic from "@/components/Topic";
+import Signup from "@/components/Signup";
 
 function App() {
   return (
@@ -17,7 +15,7 @@ function App() {
         <Route path="/signup" element= {<Signup />} /> 
         <Route path="/home" element= { <Home /> } />
         <Route path="/login" element= { <Login /> } />
-        <Route path="/signuptest" element= { <SignupTest /> } />
+        <Route path="/topic" element= {  <Topic name="Test Demo" desc="lorem ipsum solor dorem" createdAt={new Date()} /> } />
       </Routes>
     </BrowserRouter>
     </>

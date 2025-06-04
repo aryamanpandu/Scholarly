@@ -1,75 +1,100 @@
+import { useForm, SubmitHandler } from "react-hook-form";
+import { Input } from "./ui/input";
+import { Label } from "./ui/label";
+import { Button } from "./ui/button";
+import { toast }  from "sonner";
+import { useNavigate } from "react-router-dom";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import { Link } from "react-router-dom";
-import "./index.css";
+
+type FormData = {
+    firstName: string,
+    lastName: string,
+    email: string, 
+    password: string,
+    confirmPassword: string
+}
+
 
 export default function Signup() {
+    const { register, handleSubmit, formState: { errors } } = useForm<FormData>();
+    const navigate = useNavigate();
+
+    const onSubmit: SubmitHandler<FormData> = async (data) => {
+        try {
+            console.log(`Data provided to the api/signup: ${data}`);
+            const res = await fetch("http://localhost:3000/api/signup", {
+                method: "POST",
+                body: JSON.stringify(data),
+                headers: {
+                    "Content-type": "application/json"
+                }
+            });
+            
+            const resData = await res.json();
+            
+            if (resData.loginSuccess) {
+                toast.success(resData.message);
+                navigate("/login"); 
+                
+            } else {
+                toast.info(resData.message);
+            }
+            
+        } catch (e) {
+            toast.error(`Something went wrong. Error: ${e}`);
+        }
+    }
+
     return (
-        <div className="min-h-screen flex items-center justify-center ">
-        <div id="signupBox" className="w-full max-w-md bg-white/80 backdrop-blur rounded-2xl shadow-2xl p-10 flex flex-col gap-5">
-          <p id="title" className="text-xl">New here? Let’s make this official.</p>
-          <form action="/signup" method="POST">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="firstName">
-                First Name
-            </label>
-            <input
-              type="text"
-              placeholder="John"
-              id="firstName"
-              name="firstName"
-              className="w-full px-4 py-3 mb-3 rounded-lg border border-gray-300 focus:ring-indigo-500"
-            />
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="lastName">
-                Last Name
-            </label>
-            <input
-              type="text"
-              placeholder="Doe"
-              id="lastName"
-              name="lastName"
-              className="w-full px-4 py-3 mb-3 rounded-lg border border-gray-300 focus:ring-indigo-500"
-            />
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
-                Email
-            </label>
-            <input
-              type="text"
-              placeholder="example@email.com"
-              id="email"
-              name="email"
-              className="w-full px-4 py-3 mb-3 rounded-lg border border-gray-300 focus:ring-indigo-500"
-            />
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
-                Password
-            </label>
-            <input
-              type="text"
-              placeholder="ex@mplePwd"
-              id="password"
-              name="password"
-              className="w-full px-4 py-3 mb-4 rounded-lg border border-gray-300 focus:ring-indigo-500"
-            />
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="confirmPassword">
-                Confirm Password
-            </label>
-            <input
-              type="text"
-              placeholder="ex@mplePwd"
-              id="confirmPassword"
-              name="confirmPassword"
-              className="w-full px-4 py-3 mb-4 rounded-lg border border-gray-300 focus:ring-indigo-500"
-            />
-  
-        <div className="flex justify-center">
-            <input
-              type="submit"
-              value="Sign up"
-              className="px-6 py-2 rounded shadow-md bg-purple-700 text-white hover:bg-purple-800"
-            />
-          </div>
-          </form>
-          <div className="flex justify-center">
-            <Link to="/login" className="text-blue-500 hover:text-blue-600">Already have an account? Log in</Link>
-          </div>
+        <div className="min-h-screen flex items-center justify-center">
+            <Card className="w-[400px]">
+                <CardHeader>
+                    <CardTitle className="text-xl">New here? Let's make this official.</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <form onSubmit={handleSubmit(onSubmit)}>
+                        <div>
+                            <Label htmlFor="firstName" className="pb-2">First Name</Label>
+                            <Input id="firstName" type="text" className="mb-4" {...register("firstName", { required: "First Name is required." } )} />
+                            {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
+                        </div>
+                        <div>
+                            <Label htmlFor="lastName" className="pb-2">Last Name</Label>
+                            <Input id="lastName" type="text" className="mb-4" {...register("lastName", { required: "Last Name is required." } )} />
+                            {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
+                        </div>
+                        <div>
+                            <Label htmlFor="email" className="pb-2">Email</Label>
+                            <Input id="email" type="email" className="mb-4" {...register("email", { required: "Email is required." } )} />
+                            {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
+                        </div>
+                        <div>
+                            <Label htmlFor="password" className="pt-2 pb-2">Password</Label>
+                            <Input id="password" type="password" className="mb-4" {...register("password", { required: "Password is required."} )} />
+                            {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
+                        </div>
+                         <div>
+                            <Label htmlFor="confirmPassword" className="pt-2 pb-2">Confirm Password</Label>
+                            <Input id="confirmPassword" type="password" className="mb-4" {...register("confirmPassword", { required: "Enter your password twice."} )} />
+                            {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
+                        </div>
+                        <div className="flex justify-center mt-6">
+                            <Button type="submit" className="py-4 px-8">Sign up</Button>
+                        </div>
+                    </form>
+                </CardContent>
+                <CardFooter className="flex justify-center">
+                    <Link to="/login" className="text-blue-500 hover:text-blue-600">Already have an account? Log in</Link>
+                </CardFooter>
+            </Card>
         </div>
-      </div>
-    );
+    )
+    
 }

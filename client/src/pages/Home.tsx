@@ -5,3 +5,4 @@ export default function Home() {
         </>
     )
 }
+// This should be the page that calls the api to fetch all the topics 
