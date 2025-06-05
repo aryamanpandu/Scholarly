@@ -249,6 +249,7 @@ app.get('/api/topics', async (req: Request, res: Response) => {
     } catch (e) {
 
         console.log(e);
+        res.status(500).send({ message: 'Internal server error. Please try later.'});
         return;
 
     }    
@@ -274,7 +275,7 @@ app.post('/api/topics', async (req: Request, res: Response) => {
 
     try {
         //insert the topic into the topic with user_id = session.user.id
-        const [result] = await conn.execute(
+        await conn.execute(
             `INSERT INTO topics (user_id, topic_name, topic_desc)
                 VALUES (?,?,?)`, [req.session.user.id, topicName, topicDesc]
         );
@@ -287,6 +288,7 @@ app.post('/api/topics', async (req: Request, res: Response) => {
     } catch (e) {
 
         console.log(e);
+        res.status(500).send({ message: 'Internal server error. Please try later.'});
         return;
 
     }
@@ -295,9 +297,76 @@ app.post('/api/topics', async (req: Request, res: Response) => {
 // update an existing topic
 // I dont need to change the updated_at, as that will be updated on its own
 // use params for id and everything else we send through
-app.put('/api/topics', async (req: Request, res: Response) => {
+//I am trying to think about this, if the form is like an edit form, then how do I send it to 
+app.put('/api/topics/:topicId', async (req: Request, res: Response) => {
+// how do I check what values of that topic are new? 
+// I am thinking in the frontend what I could do 
+// is that all the values of the topic are sent anyway. even if the user doesn't change them. 
+    if (!req.session?.user || !req.session.user.id || !req.session.user.email) {
+        res.status(401).send({ message: "User is not authorized to update topics."});
+        return;
+    }
 
+    const { topicName, topicDesc } = req.body;
+    const topicId = req.params.topicId;
+
+    if (!topicName || !topicDesc || !topicId) {
+        res.status(400).send({message: "Invalid Request." });
+        return;
+    }
+
+    try {
+        await conn.execute(
+            `UPDATE topics 
+                SET topic_name = ?, topic_desc = ?
+                WHERE user_id = ? AND topic_id = ?`, [topicName, topicDesc, req.session.user.id, topicId]
+        );
+        
+        res.status(200).send({ message: `Successfully updated topic with topic id: ${topicId}`});
+    } catch (e) {
+
+        console.log(e);
+        res.status(500).send({ message: 'Internal server error. Please try later.'});
+        return;
+
+    }
 }); 
+
+// In the frontend make sure to add a confirmation when you have a delete anything tbh
+app.delete('api/topics/:topicId', async (req: Request, res: Response) => {
+
+    if (!req.session?.user || !req.session.user.id || !req.session.user.email) {
+        res.status(401).send({ message: "User is not authorized to delete topics."});
+        return;
+    }
+
+    const topicId = req.params.topicId;
+
+    if (!topicId) {
+        res.status(400).send({message: "Invalid Request." });
+        return;
+    }
+
+    try {
+
+        conn.execute(
+            `DELETE FROM topics 
+                WHERE user_id = ? AND topic_id = ?`, [req.session.user.id, topicId]
+        );
+
+        res.status(200).send({ message: `Successfully deleted topic which had the id: ${topicId}` });
+        return;
+
+    } catch (e) {
+        
+        console.log(e);
+        res.status(500).send({ message: 'Internal server error. Please try later.'});
+        return;
+        
+    }
+
+});
+
 
 // What do I need to send from topics table?
 // topic_id so that we can access the decks related to that topic
