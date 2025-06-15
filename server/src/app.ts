@@ -309,7 +309,7 @@ app.put('/api/topics/:topicId', async (req: Request, res: Response) => {
 
     const { topicName, topicDesc } = req.body;
     const topicId = req.params.topicId;
-
+    console.log(`topicName: ${topicName}, topicDesc: ${topicDesc}, topicId: ${topicId}`);
     if (!topicName || !topicDesc || !topicId) {
         res.status(400).send({message: "Invalid Request." });
         return;

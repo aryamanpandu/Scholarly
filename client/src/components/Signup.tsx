@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/card"
 import { Link } from "react-router-dom";
 
-type FormData = {
+type SignUpFormData = {
     firstName: string,
     lastName: string,
     email: string, 
@@ -21,12 +21,11 @@ type FormData = {
     confirmPassword: string
 }
 
-
 export default function Signup() {
-    const { register, handleSubmit, formState: { errors } } = useForm<FormData>();
+    const { register, handleSubmit, formState: { errors } } = useForm<SignUpFormData>();
     const navigate = useNavigate();
 
-    const onSubmit: SubmitHandler<FormData> = async (data) => {
+    const onSubmit: SubmitHandler<SignUpFormData> = async (data) => {
         try {
             console.log(`Data provided to the api/signup: ${data}`);
             const res = await fetch("http://localhost:3000/api/signup", {

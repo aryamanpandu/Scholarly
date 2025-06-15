@@ -15,7 +15,7 @@ function App() {
         <Route path="/signup" element= {<Signup />} /> 
         <Route path="/home" element= { <Home /> } />
         <Route path="/login" element= { <Login /> } />
-        <Route path="/topic" element= {  <Topic name="Test Demo" desc="lorem ipsum solor dorem" createdAt={new Date()} /> } />
+        <Route path="/topic" element= {  <Topic name="Test Demo" desc="lorem ipsum solor dorem" createdAt={new Date()} id={1} /> } />
       </Routes>
     </BrowserRouter>
     </>
