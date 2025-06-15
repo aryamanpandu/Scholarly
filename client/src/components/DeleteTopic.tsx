@@ -6,14 +6,47 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
+import { toast } from "sonner";
+import { buttonVariants } from "./ui/button";
 
 interface DeleteTopicData {
     topicId: number,
     open?: boolean,
-    onOpenChange?: (open: boolean) => void
+    onOpenChange?: (open: boolean) => void,
+    onSuccess?: () => void
 }
 
-export default function DeleteTopic({topicId, open, onOpenChange}: DeleteTopicData) {
+
+export default function DeleteTopic({topicId, open, onOpenChange, onSuccess}: DeleteTopicData) {
+    
+    const deleteTopicCall = async () => {
+        try {
+            const res = await fetch(`http://localhost:3000/api/topics/${topicId}`, {
+                method: "DELETE",
+                credentials: "include",
+            })
+
+            const resData = await res.json();
+
+            if (res.ok) {
+                if (onOpenChange) {
+                    onOpenChange(false);
+                }
+
+                if (onSuccess) {
+                    onSuccess();
+                }
+
+                toast.success(resData.message);
+            } else {
+                toast.error(`Failed to delete topic: ${resData.message}`);
+            }
+        } catch (e) {
+            console.log(e);
+            toast.error(`Something went wrong: ${e}`);
+        }
+    }
+
     return (
         <AlertDialog open={open} onOpenChange={onOpenChange}>
             {!open && !onOpenChange && (
@@ -25,7 +58,7 @@ export default function DeleteTopic({topicId, open, onOpenChange}: DeleteTopicDa
                 <AlertDialogTitle>Are you sure you want to delete this Topic?</AlertDialogTitle>
                 <div className="flex justify-end gap-2">
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction>Delete</AlertDialogAction>
+                    <AlertDialogAction className={buttonVariants({variant: "destructive"})} onClick={deleteTopicCall}>Delete</AlertDialogAction>
                 </div>
             </AlertDialogContent>
         </AlertDialog>    

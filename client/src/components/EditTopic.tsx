@@ -22,10 +22,11 @@ interface EditTopicData {
     topicDesc: string,
     topicId: number,
     open?: boolean,
-    onOpenChange?: (open: boolean) => void
+    onOpenChange?: (open: boolean) => void,
+    onSuccess?: () => void
 }
 
-export default function EditTopic({topicName, topicDesc, topicId, open, onOpenChange}: EditTopicData) {
+export default function EditTopic({topicName, topicDesc, topicId, open, onOpenChange, onSuccess}: EditTopicData) {
     const { register, handleSubmit, formState: {errors} } = useForm<EditTopicData>();
     const [name, setName] = useState(topicName);
     const [desc, setDesc] = useState(topicDesc);
@@ -43,12 +44,18 @@ export default function EditTopic({topicName, topicDesc, topicId, open, onOpenCh
 
             const resData = await res.json();
 
-            //if the status code is 200
-            if (res.status === 200) {
+            if (res.ok) {
+                if (onOpenChange) {
+                    onOpenChange(false);
+                }
+
+                if (onSuccess) {
+                    onSuccess();
+                }
                 toast.success(resData.message);
             } else {
                 //if the status code is 400 or 401 or 500
-                toast.error(resData.message);
+                toast.error(`Failed to update Topic: ${resData.message}`);
             }
             
         } catch (e) {
@@ -78,8 +85,8 @@ export default function EditTopic({topicName, topicDesc, topicId, open, onOpenCh
                         className="mb-4"
                         value={name}
                         {...register("topicName", {required: "Topic Name is required.", onChange: (e) => setName(e.target.value) })}
-                        required
                     />
+                    {errors.topicName && <p className="py-4 px-8">{errors.topicName.message}</p>}
                 </div>
                 <div>
                     <Label htmlFor="topicDesc" className="mb-1 block">Topic Description</Label>
@@ -90,8 +97,8 @@ export default function EditTopic({topicName, topicDesc, topicId, open, onOpenCh
                         rows={2}
                         value={desc}
                         {...register("topicDesc", {required: "Topic Description is required.", onChange: (e) => setDesc(e.target.value)})}
-                        required
                     />
+                    {errors.topicDesc && <p className="py-4 px-8">{errors.topicDesc.message}</p>}
                 </div>
                 <DialogFooter>
                     <DialogClose asChild>

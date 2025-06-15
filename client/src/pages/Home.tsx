@@ -1,8 +1,9 @@
 import Topic from "@/components/Topic"
 import { toast } from "sonner"
-import { useState } from "react"
+import { useCallback, useState } from "react"
 import { useEffect } from "react"
 import NavBar from "@/components/NavBar"
+import CreateTopic from "@/components/CreateTopic"
 
 interface TopicRes {
     topic_id: number,
@@ -11,7 +12,7 @@ interface TopicRes {
     created_at: Date
 }
 
-async function refreshTopics(ignore: boolean, setResult: (result: [TopicRes]| null) => void) {
+export async function refreshTopics(ignore: boolean, setResult: (result: [TopicRes]| null) => void) {
     try {
         const res = await fetch("http://localhost:3000/api/topics", {
             method: "GET",
@@ -34,12 +35,14 @@ async function refreshTopics(ignore: boolean, setResult: (result: [TopicRes]| nu
 export default function Home() {
     const [result, setResult] = useState<[TopicRes] | null>(null);
 
+        const handleRefreshTopics = useCallback(() => {
+            refreshTopics(false, setResult);
+        }, []);
+
     useEffect(() => {
         let ignore = false;
 
-        
-
-        refreshTopics(ignore, setResult)
+        refreshTopics(ignore, setResult);
 
         return () => {
             ignore = true;
@@ -57,8 +60,10 @@ export default function Home() {
                     key={topic.topic_id}
                     name={topic.topic_name} 
                     desc={topic.topic_desc} 
-                    createdAt={topic.created_at}
-                    id={topic.topic_id}  /> 
+                    createdAt={new Date(topic.created_at)}
+                    id={topic.topic_id}
+                    onRefresh={handleRefreshTopics}
+                    /> 
                 );
             }
         )
@@ -69,6 +74,7 @@ export default function Home() {
                 <div className="flex gap-5 m-5">
                     {topicArr}
                 </div>
+                <CreateTopic />
             </>
             
         )

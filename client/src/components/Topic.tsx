@@ -16,16 +16,17 @@ interface Topic {
     name: string,
     desc: string,
     createdAt: Date,
-    id: number
+    id: number,
+    onRefresh?: () => void
 }
 //I am going to use three dots ellipsis that will have an option to edit and delete topics.
-export default function Topic({name, desc, createdAt, id}: Topic) {
+export default function Topic({name, desc, createdAt, id, onRefresh}: Topic) {
     return (
         <>
-        <Card className="w-[400px] mx-4">
+        <Card className="w-[400px] min-w-xs mx-4">
             <CardHeader className="flex items-center justify-center gap-1">
                 <CardTitle className="text-2xl">{name}</CardTitle>
-                <ShowExtraActionMenu topicName={name} topicDesc={desc} topicId={id}/>
+                <ShowExtraActionMenu topicName={name} topicDesc={desc} topicId={id} onRefresh={onRefresh}/>
             </CardHeader>
             <hr className="mx-6"/>
             <div className="flex justify-center">
@@ -33,10 +34,9 @@ export default function Topic({name, desc, createdAt, id}: Topic) {
                     {desc}
                 </div>
             </div>
-            <div className="flex justify-end px-4">
+            <div className="flex justify-end mt-auto px-4">
                 <CardDescription>
-                    Date supposed to be here.
-                    {/* {createdAt.toDateString()} */}
+                    Created: {createdAt.toDateString()}
                 </CardDescription>
             </div>
         </Card>
@@ -44,13 +44,14 @@ export default function Topic({name, desc, createdAt, id}: Topic) {
     );
 }
 
-interface TopicEdit {
+interface TopicActionMenuProps {
     topicName: string,
     topicDesc: string,
-    topicId: number
+    topicId: number,
+    onRefresh?: () => void
 }
 
-function ShowExtraActionMenu({topicName, topicDesc, topicId}: TopicEdit) {
+function ShowExtraActionMenu({topicName, topicDesc, topicId, onRefresh}: TopicActionMenuProps) {
     const [editDialogOpen, setEditDialogOpen] = useState(false);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
@@ -82,12 +83,14 @@ function ShowExtraActionMenu({topicName, topicDesc, topicId}: TopicEdit) {
                 topicId={topicId} 
                 open={editDialogOpen}
                 onOpenChange={setEditDialogOpen}
+                onSuccess={onRefresh}
             />
 
             <DeleteTopic
                 topicId={topicId}
                 open={deleteDialogOpen}
                 onOpenChange={setDeleteDialogOpen}
+                onSuccess={onRefresh}
             />
         </>
     );
