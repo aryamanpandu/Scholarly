@@ -268,8 +268,8 @@ app.post('/api/topics', async (req: Request, res: Response) => {
     // The user will not send createdAt cause that will just be auto generated in database.
     const { topicName, topicDesc } = req.body;
 
-    if (!topicName || !topicDesc) {
-        res.status(400).send({message: "All fields are required to create a new topic." });
+    if (!topicName) {
+        res.status(400).send({message: "A topic name is required to create a new topic." });
         return;
     }
 

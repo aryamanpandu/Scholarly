@@ -79,7 +79,7 @@ export default function EditTopic({topicName, topicDesc, topicId, open, onOpenCh
                         <DialogTitle>Edit Topic</DialogTitle>
                     </DialogHeader>
                 <div>
-                    <Label htmlFor="topicName" className="mb-1 block">Topic Name</Label>
+                    <Label htmlFor="topicName" className="mb-2 block">Topic Name</Label>
                     <Input
                         id="topicName"
                         className="mb-4"
@@ -89,7 +89,7 @@ export default function EditTopic({topicName, topicDesc, topicId, open, onOpenCh
                     {errors.topicName && <p className="py-4 px-8">{errors.topicName.message}</p>}
                 </div>
                 <div>
-                    <Label htmlFor="topicDesc" className="mb-1 block">Topic Description</Label>
+                    <Label htmlFor="topicDesc" className="mb-2 block">Topic Description</Label>
                     <Textarea
                         id="topicDesc"
                         className="mb-7"

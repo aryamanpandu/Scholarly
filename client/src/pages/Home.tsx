@@ -1,5 +1,4 @@
 import Topic from "@/components/Topic"
-import { toast } from "sonner"
 import { useCallback, useState } from "react"
 import { useEffect } from "react"
 import NavBar from "@/components/NavBar"
@@ -26,8 +25,7 @@ export async function refreshTopics(ignore: boolean, setResult: (result: [TopicR
         }    
     } catch (e) {
         console.error(`Fetch failed: ${e}`);
-    }    
-        
+    }     
 }
 
 //I have to take care about changing states
@@ -74,7 +72,7 @@ export default function Home() {
                 <div className="flex gap-5 m-5">
                     {topicArr}
                 </div>
-                <CreateTopic />
+                <CreateTopic onSuccess={handleRefreshTopics}/>
             </>
             
         )
