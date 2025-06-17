@@ -240,8 +240,7 @@ app.get('/api/topics', async (req: Request, res: Response) => {
                 WHERE u.user_id = ? and u.email = ?`, [userId, email]
         );
 
-        console.log(`Topics received for user with id: ${userId} result: ${result}`);
-        console.log(`JSON Res: ${JSON.stringify(result)}`);
+        console.log(`Topics received for user with id: ${userId}`);
 
         res.status(200).send(JSON.stringify(result));
         return;
