@@ -208,6 +208,19 @@ app.post('/api/login', async (req: Request, res: Response) => {
 
 });
 
+app.post('/api/logout', async (req: Request, res: Response) => {
+    req.session.destroy((err) => {
+        if (err) {
+            console.log(`Logout Error for user: ${req.session.user?.email}; message: ${err}`);
+            res.status(500).send({message: `Error logging out`});
+            return;
+        } else {
+            res.status(200).send({message:'Successfully logged out'});
+            return;
+        }
+    });
+});
+
 // Now I need to CRUD with Topics
 
 // Make sure to test these APIs dude, you're only testing if they are successfull
@@ -370,3 +383,4 @@ app.delete('/api/topics/:topicId', async (req: Request, res: Response) => {
 // What do I need to send from topics table?
 // topic_id so that we can access the decks related to that topic
 // topic_name, topic_desc, created_at 
+

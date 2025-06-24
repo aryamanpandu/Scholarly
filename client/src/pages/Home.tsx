@@ -68,7 +68,7 @@ export default function Home() {
 
         return (
             <>
-                <NavBar/>
+                <NavBar isLoggedIn={true}/>
                 <div className="flex gap-5 m-5">
                     {topicArr}
                 </div>
@@ -80,7 +80,9 @@ export default function Home() {
     else {
         return (
             <> 
-                <div>You have no Topics!</div>
+                <NavBar isLoggedIn={true}/>
+                <div className="text-muted">You have no Topics!</div>
+                <CreateTopic onSuccess={handleRefreshTopics}/>
             </>
         )
     }
