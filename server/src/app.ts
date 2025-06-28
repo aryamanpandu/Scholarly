@@ -66,13 +66,30 @@ app.listen(port, () => {
     console.log(`server running at localhost:${port}`);
 });
 
-interface User extends RowDataPacket {
+interface UserRow extends RowDataPacket {
     user_id: number,
     email: string,
     first_name: string,
     last_name: string,
     created_at: Date,
-    updated_at: Date
+    updated_at: Date,
+    password_hash: string,
+    failed_attempts: number,
+    locked_until: Date | null
+}
+
+
+
+interface User {
+    userId: number,
+    email: string,
+    firstName: string,
+    lastName: string,
+    createdAt: Date,
+    updatedAt: Date,
+    passwordHash: string,
+    failedAttempts: number,
+    lockedUntil: Date | null
 }
 
 app.get('/test', (req: Request, res: Response) => {
@@ -89,7 +106,7 @@ app.post('/api/signup', async (req: Request, res: Response) => {
         return;
     }
 
-    const [rows] = await conn.execute<User[]>('SELECT * FROM users WHERE email = ?', [email]);
+    const [rows] = await conn.execute<UserRow[]>('SELECT * FROM users WHERE email = ?', [email]);
 
     if (rows.length > 0) { //there is already a user with this email
         res.status(409).send({message: "User already exists"});
@@ -140,10 +157,24 @@ app.post('/api/login', async (req: Request, res: Response) => {
     }
 
 
-    const [rows] = await conn.execute<User[]>(
+    const [rawRows] = await conn.execute<UserRow[]>(
         `SELECT u.user_id, u.email, l.password_hash, l.failed_attempts, l.locked_until 
              FROM users u INNER JOIN logins l ON u.user_id = l.user_id WHERE u.email = ?`, [email]
     );
+
+    const rows: User[] = rawRows.map(row => ({
+        userId: row.user_id,
+        email: row.email,
+        firstName: row.first_name,
+        lastName: row.last_name,
+        createdAt: row.created_at,
+        updatedAt: row.updated_at,
+        passwordHash: row.password_hash,
+        failedAttempts: row.failed_attempts,
+        lockedUntil: row.locked_until
+    }));
+
+    console.log(rows);
     //user with this email does not exist
     if (!rows.length) {
         res.status(409).send({message: `user with the email: ${email} does not yet exist.`, loginSuccess: false});
@@ -152,12 +183,12 @@ app.post('/api/login', async (req: Request, res: Response) => {
 
     const user = rows[0];
 
-    if (user.locked_until && user.locked_until > new Date()) {
+    if (user.lockedUntil && user.lockedUntil > new Date()) {
         res.status(401).send({message: "Account is locked. Please wait for 30 minutes before trying again.", loginSuccess: false});
         return;
     }
 
-    bcrypt.compare(password, user.password_hash, async (err, result) => {
+    bcrypt.compare(password, user.passwordHash, async (err, result) => {
         if (err) {
             res.status(500).send({message: "Error with checking password", loginSuccess: false});
             return;
@@ -166,7 +197,7 @@ app.post('/api/login', async (req: Request, res: Response) => {
         if (result) {
 
             req.session.user = { //saving the session value to use it later on.
-                id: user.user_id,
+                id: user.userId,
                 email: user.email
             }
 
@@ -175,7 +206,7 @@ app.post('/api/login', async (req: Request, res: Response) => {
                 `UPDATE logins
                 SET failed_attempts = 0,
                 locked_until = NULL
-                WHERE user_id = ?`, [user.user_id]
+                WHERE user_id = ?`, [user.userId]
             );
 
             res.status(200).send({message: `User with email: ${email} has been authorized`, loginSuccess: true});
@@ -184,19 +215,19 @@ app.post('/api/login', async (req: Request, res: Response) => {
         } else {
             console.log("User not allowed!");
 
-            if (user.failed_attempts + 1 >= 5) {
+            if (user.failedAttempts + 1 >= 5) {
                 const lockUntil = new Date(Date.now() + 30 * 60 * 1000); //30 minutes in ms
                 await conn.execute(
                     `UPDATE logins
                     SET failed_attempts = failed_attempts + 1,
-                    locked_until = ? WHERE user_id = ?`, [lockUntil, user.user_id]
+                    locked_until = ? WHERE user_id = ?`, [lockUntil, user.userId]
                 );
 
             } else {
                 await conn.execute(
                     `UPDATE logins 
                     SET failed_attempts = failed_attempts + 1 
-                    WHERE user_id = ?`, [user.user_id]
+                    WHERE user_id = ?`, [user.userId]
                 );
             }
             
@@ -294,8 +325,8 @@ app.post('/api/topics', async (req: Request, res: Response) => {
 
         console.log(`New topic created with name ${topicName}`);
         
-    res.status(200).send({ message: `Successfully created topic with name: ${topicName}` });
-    return; 
+        res.status(200).send({ message: `Successfully created topic with name: ${topicName}` });
+        return; 
 
     } catch (e) {
 
@@ -321,7 +352,7 @@ app.put('/api/topics/:topicId', async (req: Request, res: Response) => {
 
     const { topicName, topicDesc } = req.body;
     const topicId = req.params.topicId;
-    console.log(`topicName: ${topicName}, topicDesc: ${topicDesc}, topicId: ${topicId}`);
+
     if (!topicName || !topicDesc || !topicId) {
         res.status(400).send({message: "Invalid Request." });
         return;
@@ -385,3 +416,143 @@ app.delete('/api/topics/:topicId', async (req: Request, res: Response) => {
 // I can still check if the user is signed in or not but the main thing is that 
 // i have the topic id to which the decks are associated to
 
+//Get all the decks for a topic Id
+
+interface Decks extends RowDataPacket {
+    deckId: number,
+    deckName: string,
+    deckDesc: string,
+    deckCreatedAt: Date
+}
+
+app.get('/api/decks/:topicId', async (req: Request, res: Response) => {
+    
+    if(!req.session.user || !req.session.user.id || !req.session.user.email) {
+        res.status(401).send({message: "User is not authorized for this data"});
+        return;
+    }
+
+    const topicId = req.params.topicId;
+
+    if (!topicId) {
+        res.status(400).send({message: "Bad request. Topic ID is required"});
+        return;
+    }
+
+    try {
+        const [result] = await conn.execute<Decks[]>(
+            `SELECT deck_id, deck_name, deck_desc, created_at FROM decks WHERE topic_id =?`, [topicId]
+        );
+
+        console.log(`Decks received for topic with topic ID: ${topicId}`);
+
+        res.status(200).send(JSON.stringify(result));
+    } catch (e) {
+    
+        console.log(e);
+        res.status(500).send({ message: 'Internal server error. Please try later.'});
+        return;
+
+    }
+});
+
+app.post('/api/decks/:topicId', async (req: Request, res: Response) => {
+    
+    if(!req.session.user || !req.session.user.id || !req.session.user.email) {
+        res.status(401).send({message: "User is not authorized for this data"});
+        return;
+    }
+
+    const { deckName, deckDesc } = req.body;
+    const topicId = req.params.topicId;
+
+    if (!deckName || !topicId) {
+        res.status(401).send({message: "The Deck name is required to create a new deck"});
+        return;
+    }
+
+    try {
+        await conn.execute(
+            `INSERT INTO decks (topic_id, deck_name, deck_desc)
+                VALUES (?,?,?)`, [topicId, deckName, deckDesc]
+        );
+
+        console.log(`New deck created with name ${deckName}`);
+        
+        res.status(200).send({ message: `Successfully created topic with name: ${deckName}` });
+        return; 
+
+    } catch (e) {
+
+        console.log(e);
+        res.status(500).send({ message: 'Internal server error. Please try later.'});
+        return;
+
+    }
+});
+
+app.put('/api/decks/:topicId', async(req: Request, res: Response) => {
+    
+    if (!req.session?.user || !req.session.user.id || !req.session.user.email) {
+        res.status(401).send({ message: "User is not authorized to update decks."});
+        return;
+    }
+
+    const {deckName, deckDesc, deckId} = req.body;
+    const topicId = req.params.topicId;
+
+    if(!topicId || !deckId) {
+        res.status(401).send({message: "Invalid request. The topic ID and the deck ID is required to update a deck"});
+    }
+
+    try {
+        await conn.execute(
+            `UPDATE decks
+                SET deck_name = ?, deck_desc = ?
+                WHERE deck_id = ? AND topic_id = ?`, [deckName, deckDesc, deckId, topicId]
+        );
+
+        res.status(200).send({ message: `Successfully updated topic with deck id: ${deckId}`});
+    } catch (e) {
+
+        console.log(e);
+        res.status(500).send({ message: 'Internal server error. Please try later.'});
+        return;
+
+    }
+
+});
+
+app.delete('/api/decks/:topicId&:deckId', async (req: Request, res: Response) => {
+   
+    if (!req.session?.user || !req.session.user.id || !req.session.user.email) {
+        res.status(401).send({ message: "User is not authorized to delete decks."});
+        return;
+    }
+
+    const topicId = req.params.topicId;
+    const deckId = req.params.deckId;
+
+    if (!topicId || !deckId) {
+        res.status(401).send({message: "Invalid request. The topic ID and the deck ID is required to delete a deck"});
+    }
+
+    try {
+
+        await conn.execute(
+            `DELETE FROM decks 
+                WHERE deck_id = ? AND topic_id = ?`, [deckId, topicId]
+        );
+
+        res.status(200).send({ message: `Successfully deleted deck which had the id: ${deckId}` });
+        return;
+
+    } catch (e) {
+
+        console.log(e);
+        res.status(500).send({ message: 'Internal server error. Please try later.'});
+        return;
+
+    }
+    
+});
