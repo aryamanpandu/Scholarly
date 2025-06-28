@@ -1,4 +1,3 @@
-import { DialogDescription } from "@radix-ui/react-dialog";
 import { Button } from "./ui/button";
 import {
   Dialog,
@@ -57,7 +56,7 @@ export default function CreateTopic({onSuccess}: CreateTopicProps) {
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <Button className="" variant="outline"><i className="bi bi-plus-lg"></i></Button>
+                <Button className="fixed bottom-2 right-2 text-2xl font-bold" variant="default"><i className="bi bi-plus-lg"></i></Button>
             </DialogTrigger>
             <DialogContent>
                 <form onSubmit={handleSubmit(onSubmit)}>

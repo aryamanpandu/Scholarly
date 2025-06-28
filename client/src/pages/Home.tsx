@@ -69,7 +69,7 @@ export default function Home() {
         return (
             <>
                 <NavBar isLoggedIn={true}/>
-                <div className="flex gap-5 m-5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 m-5 auto-rows-fr">
                     {topicArr}
                 </div>
                 <CreateTopic onSuccess={handleRefreshTopics}/>
@@ -81,7 +81,7 @@ export default function Home() {
         return (
             <> 
                 <NavBar isLoggedIn={true}/>
-                <div className="text-muted">You have no Topics!</div>
+                <div className="flex justify-center items-center h-[calc(100vh-10rem)] text-3xl text-neutral-400">You have no Topics. Click the plus icon to create one!</div>
                 <CreateTopic onSuccess={handleRefreshTopics}/>
             </>
         )

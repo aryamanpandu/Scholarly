@@ -26,10 +26,10 @@ export default function NavBar({ isLoggedIn=false }: NavBarProps) {
           <div className="grid gap-2 py-6">
             {!isLoggedIn && 
               (<>
-                <Link to="#" className="flex w-full items-center py-2 text-lg font-semibold">
+                <Link to="/login" className="flex w-full items-center py-2 text-lg font-semibold">
                   Login
                 </Link>
-                <Link to="#" className="flex w-full items-center py-2 text-lg font-semibold">
+                <Link to="/signup" className="flex w-full items-center py-2 text-lg font-semibold">
                 Sign Up
                 </Link>
               </>)
@@ -55,10 +55,10 @@ export default function NavBar({ isLoggedIn=false }: NavBarProps) {
       <nav className="ml-auto hidden lg:flex gap-6">
         {!isLoggedIn && 
           (<>
-            <Link to="#" className="flex w-full items-center py-2 text-lg font-semibold">
+            <Link to="/login" className="flex w-full items-center py-2 text-lg font-semibold">
               Login
             </Link> 
-            <Link to="#" className="flex w-full items-center py-2 text-lg font-semibold">
+            <Link to="/signup" className="flex w-full items-center py-2 text-lg font-semibold">
               Sign Up
             </Link>
           </>)

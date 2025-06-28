@@ -380,7 +380,8 @@ app.delete('/api/topics/:topicId', async (req: Request, res: Response) => {
 });
 
 
-// What do I need to send from topics table?
-// topic_id so that we can access the decks related to that topic
-// topic_name, topic_desc, created_at 
+//What do I need to get all the decks of a topic?
+//Now I don't need the user id. I need the topic id
+// I can still check if the user is signed in or not but the main thing is that 
+// i have the topic id to which the decks are associated to
 
