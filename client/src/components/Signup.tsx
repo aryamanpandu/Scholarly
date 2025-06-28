@@ -22,12 +22,14 @@ type SignUpFormData = {
 }
 
 export default function Signup() {
-    const { register, handleSubmit, formState: { errors } } = useForm<SignUpFormData>();
+    const { register, handleSubmit, formState: { errors }, watch } = useForm<SignUpFormData>();
     const navigate = useNavigate();
+    const password = watch("password");
 
     const onSubmit: SubmitHandler<SignUpFormData> = async (data) => {
         try {
-            console.log(`Data provided to the api/signup: ${data}`);
+
+            console.log(`Data provided to the api/signup: ${JSON.stringify(data)}`);
             const res = await fetch("http://localhost:3000/api/signup", {
                 method: "POST",
                 body: JSON.stringify(data),
@@ -40,8 +42,11 @@ export default function Signup() {
             
             if (resData.loginSuccess) {
                 toast.success(resData.message);
-                navigate("/login"); 
-                
+                setTimeout(() => {
+                    console.log("Completed the user sign up");
+                    // window.location.href = "/login";
+                    navigate("/login");
+                }, 1000); 
             } else {
                 toast.info(resData.message);
             }
@@ -62,27 +67,45 @@ export default function Signup() {
                         <div>
                             <Label htmlFor="firstName" className="pb-2">First Name</Label>
                             <Input id="firstName" type="text" className="mb-4" {...register("firstName", { required: "First Name is required." } )} />
-                            {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
+                            {errors.firstName && <p className="text-red-500 text-sm">{errors.firstName.message}</p>}
                         </div>
                         <div>
                             <Label htmlFor="lastName" className="pb-2">Last Name</Label>
                             <Input id="lastName" type="text" className="mb-4" {...register("lastName", { required: "Last Name is required." } )} />
-                            {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
+                            {errors.lastName && <p className="text-red-500 text-sm">{errors.lastName.message}</p>}
                         </div>
                         <div>
                             <Label htmlFor="email" className="pb-2">Email</Label>
-                            <Input id="email" type="email" className="mb-4" {...register("email", { required: "Email is required." } )} />
+                            <Input id="email" type="email" className="mb-4" {...register("email", { 
+                                required: "Email is required.",
+                                pattern: {
+                                    value: /^\S+@\S+$/i,
+                                    message: "Invalid email address"
+                                }
+                                } )} 
+                            />
                             {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
                         </div>
                         <div>
                             <Label htmlFor="password" className="pt-2 pb-2">Password</Label>
-                            <Input id="password" type="password" className="mb-4" {...register("password", { required: "Password is required."} )} />
+                            <Input id="password" type="password" className="mb-4" {...register("password", { 
+                                required: "Password is required.",
+                                minLength: {
+                                    value: 6,
+                                    message: "Password must be at least  6 characters"
+                                }
+                            } )} 
+                        />
                             {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
                         </div>
                          <div>
                             <Label htmlFor="confirmPassword" className="pt-2 pb-2">Confirm Password</Label>
-                            <Input id="confirmPassword" type="password" className="mb-4" {...register("confirmPassword", { required: "Enter your password twice."} )} />
-                            {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
+                            <Input id="confirmPassword" type="password" className="mb-4" {...register("confirmPassword", { 
+                                required: "Enter your password twice.",
+                                validate: (value) => value === password || "Passwords do not match"
+                                } )} 
+                            />
+                            {errors.confirmPassword && <p className="text-red-500 text-sm">{errors.confirmPassword.message}</p>}
                         </div>
                         <div className="flex justify-center mt-6">
                             <Button type="submit" className="py-4 px-8">Sign up</Button>
