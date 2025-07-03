@@ -5,9 +5,12 @@ import {
   AlertDialogContent,
   AlertDialogTitle,
   AlertDialogTrigger,
+  AlertDialogHeader,
+  AlertDialogDescription
 } from "@/components/ui/alert-dialog"
 import { toast } from "sonner";
-import { buttonVariants } from "./ui/button";
+import { buttonVariants } from "@/components/ui/button";
+
 
 interface DeleteTopicData {
     topicId: number,
@@ -39,7 +42,7 @@ export default function DeleteTopic({topicId, open, onOpenChange, onSuccess}: De
 
                 toast.success(resData.message);
             } else {
-                toast.error(`Failed to delete topic: ${resData.message}`);
+                toast.error(`Failed to delete Topic: ${resData.message}`);
             }
         } catch (e) {
             console.log(e);
@@ -55,7 +58,10 @@ export default function DeleteTopic({topicId, open, onOpenChange, onSuccess}: De
                 </AlertDialogTrigger>
             )}
             <AlertDialogContent>
-                <AlertDialogTitle>Are you sure you want to delete this Topic?</AlertDialogTitle>
+                <AlertDialogHeader>
+                    <AlertDialogTitle>Are you sure you want to delete this Topic?</AlertDialogTitle>
+                    <AlertDialogDescription>This will delete all the Decks and Flashcards associated with this Topic.</AlertDialogDescription>
+                </AlertDialogHeader>
                 <div className="flex justify-end gap-2">
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
                     <AlertDialogAction className={buttonVariants({variant: "destructive"})} onClick={deleteTopicCall}>Delete</AlertDialogAction>

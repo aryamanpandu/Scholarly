@@ -1,6 +1,6 @@
-import { Button } from "./ui/button";
-import { Input } from "./ui/input";
-import { Textarea } from "./ui/textarea";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import { Textarea } from "../ui/textarea";
 import {
   Dialog,
   DialogContent,
@@ -17,7 +17,7 @@ import { toast } from "sonner";
 import { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 
-interface EditTopicData {
+interface EditTopicProps {
     topicName: string,
     topicDesc: string,
     topicId: number,
@@ -26,12 +26,12 @@ interface EditTopicData {
     onSuccess?: () => void
 }
 
-export default function EditTopic({topicName, topicDesc, topicId, open, onOpenChange, onSuccess}: EditTopicData) {
-    const { register, handleSubmit, formState: {errors} } = useForm<EditTopicData>();
+export default function EditTopic({topicName, topicDesc, topicId, open, onOpenChange, onSuccess}: EditTopicProps) {
+    const { register, handleSubmit, formState: {errors} } = useForm<EditTopicProps>();
     const [name, setName] = useState(topicName);
     const [desc, setDesc] = useState(topicDesc);
 
-    const onSubmit: SubmitHandler<EditTopicData> = async (data) => {
+    const onSubmit: SubmitHandler<EditTopicProps> = async (data) => {
         try {
             const res = await fetch(`http://localhost:3000/api/topics/${topicId}`, {
                 method: "PUT",
