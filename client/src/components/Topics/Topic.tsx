@@ -97,6 +97,7 @@ function ShowExtraActionMenu({topicName, topicDesc, topicId, onRefresh}: TopicAc
 
             <DeleteTopic
                 topicId={topicId}
+                topicName={topicName}
                 open={deleteDialogOpen}
                 onOpenChange={setDeleteDialogOpen}
                 onSuccess={onRefresh}

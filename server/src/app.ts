@@ -371,7 +371,7 @@ app.put('/api/topics/:topicId', async (req: Request, res: Response) => {
 }); 
 
 
-app.delete('/api/topics/:topicId', async (req: Request, res: Response) => {
+app.delete('/api/topics/:topicId&:topicName', async (req: Request, res: Response) => {
 
     if (!req.session?.user || !req.session.user.id || !req.session.user.email) {
         res.status(401).send({ message: "User is not authorized to delete topics."});
@@ -379,6 +379,7 @@ app.delete('/api/topics/:topicId', async (req: Request, res: Response) => {
     }
 
     const topicId = req.params.topicId;
+    const topicName = req.params.topicName;
 
     if (!topicId) {
         res.status(400).send({message: "Invalid Request." });
@@ -420,7 +421,7 @@ app.delete('/api/topics/:topicId', async (req: Request, res: Response) => {
 
         console.log(`Topic with ID: ${topicId} Deleted successfully`);
 
-        res.status(200).send({ message: `Successfully deleted topic which had the id: ${topicId}` });
+        res.status(200).send({ message: `Successfully deleted topic: ${topicName}` });
         return;
 
         } catch (e) {

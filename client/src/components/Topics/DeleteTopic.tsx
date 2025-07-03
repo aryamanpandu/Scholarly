@@ -14,17 +14,18 @@ import { buttonVariants } from "@/components/ui/button";
 
 interface DeleteTopicData {
     topicId: number,
+    topicName: string,
     open?: boolean,
     onOpenChange?: (open: boolean) => void,
     onSuccess?: () => void
 }
 
 
-export default function DeleteTopic({topicId, open, onOpenChange, onSuccess}: DeleteTopicData) {
+export default function DeleteTopic({topicId, topicName, open, onOpenChange, onSuccess}: DeleteTopicData) {
     
     const deleteTopicCall = async () => {
         try {
-            const res = await fetch(`http://localhost:3000/api/topics/${topicId}`, {
+            const res = await fetch(`http://localhost:3000/api/topics/${topicId}&${topicName}`, {
                 method: "DELETE",
                 credentials: "include",
             })
