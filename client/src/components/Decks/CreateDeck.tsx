@@ -15,22 +15,22 @@ import { toast } from "sonner";
 
 import { useForm, SubmitHandler} from "react-hook-form";
 
-interface CreateTopicData {
-    topicName: string,
-    topicDesc?: string
+interface CreateDeckData {
+    deckName: string,
+    deckDesc?: string
 }
 
-interface CreateTopicProps {
-    onSuccess: () => void
+interface CreateDeckProps {
+    onSuccess: () => void,
+    topicId: number
 }
 
-export default function CreateTopic({onSuccess}: CreateTopicProps) {
-    const { register, handleSubmit, formState: {errors}} = useForm<CreateTopicData>();
+export default function CreateDeck({onSuccess, topicId}: CreateDeckProps){
+    const { register, handleSubmit, formState: {errors}} = useForm<CreateDeckData>();
 
-    const onSubmit: SubmitHandler<CreateTopicData> = async (data) => {
+    const onSubmit: SubmitHandler<CreateDeckData> = async (data) => {
         try {
-
-            const res = await fetch(`http://localhost:3000/api/topics`, {
+            const res = await fetch(`http://localhost:3000/api/decks/${topicId}`, {
                 method: "POST",
                 credentials: "include",
                 body: JSON.stringify(data),
@@ -46,11 +46,12 @@ export default function CreateTopic({onSuccess}: CreateTopicProps) {
                 toast.success(resData.message);
                 //how do I close the damn Dialog tho? 
             } else {
-                toast.error(`Failed to create a topic: ${resData.message}`);
+                toast.error(`Failed to create a deck: ${resData.message}`);
             }
         } catch (e) {
             toast.error(`Something went wrong: ${e}`);
         }
+        
     }
 
     return (
@@ -64,28 +65,27 @@ export default function CreateTopic({onSuccess}: CreateTopicProps) {
                         <DialogTitle>Create Topic</DialogTitle>
                     </DialogHeader>
                     <div>
-                        <Label htmlFor="topicName" className="mb-2 block">Topic Name</Label>
+                        <Label htmlFor="deckName" className="mb-2 block">Deck Name</Label>
                         <Input
-                            id="topicName"
+                            id="deckName"
                             className="mb-4"
 
                             placeholder="Physics"
-                            {...register("topicName", {required: "A Topic Name is required."})}
+                            {...register("deckName", {required: "A Deck Name is required."})}
                         />
-                        {errors.topicName && <p className="py-4 px-8">{errors.topicName.message}</p>}
+                        {errors.deckName && <p className="py-4 px-8">{errors.deckName.message}</p>}
                     </div>
                     <div>
-                        <Label htmlFor="topicDesc" className="mb-2 block">
+                        <Label htmlFor="deckDesc" className="mb-2 block">
                             Topic Description
                         </Label>
                         <Textarea
-                            id="topicDesc"
+                            id="deckDesc"
                             className="mb-7"
-                            placeholder="Add a description to your Topic for better understanding."
-                            {...register("topicDesc")}
+                            placeholder="Add a description to your Deck for better understanding."
+                            {...register("deckDesc")}
                         />
                     </div>
-                    
                     <DialogFooter>
                         <DialogClose asChild>
                             <Button variant="outline">Cancel</Button>

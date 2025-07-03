@@ -426,6 +426,7 @@ interface Decks extends RowDataPacket {
     deckCreatedAt: Date
 }
 
+//Get all the Decks from a topic
 app.get('/api/decks/:topicId', async (req: Request, res: Response) => {
     
     if(!req.session.user || !req.session.user.id || !req.session.user.email) {
@@ -457,6 +458,7 @@ app.get('/api/decks/:topicId', async (req: Request, res: Response) => {
     }
 });
 
+//Create a new deck from a Topic
 app.post('/api/decks/:topicId', async (req: Request, res: Response) => {
     
     if(!req.session.user || !req.session.user.id || !req.session.user.email) {
@@ -492,6 +494,7 @@ app.post('/api/decks/:topicId', async (req: Request, res: Response) => {
     }
 });
 
+//Update an existing Deck of topicId
 app.put('/api/decks/:topicId', async(req: Request, res: Response) => {
     
     if (!req.session?.user || !req.session.user.id || !req.session.user.email) {
@@ -524,6 +527,7 @@ app.put('/api/decks/:topicId', async(req: Request, res: Response) => {
 
 });
 
+//Delete a Deck of deckId and topicId
 app.delete('/api/decks/:topicId&:deckId', async (req: Request, res: Response) => {
    
     if (!req.session?.user || !req.session.user.id || !req.session.user.email) {
