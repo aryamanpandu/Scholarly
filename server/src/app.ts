@@ -391,24 +391,68 @@ app.delete('/api/topics/:topicId', async (req: Request, res: Response) => {
         return;
     }
 
+    await conn.beginTransaction();
     try {
-
-        conn.execute(
-            `DELETE FROM topics 
-                WHERE user_id = ? AND topic_id = ?`, [req.session.user.id, topicId]
+        //1. Get all the deck IDs related to the current Topic ID
+        //2. DELETE all the flashcards associated with each deck ID
+        //3. DELETE all the decks associated with the current Topic ID
+        //4. DELEETE the current topic
+        const [decksRes] = await conn.execute(
+            `SELECT deck_id FROM decks WHERE topic_id = ?`, [topicId]
         );
+
+        //Getting an array of deck IDs
+        const deckIds = (decksRes as { deck_id : number }[]).map(r => r.deck_id);
+        
+        for (const id of deckIds) {
+            // const [rows2] = await conn.execute(
+            //     `SELECT flashcard_id FROM flashcards WHERE deck_id = ?`, [id] 
+            // );
+
+            // const flashcardIds = (rows2 as { flaschard_id : number }[]).map(r => r.flaschard_id);
+            
+            const [flashcardDelRes] = await conn.execute(
+                `DELETE f 
+                FROM flashcards f 
+                JOIN (
+                    SELECT flashcard_id FROM flashcards WHERE deck_id = ?
+                ) t 
+                ON f.flashcard_id = t.flashcard_id 
+                WHERE f.deck_id = ?`, [id, id]
+            );
+
+            const numAffectedFlashcards = (flashcardDelRes as ResultSetHeader).affectedRows;
+            console.log(`${numAffectedFlashcards} flashcards affected`);
+    
+        }
+        //Creating a new folder called DB engine in the backend, based on routes set up your files or 
+
+        const [deckDelRes] = await conn.execute(
+            `DELETE d
+            FROM decks d
+            JOIN (
+                SELECT deck_id FROM decks WHERE topic_id = ?
+            ) t
+            ON d.deck_id = t.deck_id 
+            WHERE d.topic_id = ?`, [topicId, topicId]
+        );
+
+        const numAffectedDecks = (deckDelRes as ResultSetHeader).affectedRows;
+        console.log(`${numAffectedDecks} decks affected`);
+         
+        await conn.execute(
+            `DELETE FROM topics WHERE user_id = ? AND topic_id = ?`, [req.session.user.id,topicId]
+        );
+
+        console.log(`Topic with ID: ${topicId} Deleted successfully`);
 
         res.status(200).send({ message: `Successfully deleted topic which had the id: ${topicId}` });
         return;
 
-    } catch (e) {
-        
-        console.log(e);
-        res.status(500).send({ message: 'Internal server error. Please try later.'});
-        return;
-        
-    }
-
+        } catch (e) {
+            await conn.rollback();
+            console.log(`Transaction failed: ${e}`);
+        } 
 });
 
 
@@ -541,9 +585,12 @@ app.delete('/api/decks/:topicId&:deckId', async (req: Request, res: Response) =>
     if (!topicId || !deckId) {
         res.status(401).send({message: "Invalid request. The topic ID and the deck ID is required to delete a deck"});
     }
-
+    await conn.beginTransaction();
     try {
-
+        //DELETE all the flashcards associated with the Deck, then delete the Deck
+        //STEP 1: Fetch all the flashcard IDs associated with the current Deck
+        //STEP 2: DELETE all the flashcards
+        // STEP 3: DELETE the current Deck
         await conn.execute(
             `DELETE FROM decks 
                 WHERE deck_id = ? AND topic_id = ?`, [deckId, topicId]

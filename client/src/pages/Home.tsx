@@ -33,9 +33,9 @@ export async function refreshTopics(ignore: boolean, setResult: (result: [TopicR
 export default function Home() {
     const [result, setResult] = useState<[TopicRes] | null>(null);
 
-        const handleRefreshTopics = useCallback(() => {
-            refreshTopics(false, setResult);
-        }, []);
+    const handleRefreshTopics = useCallback(() => {
+        refreshTopics(false, setResult);
+    }, []);
 
     useEffect(() => {
         let ignore = false;
