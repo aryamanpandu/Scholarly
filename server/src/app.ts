@@ -337,14 +337,9 @@ app.post('/api/topics', async (req: Request, res: Response) => {
     }
 });
 
-// update an existing topic
-// I dont need to change the updated_at, as that will be updated on its own
-// use params for id and everything else we send through
-//I am trying to think about this, if the form is like an edit form, then how do I send it to 
+
 app.put('/api/topics/:topicId', async (req: Request, res: Response) => {
-// how do I check what values of that topic are new? 
-// I am thinking in the frontend what I could do 
-// is that all the values of the topic are sent anyway. even if the user doesn't change them. 
+
     if (!req.session?.user || !req.session.user.id || !req.session.user.email) {
         res.status(401).send({ message: "User is not authorized to update topics."});
         return;
@@ -375,8 +370,7 @@ app.put('/api/topics/:topicId', async (req: Request, res: Response) => {
     }
 }); 
 
-// In the frontend make sure to add a confirmation when you have a delete anything tbh
-//This would mean deleting all the flashcards and decks associated with the topic.
+
 app.delete('/api/topics/:topicId', async (req: Request, res: Response) => {
 
     if (!req.session?.user || !req.session.user.id || !req.session.user.email) {
@@ -393,10 +387,7 @@ app.delete('/api/topics/:topicId', async (req: Request, res: Response) => {
 
     await conn.beginTransaction();
     try {
-        //1. Get all the deck IDs related to the current Topic ID
-        //2. DELETE all the flashcards associated with each deck ID
-        //3. DELETE all the decks associated with the current Topic ID
-        //4. DELEETE the current topic
+       
         const [decksRes] = await conn.execute(
             `SELECT deck_id FROM decks WHERE topic_id = ?`, [topicId]
         );
@@ -405,28 +396,11 @@ app.delete('/api/topics/:topicId', async (req: Request, res: Response) => {
         const deckIds = (decksRes as { deck_id : number }[]).map(r => r.deck_id);
         
         for (const id of deckIds) {
-            // const [rows2] = await conn.execute(
-            //     `SELECT flashcard_id FROM flashcards WHERE deck_id = ?`, [id] 
-            // );
 
-            // const flashcardIds = (rows2 as { flaschard_id : number }[]).map(r => r.flaschard_id);
-            
-            const [flashcardDelRes] = await conn.execute(
-                `DELETE f 
-                FROM flashcards f 
-                JOIN (
-                    SELECT flashcard_id FROM flashcards WHERE deck_id = ?
-                ) t 
-                ON f.flashcard_id = t.flashcard_id 
-                WHERE f.deck_id = ?`, [id, id]
-            );
-
-            const numAffectedFlashcards = (flashcardDelRes as ResultSetHeader).affectedRows;
-            console.log(`${numAffectedFlashcards} flashcards affected`);
+            await deleteFlashcardsForDeck(id.toString());
     
         }
-        //Creating a new folder called DB engine in the backend, based on routes set up your files or 
-
+        
         const [deckDelRes] = await conn.execute(
             `DELETE d
             FROM decks d
@@ -454,14 +428,6 @@ app.delete('/api/topics/:topicId', async (req: Request, res: Response) => {
             console.log(`Transaction failed: ${e}`);
         } 
 });
-
-
-//What do I need to get all the decks of a topic?
-//Now I don't need the user id. I need the topic id
-// I can still check if the user is signed in or not but the main thing is that 
-// i have the topic id to which the decks are associated to
-
-//Get all the decks for a topic Id
 
 interface Decks extends RowDataPacket {
     deckId: number,
@@ -587,10 +553,9 @@ app.delete('/api/decks/:topicId&:deckId', async (req: Request, res: Response) =>
     }
     await conn.beginTransaction();
     try {
-        //DELETE all the flashcards associated with the Deck, then delete the Deck
-        //STEP 1: Fetch all the flashcard IDs associated with the current Deck
-        //STEP 2: DELETE all the flashcards
-        // STEP 3: DELETE the current Deck
+
+        await deleteFlashcardsForDeck(deckId);
+        
         await conn.execute(
             `DELETE FROM decks 
                 WHERE deck_id = ? AND topic_id = ?`, [deckId, topicId]
@@ -606,5 +571,20 @@ app.delete('/api/decks/:topicId&:deckId', async (req: Request, res: Response) =>
         return;
 
     }
-    
 });
+
+//Function used to delete all the Flashcards for a given deck
+async function deleteFlashcardsForDeck(deckId: string) {
+    const [flashcardDelRes] = await conn.execute(
+                `DELETE f 
+                FROM flashcards f 
+                JOIN (
+                    SELECT flashcard_id FROM flashcards WHERE deck_id = ?
+                ) t 
+                ON f.flashcard_id = t.flashcard_id 
+                WHERE f.deck_id = ?`, [deckId, deckId]
+            );
+
+        const numAffectedFlashcards = (flashcardDelRes as ResultSetHeader).affectedRows;
+        console.log(`${numAffectedFlashcards} flashcards affected`);
+}
