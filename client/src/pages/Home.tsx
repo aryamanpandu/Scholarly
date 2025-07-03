@@ -1,8 +1,8 @@
-import Topic from "@/components/Topic"
+import Topic from "@/components/Topics/Topic"
 import { useCallback, useState } from "react"
 import { useEffect } from "react"
 import NavBar from "@/components/NavBar"
-import CreateTopic from "@/components/CreateTopic"
+import CreateTopic from "@/components/Topics/CreateTopic"
 
 interface TopicRes {
     topic_id: number,
@@ -69,7 +69,7 @@ export default function Home() {
         return (
             <>
                 <NavBar isLoggedIn={true}/>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 m-5 auto-rows-fr">
+                <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,0px))] gap-5 m-5 auto-rows-fr">
                     {topicArr}
                 </div>
                 <CreateTopic onSuccess={handleRefreshTopics}/>

@@ -376,6 +376,7 @@ app.put('/api/topics/:topicId', async (req: Request, res: Response) => {
 }); 
 
 // In the frontend make sure to add a confirmation when you have a delete anything tbh
+//This would mean deleting all the flashcards and decks associated with the topic.
 app.delete('/api/topics/:topicId', async (req: Request, res: Response) => {
 
     if (!req.session?.user || !req.session.user.id || !req.session.user.email) {
