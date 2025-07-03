@@ -3,7 +3,7 @@ import "./App.css";
 import LoginPage from "./LoginPage";
 import Home from "./Home";
 import SignUpPage from "./SignUpPage";
-import Deck from "@/components/Deck";
+import Deck from "@/components/Decks/Deck";
 
 function App() {
   return (

@@ -8,7 +8,7 @@ import {
   AlertDialogHeader
 } from "@/components/ui/alert-dialog"
 import { toast } from "sonner";
-import { buttonVariants } from "./ui/button";
+import { buttonVariants } from "../ui/button";
 import { AlertDialogDescription } from "@radix-ui/react-alert-dialog";
 
 interface DeleteDeckProps {
