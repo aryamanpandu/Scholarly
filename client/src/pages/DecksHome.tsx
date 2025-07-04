@@ -4,6 +4,8 @@ import { useEffect } from "react"
 import NavBar from "@/components/NavBar"
 import CreateDeck from "@/components/Decks/CreateDeck";
 import { useParams } from "react-router-dom"; 
+import { Breadcrumb, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
+import { Link } from "react-router-dom"
 
 interface DecksHomeRes {
     deck_id: number,
@@ -12,6 +14,26 @@ interface DecksHomeRes {
     created_at: Date
 }
 
+interface DecksHomeBreadCrumbProps {
+    topicId: number,
+    topicName?: string
+}
+
+function DecksHomeBreadCrumb({topicId , topicName}: DecksHomeBreadCrumbProps) {
+    return (
+        <Breadcrumb className="px-6 pt-3">
+            <BreadcrumbList>
+                <BreadcrumbLink asChild>
+                    <Link to={`/home`}>Home</Link>
+                </BreadcrumbLink>
+                <BreadcrumbSeparator />
+                <BreadcrumbLink asChild>
+                    <Link to={`/deckHome/${topicId}`}>{topicName}</Link>
+                </BreadcrumbLink>
+            </BreadcrumbList>
+        </Breadcrumb>
+    )
+}
 
 export async function refreshDecks(ignore: boolean, setResult: (result: [DecksHomeRes] | null) => void, topic_id: number) {
     try {
@@ -69,6 +91,7 @@ export default function DecksHome() {
         return (
             <>
                 <NavBar isLoggedIn={true}/>
+                <DecksHomeBreadCrumb topicId={topicId} topicName={sessionStorage.getItem("topicName") || "Topic"}  />
                 <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,0px))] gap-5 m-5 auto-rows-fr">
                     {deckArr}
                 </div>

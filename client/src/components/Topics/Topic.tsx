@@ -45,7 +45,7 @@ export default function Topic({name, desc, createdAt, id, onRefresh}: Topic) {
                 
             </CardContent>
             <div className="flex justify-between mt-auto lg:px-6 md:px-4 sm:gap-2">
-                    <Button variant="default" className="rounded-full cursor-pointer"><Link to={`/deckHome/${id}`}>Decks <i className="bi bi-arrow-right-circle-fill"></i></Link></Button>
+                    <Button variant="default" className="rounded-full cursor-pointer" onClick={() => {sessionStorage.setItem("topicName", name)} }><Link to={`/deckHome/${id}`}>Decks <i className="bi bi-arrow-right-circle-fill"></i></Link></Button>
                     <CardDescription className="text-xs sm:text-sm">
                         Created: {createdAt.toDateString()}
                     </CardDescription>

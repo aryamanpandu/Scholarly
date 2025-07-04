@@ -529,6 +529,8 @@ app.put('/api/decks/:deckId&:topicId', async(req: Request, res: Response) => {
         );
 
         res.status(200).send({ message: `Successfully updated topic with deck id: ${deckId}`});
+        return;
+
     } catch (e) {
 
         console.log(e);

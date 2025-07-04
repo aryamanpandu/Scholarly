@@ -3,12 +3,27 @@ import { useCallback, useState } from "react"
 import { useEffect } from "react"
 import NavBar from "@/components/NavBar"
 import CreateTopic from "@/components/Topics/CreateTopic"
+import { Breadcrumb, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
+import { Link } from "react-router-dom"
 
 interface TopicRes {
     topic_id: number,
     topic_name: string,
     topic_desc: string,
     created_at: Date
+}
+
+function HomeBreadCrumb() {
+    return (
+        <Breadcrumb className="px-6 pt-3">
+            <BreadcrumbList>
+                <BreadcrumbLink>
+                    <Link to={`/home`}>Home</Link>
+                </BreadcrumbLink>
+                <BreadcrumbSeparator/>
+            </BreadcrumbList>
+        </Breadcrumb>
+    );
 }
 
 export async function refreshTopics(ignore: boolean, setResult: (result: [TopicRes]| null) => void) {
@@ -69,6 +84,7 @@ export default function Home() {
         return (
             <>
                 <NavBar isLoggedIn={true}/>
+                <HomeBreadCrumb/>
                 <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,0px))] gap-5 m-5 auto-rows-fr">
                     {topicArr}
                 </div>
@@ -81,6 +97,7 @@ export default function Home() {
         return (
             <> 
                 <NavBar isLoggedIn={true}/>
+                <HomeBreadCrumb/>
                 <div className="flex justify-center items-center h-[calc(100vh-10rem)] text-3xl text-neutral-400">You have no Topics. Click the plus icon to create one!</div>
                 <CreateTopic onSuccess={handleRefreshTopics}/>
             </>
@@ -88,3 +105,4 @@ export default function Home() {
     }
     
 }
+

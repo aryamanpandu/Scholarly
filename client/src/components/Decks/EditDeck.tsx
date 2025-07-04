@@ -27,6 +27,7 @@ interface EditDeckProps {
 }
 
 
+// TODO: Fix the issue of UI not being updated after Edit.
 export default function EditDeck({deckName, deckDesc, deckId, topicId, open, onOpenChange, onSuccess}: EditDeckProps) {
     const {register, handleSubmit, formState: {errors} } = useForm<EditDeckProps>();
     const [name, setName] = useState(deckName);
@@ -34,6 +35,7 @@ export default function EditDeck({deckName, deckDesc, deckId, topicId, open, onO
 
     const onSubmit: SubmitHandler<EditDeckProps> = async (data) => {
         try {
+
             const res = await fetch(`http://localhost:3000/api/decks/${deckId}&${topicId}`, {
                 method: "PUT",
                 credentials: "include",
