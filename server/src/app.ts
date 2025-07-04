@@ -506,15 +506,16 @@ app.post('/api/decks/:topicId', async (req: Request, res: Response) => {
 });
 
 //Update an existing Deck of topicId
-app.put('/api/decks/:topicId', async(req: Request, res: Response) => {
+app.put('/api/decks/:deckId&:topicId', async(req: Request, res: Response) => {
     
     if (!req.session?.user || !req.session.user.id || !req.session.user.email) {
         res.status(401).send({ message: "User is not authorized to update decks."});
         return;
     }
 
-    const {deckName, deckDesc, deckId} = req.body;
+    const {deckName, deckDesc} = req.body;
     const topicId = req.params.topicId;
+    const deckId = req.params.deckId;
 
     if(!topicId || !deckId) {
         res.status(401).send({message: "Invalid request. The topic ID and the deck ID is required to update a deck"});
@@ -539,7 +540,7 @@ app.put('/api/decks/:topicId', async(req: Request, res: Response) => {
 });
 
 //Delete a Deck of deckId and topicId
-app.delete('/api/decks/:topicId&:deckId', async (req: Request, res: Response) => {
+app.delete('/api/decks/:deckId&:topicId', async (req: Request, res: Response) => {
    
     if (!req.session?.user || !req.session.user.id || !req.session.user.email) {
         res.status(401).send({ message: "User is not authorized to delete decks."});

@@ -23,7 +23,7 @@ export default function DeleteDeck({deckId, topicId, open, onOpenChange, onSucce
     
     const deleteDeckCall = async () => {
         try {
-            const res= await fetch(`http://localhost:3000/api/decks/${topicId}&${deckId}`, {
+            const res= await fetch(`http://localhost:3000/api/decks/${deckId}&${topicId}`, {
                 method: "DELETE",
                 credentials: "include"
             });

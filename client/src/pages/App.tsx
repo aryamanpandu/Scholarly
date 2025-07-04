@@ -4,6 +4,7 @@ import LoginPage from "./LoginPage";
 import Home from "./Home";
 import SignUpPage from "./SignUpPage";
 import Deck from "@/components/Decks/Deck";
+import DecksHome from "./DecksHome";
 
 function App() {
   return (
@@ -14,7 +15,8 @@ function App() {
         <Route path="/signup" element= {<SignUpPage />} /> 
         <Route path="/home" element= { <Home /> } />
         <Route path="/login" element= { <LoginPage /> } />
-        <Route path="/deck" element= { <Deck id={1} topicId={2}createdAt={new Date()} name="test" desc="hello" /> } /> 
+        <Route path="/deck" element= { <Deck id={1} topicId={2}createdAt={new Date()} name="test" desc="hello" /> } />
+        <Route path="/deckHome/:topicId" element= { <DecksHome /> } />
       </Routes>
     </BrowserRouter>
     </>

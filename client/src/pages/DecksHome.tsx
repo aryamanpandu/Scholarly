@@ -3,6 +3,7 @@ import { useCallback, useState } from "react"
 import { useEffect } from "react"
 import NavBar from "@/components/NavBar"
 import CreateDeck from "@/components/Decks/CreateDeck";
+import { useParams } from "react-router-dom"; 
 
 interface DecksHomeRes {
     deck_id: number,
@@ -11,9 +12,6 @@ interface DecksHomeRes {
     created_at: Date
 }
 
-interface DecksHomeProps {
-    topic_id: number
-}
 
 export async function refreshDecks(ignore: boolean, setResult: (result: [DecksHomeRes] | null) => void, topic_id: number) {
     try {
@@ -34,18 +32,19 @@ export async function refreshDecks(ignore: boolean, setResult: (result: [DecksHo
 }
 
 
-export default function DecksHome({topic_id}: DecksHomeProps) {
-
+export default function DecksHome() {
+    const params = useParams();
+    const topicId = Number(params.topicId);
     const [result, setResult] = useState<[DecksHomeRes] | null>(null);
 
     const handleRefreshDecks = useCallback(() => {
-        refreshDecks(false, setResult, topic_id);
+        refreshDecks(false, setResult, topicId);
     }, []);
     
     useEffect(() => {
         let ignore = false;
 
-        refreshDecks(ignore, setResult, topic_id);
+        refreshDecks(ignore, setResult, topicId);
 
         return () => {
             ignore = true;
@@ -59,10 +58,10 @@ export default function DecksHome({topic_id}: DecksHomeProps) {
                 return (
                     <Deck
                         id={deck.deck_id}
-                        topicId={topic_id}
+                        topicId={topicId}
                         name={deck.deck_name}
                         desc={deck.deck_desc}
-                        createdAt={deck.created_at}
+                        createdAt={new Date(deck.created_at)}
                     />
                 );
         });
@@ -70,13 +69,19 @@ export default function DecksHome({topic_id}: DecksHomeProps) {
         return (
             <>
                 <NavBar isLoggedIn={true}/>
-                <div>
+                <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,0px))] gap-5 m-5 auto-rows-fr">
                     {deckArr}
                 </div>
-                <CreateDeck onSuccess={handleRefreshDecks} topicId={topic_id}/>
+                <CreateDeck onSuccess={handleRefreshDecks} topicId={topicId}/>
+            </>
+        );
+    } else {
+        return(
+            <>
+                <NavBar isLoggedIn={true}/>
+                <div className="flex justify-center items-center h-[calc(100vh-10rem)] text-3xl text-neutral-400">You have no Decks. Click the plus icon to create one!</div>
+                <CreateDeck onSuccess={handleRefreshDecks} topicId={topicId}/>
             </>
         )
-
-
     }
 }
