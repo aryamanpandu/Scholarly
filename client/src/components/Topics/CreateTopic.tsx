@@ -21,10 +21,12 @@ interface CreateTopicData {
 }
 
 interface CreateTopicProps {
-    onSuccess: () => void
+    onSuccess: () => void,
+    open: boolean,
+    onOpenChange: (open: boolean) => void
 }
 
-export default function CreateTopic({onSuccess}: CreateTopicProps) {
+export default function CreateTopic({onSuccess, open, onOpenChange}: CreateTopicProps) {
     const { register, handleSubmit, formState: {errors}} = useForm<CreateTopicData>();
 
     const onSubmit: SubmitHandler<CreateTopicData> = async (data) => {
@@ -42,6 +44,7 @@ export default function CreateTopic({onSuccess}: CreateTopicProps) {
             const resData = await res.json();
 
             if (res.ok) {
+                onOpenChange(false);
                 onSuccess();
                 toast.success(resData.message);
                 //how do I close the damn Dialog tho? 
@@ -54,9 +57,9 @@ export default function CreateTopic({onSuccess}: CreateTopicProps) {
     }
 
     return (
-        <Dialog>
+        <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogTrigger asChild>
-                <Button className="fixed bottom-2 right-2 text-2xl font-bold" variant="default"><i className="bi bi-plus-lg"></i></Button>
+                <Button className="fixed bottom-2 right-2 text-2xl font-bold" variant="default" onClick={() => onOpenChange(true)}><i className="bi bi-plus-lg"></i></Button>
             </DialogTrigger>
             <DialogContent>
                 <form onSubmit={handleSubmit(onSubmit)}>

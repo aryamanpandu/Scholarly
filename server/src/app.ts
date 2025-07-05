@@ -493,7 +493,7 @@ app.post('/api/decks/:topicId', async (req: Request, res: Response) => {
 
         console.log(`New deck created with name ${deckName}`);
         
-        res.status(200).send({ message: `Successfully created topic with name: ${deckName}` });
+        res.status(200).send({ message: `Successfully created Deck with name: ${deckName}` });
         return; 
 
     } catch (e) {

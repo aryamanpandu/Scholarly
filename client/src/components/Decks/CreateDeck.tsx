@@ -14,6 +14,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 
 import { useForm, SubmitHandler} from "react-hook-form";
+import { useState } from "react";
 
 interface CreateDeckData {
     deckName: string,
@@ -22,11 +23,14 @@ interface CreateDeckData {
 
 interface CreateDeckProps {
     onSuccess: () => void,
-    topicId: number
+    topicId: number,
+    open: boolean,
+    onOpenChange: (open: boolean) => void
 }
 
-export default function CreateDeck({onSuccess, topicId}: CreateDeckProps){
+export default function CreateDeck({onSuccess, topicId, open, onOpenChange}: CreateDeckProps){
     const { register, handleSubmit, formState: {errors}} = useForm<CreateDeckData>();
+    
 
     const onSubmit: SubmitHandler<CreateDeckData> = async (data) => {
         try {
@@ -42,6 +46,7 @@ export default function CreateDeck({onSuccess, topicId}: CreateDeckProps){
             const resData = await res.json();
 
             if (res.ok) {
+                onOpenChange(false);
                 onSuccess();
                 toast.success(resData.message);
                 //how do I close the damn Dialog tho? 
@@ -55,14 +60,12 @@ export default function CreateDeck({onSuccess, topicId}: CreateDeckProps){
     }
 
     return (
-        <Dialog>
-            <DialogTrigger asChild>
-                <Button className="fixed bottom-2 right-2 text-2xl font-bold" variant="default"><i className="bi bi-plus-lg"></i></Button>
-            </DialogTrigger>
+        <Dialog open={open} onOpenChange={onOpenChange}>
+            <Button className="fixed bottom-2 right-2 text-2xl font-bold" variant="default" onClick={() => {onOpenChange(true)}}><i className="bi bi-plus-lg"></i></Button>
             <DialogContent>
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <DialogHeader className="mb-4">
-                        <DialogTitle>Create Topic</DialogTitle>
+                        <DialogTitle>Create Deck</DialogTitle>
                     </DialogHeader>
                     <div>
                         <Label htmlFor="deckName" className="mb-2 block">Deck Name</Label>

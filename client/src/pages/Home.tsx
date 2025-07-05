@@ -47,6 +47,7 @@ export async function refreshTopics(ignore: boolean, setResult: (result: [TopicR
 //Do the request to get the information from get 
 export default function Home() {
     const [result, setResult] = useState<[TopicRes] | null>(null);
+    const [createDialogOpen, setCreateDialogOpen] = useState(false);
 
     const handleRefreshTopics = useCallback(() => {
         refreshTopics(false, setResult);
@@ -88,7 +89,7 @@ export default function Home() {
                 <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,0px))] gap-5 m-5 auto-rows-fr">
                     {topicArr}
                 </div>
-                <CreateTopic onSuccess={handleRefreshTopics}/>
+                <CreateTopic onSuccess={handleRefreshTopics} open={createDialogOpen} onOpenChange={setCreateDialogOpen}/>
             </>
             
         )
@@ -99,7 +100,7 @@ export default function Home() {
                 <NavBar isLoggedIn={true}/>
                 <HomeBreadCrumb/>
                 <div className="flex justify-center items-center h-[calc(100vh-10rem)] text-3xl text-neutral-400">You have no Topics. Click the plus icon to create one!</div>
-                <CreateTopic onSuccess={handleRefreshTopics}/>
+                <CreateTopic onSuccess={handleRefreshTopics} open={createDialogOpen} onOpenChange={setCreateDialogOpen}/>
             </>
         )
     }

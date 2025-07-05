@@ -58,6 +58,7 @@ export default function DecksHome() {
     const params = useParams();
     const topicId = Number(params.topicId);
     const [result, setResult] = useState<[DecksHomeRes] | null>(null);
+    const [createDialogOpen, setCreateDialogOpen] = useState(false);
 
     const handleRefreshDecks = useCallback(() => {
         refreshDecks(false, setResult, topicId);
@@ -95,7 +96,7 @@ export default function DecksHome() {
                 <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,0px))] gap-5 m-5 auto-rows-fr">
                     {deckArr}
                 </div>
-                <CreateDeck onSuccess={handleRefreshDecks} topicId={topicId}/>
+                <CreateDeck onSuccess={handleRefreshDecks} topicId={topicId} open={createDialogOpen} onOpenChange={setCreateDialogOpen}/>
             </>
         );
     } else {
@@ -103,7 +104,7 @@ export default function DecksHome() {
             <>
                 <NavBar isLoggedIn={true}/>
                 <div className="flex justify-center items-center h-[calc(100vh-10rem)] text-3xl text-neutral-400">You have no Decks. Click the plus icon to create one!</div>
-                <CreateDeck onSuccess={handleRefreshDecks} topicId={topicId}/>
+                <CreateDeck onSuccess={handleRefreshDecks} topicId={topicId} open={createDialogOpen} onOpenChange={setCreateDialogOpen}/>
             </>
         )
     }

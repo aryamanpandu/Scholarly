@@ -68,11 +68,6 @@ export default function EditTopic({topicName, topicDesc, topicId, open, onOpenCh
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            {!open && !onOpenChange && (
-                <DialogTrigger asChild>
-                    <div><i className="bi bi-pencil-square"/> Edit</div>
-                </DialogTrigger>
-            )}
             <DialogContent>
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <DialogHeader className="mb-4">
