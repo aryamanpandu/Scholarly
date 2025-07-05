@@ -21,9 +21,9 @@ interface EditDeckProps {
     deckDesc: string,
     deckId: number,
     topicId: number,
-    open?: boolean,
-    onOpenChange?: (open: boolean) => void,
-    onSuccess?: () => void
+    open: boolean,
+    onOpenChange: (open: boolean) => void,
+    onSuccess: () => void
 }
 
 
@@ -48,13 +48,8 @@ export default function EditDeck({deckName, deckDesc, deckId, topicId, open, onO
             const resData = await res.json();
 
             if (res.ok) {
-                if (onOpenChange) {
-                    onOpenChange(false);
-                }
-
-                if (onSuccess) {
-                    onSuccess();
-                }
+                onOpenChange(false);
+                onSuccess();
 
                 toast.success(resData.message);
             } else {
@@ -69,44 +64,39 @@ export default function EditDeck({deckName, deckDesc, deckId, topicId, open, onO
     
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            {!open && !onOpenChange && (
-                <DialogTrigger asChild>
-                    <div><i className="bi bi-pencil-square"/> Edit</div>
-                </DialogTrigger>
-            )}
             <DialogContent>
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <DialogHeader className="mb-4">
                         <DialogTitle>Edit Deck</DialogTitle>
                     </DialogHeader>
-                <div>
-                    <Label htmlFor="deckName" className="mb-2 block">Deck Name</Label>
-                    <Input
-                        id="deckName"
-                        className="mb-4"
-                        value={name}
-                        {...register("deckName", {required: "Deck Name is required.", onChange: (e) => setName(e.target.value) })}
-                    />
-                    {errors.deckName && <p className="py-4 px-8">{errors.deckName.message}</p>}
-                </div>
-                <div>
-                    <Label htmlFor="deckDesc" className="mb-2 block">Deck Description</Label>
-                    <Textarea
-                        id="deckDesc"
-                        className="mb-7"
-                        placeholder="Enter your topic's description..."
-                        rows={2}
-                        value={desc}
-                        {...register("deckDesc", {required: "Deck Description is required.", onChange: (e) => setDesc(e.target.value)})}
-                    />
-                    {errors.deckDesc && <p className="py-4 px-8">{errors.deckDesc.message}</p>}
-                </div>
-                <DialogFooter>
-                    <DialogClose asChild>
-                        <Button variant="outline" type="button">Cancel</Button>
-                    </DialogClose>
-                    <Button type="submit">Save changes</Button>
-                </DialogFooter>
+                    <div>
+                        <Label htmlFor="deckName" className="mb-2 block">Deck Name</Label>
+                        <Input
+                            id="deckName"
+                            className="mb-4"
+                            value={name}
+                            {...register("deckName", {required: "Deck Name is required.", onChange: (e) => setName(e.target.value) })}
+                        />
+                        {errors.deckName && <p className="py-4 px-8">{errors.deckName.message}</p>}
+                    </div>
+                    <div>
+                        <Label htmlFor="deckDesc" className="mb-2 block">Deck Description</Label>
+                        <Textarea
+                            id="deckDesc"
+                            className="mb-7"
+                            placeholder="Enter your topic's description..."
+                            rows={2}
+                            value={desc}
+                            {...register("deckDesc", {required: "Deck Description is required.", onChange: (e) => setDesc(e.target.value)})}
+                        />
+                        {errors.deckDesc && <p className="py-4 px-8">{errors.deckDesc.message}</p>}
+                    </div>
+                    <DialogFooter>
+                        <DialogClose asChild>
+                            <Button variant="outline" type="button">Cancel</Button>
+                        </DialogClose>
+                        <Button type="submit">Save changes</Button>
+                    </DialogFooter>
                 </form>
             </DialogContent>
         </Dialog>

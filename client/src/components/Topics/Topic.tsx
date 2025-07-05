@@ -25,7 +25,7 @@ interface Topic {
     desc: string,
     createdAt: Date,
     id: number,
-    onRefresh?: () => void
+    onRefresh: () => void
 }
 //I am going to use three dots ellipsis that will have an option to edit and delete topics.
 export default function Topic({name, desc, createdAt, id, onRefresh}: Topic) {
@@ -58,7 +58,7 @@ interface TopicActionMenuProps {
     topicName: string,
     topicDesc: string,
     topicId: number,
-    onRefresh?: () => void
+    onRefresh: () => void
 }
 
 function ShowExtraActionMenu({topicName, topicDesc, topicId, onRefresh}: TopicActionMenuProps) {

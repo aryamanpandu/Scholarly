@@ -85,6 +85,7 @@ export default function DecksHome() {
                         name={deck.deck_name}
                         desc={deck.deck_desc}
                         createdAt={new Date(deck.created_at)}
+                        onRefresh={handleRefreshDecks}
                     />
                 );
         });

@@ -21,9 +21,9 @@ interface EditTopicProps {
     topicName: string,
     topicDesc: string,
     topicId: number,
-    open?: boolean,
-    onOpenChange?: (open: boolean) => void,
-    onSuccess?: () => void
+    open: boolean,
+    onOpenChange: (open: boolean) => void,
+    onSuccess: () => void
 }
 
 export default function EditTopic({topicName, topicDesc, topicId, open, onOpenChange, onSuccess}: EditTopicProps) {

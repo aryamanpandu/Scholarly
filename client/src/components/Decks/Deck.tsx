@@ -25,7 +25,7 @@ interface DeckProps {
     name: string,
     desc: string,
     createdAt: Date,
-    onRefresh?: () => void
+    onRefresh: () => void
 }
 
 export default function Deck({id, topicId, name, desc, createdAt, onRefresh}: DeckProps) {
@@ -58,7 +58,7 @@ interface DeckActionMenuProps {
     deckDesc: string,
     deckId: number,
     topicId: number,
-    onRefresh?: () => void
+    onRefresh: () => void
 }
 
 function ShowExtraActionMenu({deckName, deckDesc, deckId, topicId, onRefresh}: DeckActionMenuProps) {
