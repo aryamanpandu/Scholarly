@@ -43,7 +43,7 @@ export default function Deck({id, topicId, name, desc, createdAt, onRefresh}: De
                     </div>
                 </div>
             </CardContent>
-            <div className="flex justify-between mt-auto lg:px-6 md:px-4 sm:gap-2">
+            <div className="flex justify-between mt-auto lg:px-6 md:px-4">
                 <Button variant="default" className="rounded-full cursor-pointer">Flashcards</Button>
                 <CardDescription className="text-xs sm:text-sm">
                     Created: {createdAt.toDateString()}

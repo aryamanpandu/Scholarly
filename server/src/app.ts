@@ -252,13 +252,6 @@ app.post('/api/logout', async (req: Request, res: Response) => {
     });
 });
 
-// Now I need to CRUD with Topics
-
-// Make sure to test these APIs dude, you're only testing if they are successfull
-// SO my thinking is, we setup the a value in session like email, and user id and check if they are part of the database before giving access in express, woudl that work with sessions?
-
-// Retrieve Topics
-
 interface Topic extends RowDataPacket{
     topicId: number,
     topicName: string,
@@ -307,8 +300,6 @@ app.post('/api/topics', async (req: Request, res: Response) => {
         return;
     }
 
-    // I am assuming that the user will send a topic with the same things as the interface
-    // The user will not send createdAt cause that will just be auto generated in database.
     const { topicName, topicDesc } = req.body;
 
     if (!topicName) {
@@ -430,7 +421,7 @@ app.delete('/api/topics/:topicId&:topicName', async (req: Request, res: Response
         } 
 });
 
-interface Decks extends RowDataPacket {
+interface Deck extends RowDataPacket {
     deckId: number,
     deckName: string,
     deckDesc: string,
@@ -453,7 +444,7 @@ app.get('/api/decks/:topicId', async (req: Request, res: Response) => {
     }
 
     try {
-        const [result] = await conn.execute<Decks[]>(
+        const [result] = await conn.execute<Deck[]>(
             `SELECT deck_id, deck_name, deck_desc, created_at FROM decks WHERE topic_id =?`, [topicId]
         );
 
@@ -592,3 +583,39 @@ async function deleteFlashcardsForDeck(deckId: string) {
         const numAffectedFlashcards = (flashcardDelRes as ResultSetHeader).affectedRows;
         console.log(`${numAffectedFlashcards} flashcards affected`);
 }
+
+
+interface Flashcard extends RowDataPacket {
+    flashcardId: number,
+    correctCheck: boolean,
+    question: string,
+    answer: string,
+    createdAt: Date,
+}
+
+app.get('/api/flashcards/:deckId', async (req: Request, res: Response) => {
+
+    if (!req.session?.user || !req.session.user.id || !req.session.user.email) {
+        res.status(401).send({ message: "User is not authorized to see these flashcards."});
+        return;
+    }
+
+    const deckId = req.params.deckId;
+
+    if (!deckId) {
+        res.status(400).send({message: "Invalid Request. Deck ID is required"});
+    }
+
+    try {
+        const [result] = await conn.execute<Flashcard[]>(`
+            `); 
+
+    } catch (e) {
+
+        console.log(e);
+        res.status(500).send({ message: 'Internal server error. Please try later.'});
+        return;
+
+    }
+
+});

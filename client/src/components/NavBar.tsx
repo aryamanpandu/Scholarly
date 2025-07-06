@@ -19,7 +19,7 @@ export default function NavBar({ isLoggedIn=false }: NavBarProps) {
           </Button>
         </SheetTrigger>
         <SheetContent side="left">
-          <Link to="#" className="mr-6 hidden lg:flex" >
+          <Link to="/home" className="mr-6 hidden lg:flex" >
             <ScholarlyIcon className="h-8 w-8" />
             <span className="sr-only">Scholarly</span>
           </Link>

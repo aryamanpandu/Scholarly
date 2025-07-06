@@ -64,6 +64,7 @@ export default function EditDeck({deckName, deckDesc, deckId, topicId, open, onO
     
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
+            <DialogTrigger hidden></DialogTrigger>
             <DialogContent>
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <DialogHeader className="mb-4">

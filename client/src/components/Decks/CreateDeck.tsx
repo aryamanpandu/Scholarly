@@ -61,6 +61,7 @@ export default function CreateDeck({onSuccess, topicId, open, onOpenChange}: Cre
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
+            <DialogTrigger hidden></DialogTrigger>
             <Button className="fixed bottom-2 right-2 text-2xl font-bold" variant="default" onClick={() => {onOpenChange(true)}}><i className="bi bi-plus-lg"></i></Button>
             <DialogContent>
                 <form onSubmit={handleSubmit(onSubmit)}>
