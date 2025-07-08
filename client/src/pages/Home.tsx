@@ -86,6 +86,11 @@ export default function Home() {
             <>
                 <NavBar isLoggedIn={true}/>
                 <HomeBreadCrumb/>
+                <div className="flex justify-center">
+                    <h1 className="m-4 text-3xl border-b-2">
+                        Topics
+                    </h1>
+                </div>
                 <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,0px))] gap-5 m-5 auto-rows-fr">
                     {topicArr}
                 </div>

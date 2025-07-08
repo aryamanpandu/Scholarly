@@ -18,6 +18,10 @@ import { useState } from "react";
 
 export default function Flashcard() {
     return (
-        <></>
+        <Card>
+            <CardHeader>
+                <CardTitle></CardTitle>
+            </CardHeader>
+        </Card>
     )
 }

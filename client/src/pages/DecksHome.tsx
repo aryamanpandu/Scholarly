@@ -94,6 +94,9 @@ export default function DecksHome() {
             <>
                 <NavBar isLoggedIn={true}/>
                 <DecksHomeBreadCrumb topicId={topicId} topicName={sessionStorage.getItem("topicName") || "Topic"}  />
+                <div className="flex justify-center">
+                    <h1 className="m-4 text-3xl border-b-2">{sessionStorage.getItem("topicName") || "Topic"}</h1>
+                </div>
                 <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,0px))] gap-5 m-5 auto-rows-fr">
                     {deckArr}
                 </div>
