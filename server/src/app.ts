@@ -608,7 +608,13 @@ app.get('/api/flashcards/:deckId', async (req: Request, res: Response) => {
 
     try {
         const [result] = await conn.execute<Flashcard[]>(`
-            `); 
+            SELECT flashcard_id, correct_check, question, answer, created_at FROM flashcards WHERE deck_id = ?
+            `, [deckId]
+        );
+        
+        console.log(`Flashcards received for Deck with ID: ${deckId}`);
+
+        res.status(200).send(JSON.stringify(result));
 
     } catch (e) {
 
@@ -617,5 +623,39 @@ app.get('/api/flashcards/:deckId', async (req: Request, res: Response) => {
         return;
 
     }
-
 });
+
+//What things are needed when creating a flashcard?
+// deck_id, question, answer 
+app.post('/api/flashcards/:deckId', async (req: Request, res: Response) => {
+    
+    if (!req.session?.user || !req.session.user.id || !req.session.user.email) {
+        res.status(401).send({ message: "User is not authorized to create a flashcard."});
+        return;
+    }
+
+    const {question, answer} = req.body; 
+    const deckId = req.params.deckId;
+
+
+
+    if (!deckId || !question || !answer) {
+        res.status(400).send({message: "Invalid Request. Deck ID, question, answer is required to create a new Flashcard"});
+    }
+
+    try {
+        const [result] = await conn.execute(
+            `INSERT INTO flashcards(question, answer)
+                VALUES(?,?) WHERE deck_id = ?`, [question,answer,deckId]
+        );
+
+        console.log(result);
+        res.status(200).send({message: `Flashcard with `})
+    } catch (e) {
+        console.log(e);
+        res.status(500).send({ message: 'Internal server error. Please try later.'});
+        return;
+    }
+
+
+})
