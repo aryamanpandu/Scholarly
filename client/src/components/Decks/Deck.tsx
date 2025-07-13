@@ -44,7 +44,7 @@ export default function Deck({id, topicId, name, desc, createdAt, onRefresh}: De
                 </div>
             </CardContent>
             <div className="flex justify-between mt-auto lg:px-6 md:px-4">
-                <Button variant="default" className="rounded-full cursor-pointer">Flashcards</Button>
+                <Button variant="default" className="rounded-full cursor-pointer">Flashcards <i className="bi bi-arrow-right-circle-fill"></i></Button>
                 <CardDescription className="text-xs sm:text-sm">
                     Created: {createdAt.toDateString()}
                 </CardDescription>
@@ -62,7 +62,7 @@ interface DeckActionMenuProps {
 }
 
 function ShowExtraActionMenu({deckName, deckDesc, deckId, topicId, onRefresh}: DeckActionMenuProps) {
-     const [editDialogOpen, setEditDialogOpen] = useState(false);
+    const [editDialogOpen, setEditDialogOpen] = useState(false);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
     return (
@@ -81,7 +81,7 @@ function ShowExtraActionMenu({deckName, deckDesc, deckId, topicId, onRefresh}: D
                         <DropdownMenuItem
                             onSelect= {() => {setDeleteDialogOpen(true)}}
                         >
-                            <i className="bi bi-trash"></i> Delete
+                            <i className="bi bi-trash"/> Delete Deck
                         </DropdownMenuItem>
                     </DropdownMenuGroup>
                 </DropdownMenuContent>
