@@ -25,7 +25,7 @@ export default function DeleteTopic({topicId, topicName, open, onOpenChange, onS
     
     const deleteTopicCall = async () => {
         try {
-            const res = await fetch(`http://localhost:3000/api/topics/${topicId}&${topicName}`, {
+            const res = await fetch(`http://localhost:3000/api/topics/${topicId}/${topicName}`, {
                 method: "DELETE",
                 credentials: "include",
             })

@@ -362,7 +362,7 @@ app.put('/api/topics/:topicId', async (req: Request, res: Response) => {
 }); 
 
 
-app.delete('/api/topics/:topicId&:topicName', async (req: Request, res: Response) => {
+app.delete('/api/topics/:topicId/:topicName', async (req: Request, res: Response) => {
 
     if (!req.session?.user || !req.session.user.id || !req.session.user.email) {
         res.status(401).send({ message: "User is not authorized to delete topics."});
@@ -497,7 +497,7 @@ app.post('/api/decks/:topicId', async (req: Request, res: Response) => {
 });
 
 //Update an existing Deck of topicId
-app.put('/api/decks/:deckId&:topicId', async(req: Request, res: Response) => {
+app.put('/api/decks/:deckId/:topicId', async(req: Request, res: Response) => {
     
     if (!req.session?.user || !req.session.user.id || !req.session.user.email) {
         res.status(401).send({ message: "User is not authorized to update decks."});
@@ -533,7 +533,7 @@ app.put('/api/decks/:deckId&:topicId', async(req: Request, res: Response) => {
 });
 
 //Delete a Deck of deckId and topicId
-app.delete('/api/decks/:deckId&:topicId', async (req: Request, res: Response) => {
+app.delete('/api/decks/:deckId/:topicId', async (req: Request, res: Response) => {
    
     if (!req.session?.user || !req.session.user.id || !req.session.user.email) {
         res.status(401).send({ message: "User is not authorized to delete decks."});
@@ -591,6 +591,8 @@ interface Flashcard extends RowDataPacket {
     question: string,
     answer: string,
     createdAt: Date,
+
+    deckId: string //testing
 }
 
 app.get('/api/flashcards/:deckId', async (req: Request, res: Response) => {
@@ -608,7 +610,7 @@ app.get('/api/flashcards/:deckId', async (req: Request, res: Response) => {
 
     try {
         const [result] = await conn.execute<Flashcard[]>(`
-            SELECT flashcard_id, correct_check, question, answer, created_at FROM flashcards WHERE deck_id = ?
+            SELECT flashcard_id, correct_check, question, answer, created_at, deck_id FROM flashcards WHERE deck_id = ?
             `, [deckId]
         );
         
@@ -647,7 +649,7 @@ app.post('/api/flashcards/:deckId', async (req: Request, res: Response) => {
     try {
         const [rawResult] = await conn.execute(
             `INSERT INTO flashcards(question, answer, deck_id, correct_check)
-                VALUES(?,?,?)`, [question,answer,deckId, correctCheck]
+                VALUES(?,?,?,?)`, [question,answer,deckId, correctCheck]
         );
 
         const result = rawResult as ResultSetHeader;
@@ -661,7 +663,7 @@ app.post('/api/flashcards/:deckId', async (req: Request, res: Response) => {
 
 });
 
-app.put('/api/flashcards/:flashcardId&:deckId', async (req: Request, res: Response) => {
+app.put('/api/flashcards/:flashcardId/:deckId', async (req: Request, res: Response) => {
 
     if (!req.session?.user || !req.session.user.id || !req.session.user.email) {
         res.status(401).send({ message: "User is not authorized to update the flashcard."});
@@ -669,9 +671,9 @@ app.put('/api/flashcards/:flashcardId&:deckId', async (req: Request, res: Respon
     }
 
     const flashcardId = req.params.flashcardId;
-    const deckId = req.params.flashcardId;
+    const deckId = req.params.deckId;
     const {question, answer} = req.body;
-    const correctCheck = false; // Newly updated flashcard will not be considered as having been correctly done.
+    const correctCheck = false; // Newly updated flashcard will not be considered as having been correctly answered.
 
     if (!flashcardId || !deckId || !question || !answer) {
         res.status(400).send({message: "Invalid Request. Deck ID, Flashcard ID, question, answer is required to upate a Flashcard"});
@@ -679,13 +681,13 @@ app.put('/api/flashcards/:flashcardId&:deckId', async (req: Request, res: Respon
     }
     
     try {
-        await conn.execute(
-            `UPDATE flashcards 
-                SET question = ?, answer = ?, correct_check = ?
-                WHERE flashcard_id = ? AND deck_id = ?`, [question, answer, correctCheck, flashcardId, deckId]
-        );
+            await conn.execute(
+                `UPDATE flashcards 
+                    SET question = ?, answer = ?, correct_check = ?
+                    WHERE flashcard_id = ? AND deck_id = ?`, [question, answer, correctCheck, flashcardId, deckId]
+            );
 
-        res.status(200).send({message: `Successfully updated flashcard with ID: ${flashcardId}`});
+            res.status(200).send({message: `Successfully updated flashcard with ID: ${flashcardId}`});
 
     } catch (e) {
         console.log(e);
@@ -695,7 +697,7 @@ app.put('/api/flashcards/:flashcardId&:deckId', async (req: Request, res: Respon
 
 });
 
-app.delete('/api/flashcards/:flashcardId&:deckId', async (req: Request, res: Response) => {
+app.delete('/api/flashcards/:flashcardId/:deckId', async (req: Request, res: Response) => {
 
     if (!req.session?.user || !req.session.user.id || !req.session.user.email) {
         res.status(401).send({ message: "User is not authorized to delete the flashcard."});
@@ -711,7 +713,7 @@ app.delete('/api/flashcards/:flashcardId&:deckId', async (req: Request, res: Res
 
     try {
         await conn.execute(
-            `DELETE FROM flaschards WHERE flashcard_id = ? AND deck_id = ?`, [flashcardId, deckId]
+            `DELETE FROM flashcards WHERE flashcard_id = ? AND deck_id = ?`, [flashcardId, deckId]
         );
 
         res.status(200).send({message: `Flashcard with ID: ${flashcardId} successfully deleted`});

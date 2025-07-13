@@ -36,7 +36,7 @@ export default function EditDeck({deckName, deckDesc, deckId, topicId, open, onO
     const onSubmit: SubmitHandler<EditDeckProps> = async (data) => {
         try {
 
-            const res = await fetch(`http://localhost:3000/api/decks/${deckId}&${topicId}`, {
+            const res = await fetch(`http://localhost:3000/api/decks/${deckId}/${topicId}`, {
                 method: "PUT",
                 credentials: "include",
                 body: JSON.stringify(data),

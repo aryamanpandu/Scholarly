@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS flashcards (
     deck_id INT NOT NULL, 
     correct_check BOOLEAN,
     question VARCHAR(150) NOT NULL,
-    answer VARCHAR(300) NOT NULL,
+    answer VARCHAR(500) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (deck_id) REFERENCES decks(deck_id)
