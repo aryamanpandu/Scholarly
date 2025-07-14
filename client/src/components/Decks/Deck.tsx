@@ -4,7 +4,7 @@ import {
     CardTitle, 
     CardDescription, 
     CardContent
-} from "../ui/card";
+} from "@/components/ui/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,12 +12,12 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Button } from "../ui/button";
-
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 import { useState } from "react";
 
-import EditDeck from "./EditDeck";
-import DeleteDeck from "./DeleteDeck";
+import EditDeck from "@/components/Decks/EditDeck";
+import DeleteDeck from "@/components/Decks/DeleteDeck";
 
 interface DeckProps {
     id: number,
@@ -44,7 +44,7 @@ export default function Deck({id, topicId, name, desc, createdAt, onRefresh}: De
                 </div>
             </CardContent>
             <div className="flex justify-between mt-auto lg:px-6 md:px-4">
-                <Button variant="default" className="rounded-full cursor-pointer">Flashcards</Button>
+                <Button variant="default" className="rounded-full cursor-pointer" onClick={() => {sessionStorage.setItem("deckName", name)}}> <Link to={`/flashcardHome/${id}`}>Flashcards <i className="bi bi-arrow-right-circle-fill"></i></Link></Button>
                 <CardDescription className="text-xs sm:text-sm">
                     Created: {createdAt.toDateString()}
                 </CardDescription>
@@ -62,7 +62,7 @@ interface DeckActionMenuProps {
 }
 
 function ShowExtraActionMenu({deckName, deckDesc, deckId, topicId, onRefresh}: DeckActionMenuProps) {
-     const [editDialogOpen, setEditDialogOpen] = useState(false);
+    const [editDialogOpen, setEditDialogOpen] = useState(false);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
     return (
@@ -81,7 +81,7 @@ function ShowExtraActionMenu({deckName, deckDesc, deckId, topicId, onRefresh}: D
                         <DropdownMenuItem
                             onSelect= {() => {setDeleteDialogOpen(true)}}
                         >
-                            <i className="bi bi-trash"></i> Delete
+                            <i className="bi bi-trash"/> Delete Deck
                         </DropdownMenuItem>
                     </DropdownMenuGroup>
                 </DropdownMenuContent>

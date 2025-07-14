@@ -11,30 +11,28 @@ import { toast } from "sonner";
 import { buttonVariants } from "../ui/button";
 import { AlertDialogDescription } from "@radix-ui/react-alert-dialog";
 
-interface DeleteDeckProps {
+interface DeleteFlashcardProps {
+    flashcardId: number,
     deckId: number,
-    topicId: number,
     open: boolean,
     onOpenChange: (open: boolean) => void,
     onSuccess: () => void
 }
 
-export default function DeleteDeck({deckId, topicId, open, onOpenChange, onSuccess}: DeleteDeckProps) {
+export default function DeleteFlashcard({flashcardId, deckId, open, onOpenChange, onSuccess}: DeleteFlashcardProps) {
     
-    const deleteDeckCall = async () => {
+    const deleteFlashcardCall = async () => {
         try {
-            const res= await fetch(`http://localhost:3000/api/decks/${deckId}/${topicId}`, {
+            const res = await fetch(`http://localhost:3000/api/flashcards/${flashcardId}/${deckId}`, {
                 method: "DELETE",
                 credentials: "include"
             });
-            
+
             const resData = await res.json();
 
             if (res.ok) {
                 onOpenChange(false);
-
                 onSuccess();
-
                 toast.success(resData.message);
             } else {
                 toast.error(`Failed to delete Deck: ${resData.message}`);
@@ -43,23 +41,21 @@ export default function DeleteDeck({deckId, topicId, open, onOpenChange, onSucce
             console.log(e);
             toast.error(`Something went wrong: ${e}`);
         }
-
     }
     
-    
-    return (
-       <AlertDialog open={open} onOpenChange={onOpenChange}>
+    return(
+        <AlertDialog open={open} onOpenChange={onOpenChange}>
             <AlertDialogTrigger hidden />
             <AlertDialogContent>
                 <AlertDialogHeader>
-                    <AlertDialogTitle>Are you sure you want to delete this Deck?</AlertDialogTitle>
-                    <AlertDialogDescription>This will delete all the Flashcards associated with this Deck.</AlertDialogDescription>
+                    <AlertDialogTitle>Are you sure you want to delete this Flashcard?</AlertDialogTitle>
+                    <AlertDialogDescription>This will delete all the associated data with the Flashcard</AlertDialogDescription>
                 </AlertDialogHeader>
                 <div className="flex justify-end gap-2">
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction className={buttonVariants({variant: "destructive"})} onClick={deleteDeckCall}>Delete</AlertDialogAction>
+                    <AlertDialogAction className={buttonVariants({variant: "destructive"})} onClick={deleteFlashcardCall}>Delete</AlertDialogAction>
                 </div>
             </AlertDialogContent>
-        </AlertDialog>   
+        </AlertDialog>
     );
 }

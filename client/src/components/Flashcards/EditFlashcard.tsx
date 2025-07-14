@@ -16,27 +16,25 @@ import { toast } from "sonner";
 import { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 
-interface EditDeckProps {
-    deckName: string,
-    deckDesc: string,
+interface EditFlashcardProps {
+    question: string,
+    answer: string,
     deckId: number,
-    topicId: number,
+    flashcardId: number,
     open: boolean,
     onOpenChange: (open: boolean) => void,
     onSuccess: () => void
 }
 
+export default function EditFlashcard({question: cardQuestion, answer: cardAnswer, deckId, flashcardId, open, onOpenChange, onSuccess}: EditFlashcardProps) {
+    const { register, handleSubmit, formState: {errors} } = useForm<EditFlashcardProps>();
+    const [question, setQuestion] = useState(cardQuestion);
+    const [answer, setAnswer] = useState(cardAnswer);
 
-// TODO: Fix the issue of UI not being updated after Edit.
-export default function EditDeck({deckName, deckDesc, deckId, topicId, open, onOpenChange, onSuccess}: EditDeckProps) {
-    const {register, handleSubmit, formState: {errors} } = useForm<EditDeckProps>();
-    const [name, setName] = useState(deckName);
-    const [desc, setDesc] = useState(deckDesc);
-
-    const onSubmit: SubmitHandler<EditDeckProps> = async (data) => {
+    const onSubmit: SubmitHandler<EditFlashcardProps> = async (data) => {
         try {
 
-            const res = await fetch(`http://localhost:3000/api/decks/${deckId}/${topicId}`, {
+            const res = await fetch(`http://localhost:3000/api/flashcards/${flashcardId}/${deckId}`, {
                 method: "PUT",
                 credentials: "include",
                 body: JSON.stringify(data),
@@ -53,44 +51,43 @@ export default function EditDeck({deckName, deckDesc, deckId, topicId, open, onO
 
                 toast.success(resData.message);
             } else {
-                toast.error(`Failed to update Deck: ${resData.message}`);
+                toast.error(`Failed to update Flashcard: ${resData.message}`);
             }
         } catch (e) {
             console.log(e);
             toast.error(`Something went wrong: ${e}`);
         }
     }
-
-    
+     
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogTrigger hidden></DialogTrigger>
+            <DialogTrigger hidden/>
             <DialogContent>
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <DialogHeader className="mb-4">
-                        <DialogTitle>Edit Deck</DialogTitle>
+                        <DialogTitle>Edit Flashcard</DialogTitle>
                     </DialogHeader>
                     <div>
-                        <Label htmlFor="deckName" className="mb-2 block">Deck Name</Label>
+                        <Label htmlFor="question" className="mb-2 block">Question</Label>
                         <Input
-                            id="deckName"
+                            id="question"
                             className="mb-4"
-                            value={name}
-                            {...register("deckName", {required: "Deck Name is required.", onChange: (e) => setName(e.target.value) })}
+                            value={question}
+                            {...register("question", {required: "Flashcard question is required", onChange: (e) => setQuestion(e.target.value)})} 
                         />
-                        {errors.deckName && <p className="py-4 px-8">{errors.deckName.message}</p>}
+                        {errors.question && <p className="py-4 px-8">{errors.question.message}</p>}
                     </div>
                     <div>
-                        <Label htmlFor="deckDesc" className="mb-2 block">Deck Description</Label>
+                        <Label htmlFor="answer" className="mb-2 block">Answer</Label>
                         <Textarea
-                            id="deckDesc"
+                            id="answer"
                             className="mb-7"
-                            placeholder="Enter your topic's description..."
+                            placeholder="Enter the answer to your flashcard here..."
                             rows={2}
-                            value={desc}
-                            {...register("deckDesc", {required: "Deck Description is required.", onChange: (e) => setDesc(e.target.value)})}
+                            value={answer}
+                            {...register("answer", {required: "Flashcard answer is required", onChange: (e) => setAnswer(e.target.value)})}
                         />
-                        {errors.deckDesc && <p className="py-4 px-8">{errors.deckDesc.message}</p>}
+                        {errors.answer && <p className="py-4 px-8">{errors.answer.message}</p>}
                     </div>
                     <DialogFooter>
                         <DialogClose asChild>

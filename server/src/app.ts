@@ -362,7 +362,7 @@ app.put('/api/topics/:topicId', async (req: Request, res: Response) => {
 }); 
 
 
-app.delete('/api/topics/:topicId&:topicName', async (req: Request, res: Response) => {
+app.delete('/api/topics/:topicId/:topicName', async (req: Request, res: Response) => {
 
     if (!req.session?.user || !req.session.user.id || !req.session.user.email) {
         res.status(401).send({ message: "User is not authorized to delete topics."});
@@ -497,7 +497,7 @@ app.post('/api/decks/:topicId', async (req: Request, res: Response) => {
 });
 
 //Update an existing Deck of topicId
-app.put('/api/decks/:deckId&:topicId', async(req: Request, res: Response) => {
+app.put('/api/decks/:deckId/:topicId', async(req: Request, res: Response) => {
     
     if (!req.session?.user || !req.session.user.id || !req.session.user.email) {
         res.status(401).send({ message: "User is not authorized to update decks."});
@@ -533,7 +533,7 @@ app.put('/api/decks/:deckId&:topicId', async(req: Request, res: Response) => {
 });
 
 //Delete a Deck of deckId and topicId
-app.delete('/api/decks/:deckId&:topicId', async (req: Request, res: Response) => {
+app.delete('/api/decks/:deckId/:topicId', async (req: Request, res: Response) => {
    
     if (!req.session?.user || !req.session.user.id || !req.session.user.email) {
         res.status(401).send({ message: "User is not authorized to delete decks."});
@@ -589,8 +589,7 @@ interface Flashcard extends RowDataPacket {
     flashcardId: number,
     correctCheck: boolean,
     question: string,
-    answer: string,
-    createdAt: Date,
+    answer: string
 }
 
 app.get('/api/flashcards/:deckId', async (req: Request, res: Response) => {
@@ -608,7 +607,13 @@ app.get('/api/flashcards/:deckId', async (req: Request, res: Response) => {
 
     try {
         const [result] = await conn.execute<Flashcard[]>(`
-            `); 
+            SELECT flashcard_id, correct_check, question, answer FROM flashcards WHERE deck_id = ?
+            `, [deckId]
+        );
+        
+        console.log(`Flashcards received for Deck with ID: ${deckId}`);
+
+        res.status(200).send(JSON.stringify(result));
 
     } catch (e) {
 
@@ -617,5 +622,122 @@ app.get('/api/flashcards/:deckId', async (req: Request, res: Response) => {
         return;
 
     }
+});
+
+//What things are needed when creating a flashcard?
+// deck_id, question, answer 
+app.post('/api/flashcards/:deckId', async (req: Request, res: Response) => {
+    
+    if (!req.session?.user || !req.session.user.id || !req.session.user.email) {
+        res.status(401).send({ message: "User is not authorized to create a flashcard."});
+        return;
+    }
+
+    const {question, answer} = req.body; 
+    const deckId = req.params.deckId;
+    const correctCheck = false;
+
+    if (!deckId || !question || !answer) {
+        res.status(400).send({message: "Invalid Request. Deck ID, question, answer is required to create a new Flashcard"});
+    }
+
+    try {
+        const [rawResult] = await conn.execute(
+            `INSERT INTO flashcards(question, answer, deck_id, correct_check)
+                VALUES(?,?,?,?)`, [question,answer,deckId, correctCheck]
+        );
+
+        const result = rawResult as ResultSetHeader;
+        res.status(200).send({message: `Flashcard inserted with ID: ${result.insertId}`})
+    } catch (e) {
+        console.log(e);
+        res.status(500).send({ message: 'Internal server error. Please try later.'});
+        return;
+    }
+
 
 });
+
+app.put('/api/flashcards/:flashcardId/:deckId', async (req: Request, res: Response) => {
+
+    if (!req.session?.user || !req.session.user.id || !req.session.user.email) {
+        res.status(401).send({ message: "User is not authorized to update the flashcard."});
+        return;
+    }
+
+    const flashcardId = req.params.flashcardId;
+    const deckId = req.params.deckId;
+    const {question, answer} = req.body;
+    const correctCheck = false; // Newly updated flashcard will not be considered as having been correctly answered.
+
+    if (!flashcardId || !deckId || !question || !answer) {
+        res.status(400).send({message: "Invalid Request. Deck ID, Flashcard ID, question, answer is required to upate a Flashcard"});
+        return;
+    }
+    
+    try {
+            await conn.execute(
+                `UPDATE flashcards 
+                    SET question = ?, answer = ?, correct_check = ?
+                    WHERE flashcard_id = ? AND deck_id = ?`, [question, answer, correctCheck, flashcardId, deckId]
+            );
+
+            res.status(200).send({message: `Successfully updated flashcard with ID: ${flashcardId}`});
+
+    } catch (e) {
+        console.log(e);
+        res.status(500).send({ message: 'Internal server error. Please try later.'});
+        return;
+    }
+
+});
+
+app.delete('/api/flashcards/:flashcardId/:deckId', async (req: Request, res: Response) => {
+
+    if (!req.session?.user || !req.session.user.id || !req.session.user.email) {
+        res.status(401).send({ message: "User is not authorized to delete the flashcard."});
+        return;
+    }
+
+    const flashcardId = req.params.flashcardId;
+    const deckId = req.params.deckId;
+
+    if (!flashcardId || !deckId) {
+        res.status(400).send({message: `Invalid Request. Flashcard ID and Deck ID are required for deleting a Flashcard`});
+    }
+
+    try {
+        await conn.execute(
+            `DELETE FROM flashcards WHERE flashcard_id = ? AND deck_id = ?`, [flashcardId, deckId]
+        );
+
+        res.status(200).send({message: `Flashcard with ID: ${flashcardId} successfully deleted`});
+
+    } catch (e) {
+        console.log(e);
+        res.status(500).send({ message: 'Internal server error. Please try later.'});
+        return;
+    }
+ 
+});
+
+
+
+
+// TODO: log the user out if the user doesn't have the session ID in any API call. 
+
+async function logOutUser(req: Request): Promise<void> {
+
+    return new Promise((resolve, reject) => {
+        req.session.destroy( (err) => {
+            if (err) {
+                console.log(`Logout Error for user: ${req.session.user?.email}; message: ${err}`);
+                reject(err);
+            } else {
+                resolve();
+            }
+        });
+    });
+    
+
+}

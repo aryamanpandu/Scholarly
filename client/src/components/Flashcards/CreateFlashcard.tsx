@@ -15,25 +15,24 @@ import { toast } from "sonner";
 
 import { useForm, SubmitHandler} from "react-hook-form";
 
-interface CreateDeckData {
-    deckName: string,
-    deckDesc?: string
+
+interface CreateFlashcardData {
+    question: string,
+    answer: string
 }
 
-interface CreateDeckProps {
+interface CreateFlashcardProps {
     onSuccess: () => void,
-    topicId: number,
+    deckId: number,
     open: boolean,
     onOpenChange: (open: boolean) => void
 }
+export default function CreateFlashcard({ onSuccess, deckId, open, onOpenChange}: CreateFlashcardProps) {
+    const { register, handleSubmit, formState: {errors}} = useForm<CreateFlashcardData>();
 
-export default function CreateDeck({onSuccess, topicId, open, onOpenChange}: CreateDeckProps){
-    const { register, handleSubmit, formState: {errors}} = useForm<CreateDeckData>();
-    
-
-    const onSubmit: SubmitHandler<CreateDeckData> = async (data) => {
+    const onSubmit: SubmitHandler<CreateFlashcardData> = async (data) => {
         try {
-            const res = await fetch(`http://localhost:3000/api/decks/${topicId}`, {
+            const res = await fetch(`http://localhost:3000/api/flashcards/${deckId}`, {
                 method: "POST",
                 credentials: "include",
                 body: JSON.stringify(data),
@@ -48,46 +47,45 @@ export default function CreateDeck({onSuccess, topicId, open, onOpenChange}: Cre
                 onOpenChange(false);
                 onSuccess();
                 toast.success(resData.message);
-                //how do I close the damn Dialog tho? 
             } else {
-                toast.error(`Failed to create a deck: ${resData.message}`);
+                toast.error(`Failed to create a Flashcard: ${resData.message}`);
             }
+
         } catch (e) {
             toast.error(`Something went wrong: ${e}`);
         }
-        
     }
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogTrigger hidden />
+            <DialogTrigger hidden/>
             <Button className="fixed bottom-2 right-2 text-2xl font-bold" variant="default" onClick={() => {onOpenChange(true)}}><i className="bi bi-plus-lg"></i></Button>
             <DialogContent>
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <DialogHeader className="mb-4">
-                        <DialogTitle>Create Deck</DialogTitle>
+                        <DialogTitle>Create Flashcard</DialogTitle>
                     </DialogHeader>
                     <div>
-                        <Label htmlFor="deckName" className="mb-2 block">Deck Name</Label>
+                        <Label htmlFor="question" className="mb-2 block">Question</Label>
                         <Input
-                            id="deckName"
+                            id="question"
                             className="mb-4"
-
                             placeholder="Physics"
-                            {...register("deckName", {required: "A Deck Name is required."})}
+                            {...register("question", {required: "A Flashcard question is required."})}
                         />
-                        {errors.deckName && <p className="py-4 px-8">{errors.deckName.message}</p>}
+                        {errors.question && <p className="py-2 text-red-500">{errors.question.message}</p>}
                     </div>
                     <div>
-                        <Label htmlFor="deckDesc" className="mb-2 block">
-                            Topic Description
+                        <Label htmlFor="answer" className="mb-2 block">
+                            Answer
                         </Label>
                         <Textarea
-                            id="deckDesc"
+                            id="answer"
                             className="mb-7"
-                            placeholder="Add a description to your Deck for better understanding."
-                            {...register("deckDesc")}
+                            placeholder="Add the answer to your flashcard here."
+                            {...register("answer", {required: "A flashcard answer is required"})}
                         />
+                        {errors.answer && <p className="py-2 text-red-500">{errors.answer.message}</p>}
                     </div>
                     <DialogFooter>
                         <DialogClose asChild>

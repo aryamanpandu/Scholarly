@@ -16,7 +16,7 @@ interface DecksHomeRes {
 
 interface DecksHomeBreadCrumbProps {
     topicId: number,
-    topicName?: string
+    topicName: string
 }
 
 function DecksHomeBreadCrumb({topicId , topicName}: DecksHomeBreadCrumbProps) {
@@ -77,7 +77,6 @@ export default function DecksHome() {
     if (result && result.length > 0) {
         let deckArr = result.map((deck: DecksHomeRes) => 
             {
-                console.log(deck);
                 return (
                     <Deck
                         id={deck.deck_id}
@@ -107,6 +106,7 @@ export default function DecksHome() {
         return(
             <>
                 <NavBar isLoggedIn={true}/>
+                <DecksHomeBreadCrumb topicId={topicId} topicName={sessionStorage.getItem("topicName") || "Topic"}  />
                 <div className="flex justify-center items-center h-[calc(100vh-10rem)] text-3xl text-neutral-400">You have no Decks. Click the plus icon to create one!</div>
                 <CreateDeck onSuccess={handleRefreshDecks} topicId={topicId} open={createDialogOpen} onOpenChange={setCreateDialogOpen}/>
             </>
