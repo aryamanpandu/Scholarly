@@ -589,10 +589,7 @@ interface Flashcard extends RowDataPacket {
     flashcardId: number,
     correctCheck: boolean,
     question: string,
-    answer: string,
-    createdAt: Date,
-
-    deckId: string //testing
+    answer: string
 }
 
 app.get('/api/flashcards/:deckId', async (req: Request, res: Response) => {
@@ -610,7 +607,7 @@ app.get('/api/flashcards/:deckId', async (req: Request, res: Response) => {
 
     try {
         const [result] = await conn.execute<Flashcard[]>(`
-            SELECT flashcard_id, correct_check, question, answer, created_at, deck_id FROM flashcards WHERE deck_id = ?
+            SELECT flashcard_id, correct_check, question, answer FROM flashcards WHERE deck_id = ?
             `, [deckId]
         );
         
