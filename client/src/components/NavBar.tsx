@@ -37,7 +37,7 @@ export default function NavBar({ isLoggedIn=false }: NavBarProps) {
             {isLoggedIn &&
 
               (<>
-                <Link to="#" className="flex w-full items-center py-2 text-lg font-semibold">
+                <Link to="/home" className="flex w-full items-center py-2 text-lg font-semibold">
                   Home
                 </Link>
                 <div className="flex w-full items-center py-2 text-lg font-semibold">
