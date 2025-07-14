@@ -9,8 +9,7 @@ import { Link } from "react-router-dom"
 interface TopicRes {
     topic_id: number,
     topic_name: string,
-    topic_desc: string,
-    created_at: Date
+    topic_desc: string
 }
 
 function HomeBreadCrumb() {
@@ -74,7 +73,6 @@ export default function Home() {
                     key={topic.topic_id}
                     name={topic.topic_name} 
                     desc={topic.topic_desc} 
-                    createdAt={new Date(topic.created_at)}
                     id={topic.topic_id}
                     onRefresh={handleRefreshTopics}
                     /> 
@@ -104,7 +102,12 @@ export default function Home() {
             <> 
                 <NavBar isLoggedIn={true}/>
                 <HomeBreadCrumb/>
-                <div className="flex justify-center items-center h-[calc(100vh-10rem)] text-3xl text-neutral-400">You have no Topics. Click the plus icon to create one!</div>
+                <div className="flex justify-center">
+                    <h1 className="m-4 text-3xl border-b-2">
+                        Topics
+                    </h1>
+                </div>
+                <div className="flex justify-center items-center h-[calc(100vh-16rem)] text-3xl text-neutral-400">You have no Topics. Click the plus icon to create one!</div>
                 <CreateTopic onSuccess={handleRefreshTopics} open={createDialogOpen} onOpenChange={setCreateDialogOpen}/>
             </>
         )

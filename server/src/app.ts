@@ -271,7 +271,7 @@ app.get('/api/topics', async (req: Request, res: Response) => {
     // get all the topics from topics table where the user has the user_id and the email
     try {
         const [result] = await conn.execute<Topic[]>(
-            `SELECT t.topic_id, t.topic_name, t.topic_desc, t.created_at
+            `SELECT t.topic_id, t.topic_name, t.topic_desc
                 FROM topics t INNER JOIN users u
                 ON t.user_id = u.user_id
                 WHERE u.user_id = ? and u.email = ?`, [userId, email]
@@ -445,7 +445,7 @@ app.get('/api/decks/:topicId', async (req: Request, res: Response) => {
 
     try {
         const [result] = await conn.execute<Deck[]>(
-            `SELECT deck_id, deck_name, deck_desc, created_at FROM decks WHERE topic_id =?`, [topicId]
+            `SELECT deck_id, deck_name, deck_desc FROM decks WHERE topic_id =?`, [topicId]
         );
 
         console.log(`Decks received for topic with topic ID: ${topicId}`);

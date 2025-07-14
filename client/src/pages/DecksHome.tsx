@@ -10,8 +10,7 @@ import { Link } from "react-router-dom"
 interface DecksHomeRes {
     deck_id: number,
     deck_name: string,
-    deck_desc: string,
-    created_at: Date
+    deck_desc: string
 }
 
 interface DecksHomeBreadCrumbProps {
@@ -83,7 +82,6 @@ export default function DecksHome() {
                         topicId={topicId}
                         name={deck.deck_name}
                         desc={deck.deck_desc}
-                        createdAt={new Date(deck.created_at)}
                         onRefresh={handleRefreshDecks}
                     />
                 );
@@ -107,7 +105,10 @@ export default function DecksHome() {
             <>
                 <NavBar isLoggedIn={true}/>
                 <DecksHomeBreadCrumb topicId={topicId} topicName={sessionStorage.getItem("topicName") || "Topic"}  />
-                <div className="flex justify-center items-center h-[calc(100vh-10rem)] text-3xl text-neutral-400">You have no Decks. Click the plus icon to create one!</div>
+                <div className="flex justify-center">
+                    <h1 className="m-4 text-3xl border-b-2">{sessionStorage.getItem("topicName") || "Topic"}</h1>
+                </div>
+                <div className="flex justify-center items-center h-[calc(100vh-16rem)] text-3xl text-neutral-400">You have no Decks. Click the plus icon to create one!</div>
                 <CreateDeck onSuccess={handleRefreshDecks} topicId={topicId} open={createDialogOpen} onOpenChange={setCreateDialogOpen}/>
             </>
         )

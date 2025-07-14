@@ -23,12 +23,11 @@ import { useState } from "react";
 interface Topic {
     name: string,
     desc: string,
-    createdAt: Date,
     id: number,
     onRefresh: () => void
 }
 //I am going to use three dots ellipsis that will have an option to edit and delete topics.
-export default function Topic({name, desc, createdAt, id, onRefresh}: Topic) {
+export default function Topic({name, desc, id, onRefresh}: Topic) {
     return (
         <Card className="w-full min-w-0 h-full flex flex-col border rounded-xl">
             <CardHeader className="flex items-center justify-center gap-1">
@@ -38,18 +37,15 @@ export default function Topic({name, desc, createdAt, id, onRefresh}: Topic) {
             <CardContent>
                 <hr className="mx-6"/>
                 <div className="flex justify-center flex-grow">
-                    <div className="text-center text-sm sm:text-base md:text-lg m-3 break-words">
+                    <div className="text-center text-sm sm:text-base md:text-lg m-3 break-words text-muted-foreground">
                         {desc}
                     </div>
                 </div>
                 
             </CardContent>
             <div className="flex justify-between mt-auto lg:px-6 md:px-4 sm:gap-2">
-                    <Button variant="default" className="rounded-full cursor-pointer" onClick={() => {sessionStorage.setItem("topicName", name); sessionStorage.setItem("topicId", id.toString())} }><Link to={`/deckHome/${id}`}>Decks <i className="bi bi-arrow-right-circle-fill"></i></Link></Button>
-                    <CardDescription className="text-xs sm:text-sm">
-                        Created: {createdAt.toDateString()}
-                    </CardDescription>
-                </div>
+                <Button variant="default" className="rounded-full cursor-pointer px-5 py-3" onClick={() => {sessionStorage.setItem("topicName", name); sessionStorage.setItem("topicId", id.toString())} }><Link to={`/deckHome/${id}`}>Decks <i className="bi bi-arrow-right-circle-fill"></i></Link></Button>
+            </div>
         </Card>
     );
 }

@@ -36,7 +36,7 @@ export default function Flashcard({question, answer, flashcardId, deckId, onRefr
             <CardContent>
                 <hr className="mx-6"/>
                 <div className="flex justify-center flex-grow">
-                    <div className="text-center text-sm sm:text-base md:text-lg m-3 break-words">
+                    <div className="text-center text-sm sm:text-base md:text-lg m-3 break-words text-muted-foreground">
                         {answer}
                     </div>
                 </div> 

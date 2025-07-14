@@ -111,7 +111,10 @@ export default function FlashcardsHome() {
                 <>
                     <NavBar isLoggedIn={true}/>
                     <FlashcardsHomeBreadCrumb topicId={Number(sessionStorage.getItem("topicId"))} topicName={sessionStorage.getItem("topicName") || "Topic"} deckId={deckId} deckName={sessionStorage.getItem("deckName") || "Deck"}/>
-                    <div className="flex justify-center items-center h-[calc(100vh-10rem)] text-3xl text-neutral-400">You have no Decks. Click the plus icon to create one!</div>
+                    <div className="flex justify-center">
+                        <h1 className="m-4 text-3xl border-b-2">{sessionStorage.getItem("deckName") || "Deck"}</h1>
+                    </div>
+                    <div className="flex justify-center items-center h-[calc(100vh-16rem)] text-3xl text-neutral-400">You have no Decks. Click the plus icon to create one!</div>
                     <CreateFlashcard onSuccess={handleRefreshFlashcards} deckId={deckId} open={createDialogOpen} onOpenChange={setCreateDialogOpen}/>
                 </>
             )
