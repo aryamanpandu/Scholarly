@@ -44,9 +44,9 @@ const LargeDock = ({
       onMouseMove={(e) => mouseXPosition.set(e.pageX)} // Update mouse X position on mouse move
       onMouseLeave={() => mouseXPosition.set(Infinity)} // Reset on mouse leave
       className={cn(
-        "mx-auto hidden h-16 items-end gap-4 rounded-2xl bg-white/10 px-4 pb-3 dark:bg-black/10 md:flex", // Large dock styles
+        "mx-auto hidden h-16 items-end gap-4 rounded-2xl bg-gray-200 px-4 pb-3 dark:bg-black/10 md:flex", // Large dock styles
         className,
-        "border border-gray-200/30 backdrop-blur-sm dark:border-gray-800/30",
+        "border border-gray-400/30 backdrop-blur-sm dark:border-gray-800/30",
       )}
     >
       {/* Render each dock icon */}
@@ -100,7 +100,7 @@ function DockIcon({
         style={{ width, height }} // Set dynamic width and height
         onMouseEnter={() => setIsHovered(true)} // Handle mouse enter
         onMouseLeave={() => setIsHovered(false)} // Handle mouse leave
-        className="relative flex aspect-square items-center justify-center rounded-full bg-white/20 text-black shadow-lg backdrop-blur-md dark:bg-black/20 dark:text-white"
+        className="relative flex aspect-square items-center justify-center rounded-full bg-gray-500 text-black shadow-lg backdrop-blur-md dark:bg-black/20 dark:text-white"
       >
         <AnimatePresence>
           {/* Tooltip that appears on hover */}

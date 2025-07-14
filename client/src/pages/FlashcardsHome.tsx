@@ -6,6 +6,7 @@ import { useParams } from "react-router-dom";
 import { Breadcrumb, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { Link } from "react-router-dom"
 import CreateFlashcard from "@/components/Flashcards/CreateFlashcard";
+import FlashcardNavBar from "@/components/Flashcards/FlashcardNavBar";
 
 interface FlashcardsHomeRes {
     flashcard_id: number,
@@ -103,6 +104,7 @@ export default function FlashcardsHome() {
             <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,0px))] gap-5 m-5 auto-rows-fr">
                 {flashcardArr}
             </div>
+            <FlashcardNavBar />
             <CreateFlashcard onSuccess={handleRefreshFlashcards} deckId={deckId} open={createDialogOpen} onOpenChange={setCreateDialogOpen} />
             </>
         );
