@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 
 import EditFlashcard from "@/components/Flashcards/EditFlashcard";
+import DeleteFlashcard from "@/components/Flashcards/DeleteFlashcard";
 
 import { useState } from "react";
 
@@ -84,6 +85,14 @@ function ShowExtraActionMenu({question, answer, flashcardId, deckId, onRefresh}:
                 deckId={deckId}
                 open={editDialogOpen}
                 onOpenChange={setEditDialogOpen}
+                onSuccess={onRefresh}
+            />
+
+            <DeleteFlashcard
+                flashcardId={flashcardId}
+                deckId={deckId}
+                open={deleteDialogOpen}
+                onOpenChange={setDeleteDialogOpen}
                 onSuccess={onRefresh}
             />
             

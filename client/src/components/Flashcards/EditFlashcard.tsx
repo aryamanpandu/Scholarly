@@ -84,7 +84,7 @@ export default function EditFlashcard({cardQuestion, cardAnswer, deckId, flashca
                             className="mb-7"
                             placeholder="Enter the answer to your flashcard here..."
                             rows={2}
-                            value={question}
+                            value={answer}
                             {...register("cardAnswer", {required: "Flashcard answer is required", onChange: (e) => setAnswer(e.target.value)})}
                         />
                         {errors.cardAnswer && <p className="py-4 px-8">{errors.cardAnswer.message}</p>}
