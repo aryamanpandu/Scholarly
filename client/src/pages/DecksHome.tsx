@@ -16,7 +16,7 @@ interface DecksHomeRes {
 
 interface DecksHomeBreadCrumbProps {
     topicId: number,
-    topicName?: string
+    topicName: string
 }
 
 function DecksHomeBreadCrumb({topicId , topicName}: DecksHomeBreadCrumbProps) {
@@ -77,7 +77,6 @@ export default function DecksHome() {
     if (result && result.length > 0) {
         let deckArr = result.map((deck: DecksHomeRes) => 
             {
-                console.log(deck);
                 return (
                     <Deck
                         id={deck.deck_id}

@@ -17,8 +17,8 @@ import { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 
 interface EditFlashcardProps {
-    cardQuestion: string,
-    cardAnswer: string,
+    question: string,
+    answer: string,
     deckId: number,
     flashcardId: number,
     open: boolean,
@@ -26,7 +26,7 @@ interface EditFlashcardProps {
     onSuccess: () => void
 }
 
-export default function EditFlashcard({cardQuestion, cardAnswer, deckId, flashcardId, open, onOpenChange, onSuccess}: EditFlashcardProps) {
+export default function EditFlashcard({question: cardQuestion, answer: cardAnswer, deckId, flashcardId, open, onOpenChange, onSuccess}: EditFlashcardProps) {
     const { register, handleSubmit, formState: {errors} } = useForm<EditFlashcardProps>();
     const [question, setQuestion] = useState(cardQuestion);
     const [answer, setAnswer] = useState(cardAnswer);
@@ -68,26 +68,26 @@ export default function EditFlashcard({cardQuestion, cardAnswer, deckId, flashca
                         <DialogTitle>Edit Flashcard</DialogTitle>
                     </DialogHeader>
                     <div>
-                        <Label htmlFor="cardQuestion" className="mb-2 block">Question</Label>
+                        <Label htmlFor="question" className="mb-2 block">Question</Label>
                         <Input
-                            id="cardQuestion"
+                            id="question"
                             className="mb-4"
                             value={question}
-                            {...register("cardQuestion", {required: "Flashcard question is required", onChange: (e) => setQuestion(e.target.value)})} 
+                            {...register("question", {required: "Flashcard question is required", onChange: (e) => setQuestion(e.target.value)})} 
                         />
-                        {errors.cardQuestion && <p className="py-4 px-8">{errors.cardQuestion.message}</p>}
+                        {errors.question && <p className="py-4 px-8">{errors.question.message}</p>}
                     </div>
                     <div>
-                        <Label htmlFor="cardAnswer" className="mb-2 block">Answer</Label>
+                        <Label htmlFor="answer" className="mb-2 block">Answer</Label>
                         <Textarea
-                            id="cardAnswer"
+                            id="answer"
                             className="mb-7"
                             placeholder="Enter the answer to your flashcard here..."
                             rows={2}
                             value={answer}
-                            {...register("cardAnswer", {required: "Flashcard answer is required", onChange: (e) => setAnswer(e.target.value)})}
+                            {...register("answer", {required: "Flashcard answer is required", onChange: (e) => setAnswer(e.target.value)})}
                         />
-                        {errors.cardAnswer && <p className="py-4 px-8">{errors.cardAnswer.message}</p>}
+                        {errors.answer && <p className="py-4 px-8">{errors.answer.message}</p>}
                     </div>
                     <DialogFooter>
                         <DialogClose asChild>

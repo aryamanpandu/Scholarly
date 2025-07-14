@@ -17,8 +17,8 @@ import { useForm, SubmitHandler} from "react-hook-form";
 
 
 interface CreateFlashcardData {
-    cardQuestion: string,
-    cardAnswer: string
+    question: string,
+    answer: string
 }
 
 interface CreateFlashcardProps {
@@ -32,7 +32,7 @@ export default function CreateFlashcard({ onSuccess, deckId, open, onOpenChange}
 
     const onSubmit: SubmitHandler<CreateFlashcardData> = async (data) => {
         try {
-            const res = await fetch(`http://localhost:3000/api/decks/${deckId}`, {
+            const res = await fetch(`http://localhost:3000/api/flashcards/${deckId}`, {
                 method: "POST",
                 credentials: "include",
                 body: JSON.stringify(data),
@@ -66,27 +66,33 @@ export default function CreateFlashcard({ onSuccess, deckId, open, onOpenChange}
                         <DialogTitle>Create Flashcard</DialogTitle>
                     </DialogHeader>
                     <div>
-                        <Label htmlFor="cardQuestion" className="mb-2 block">Question</Label>
+                        <Label htmlFor="question" className="mb-2 block">Question</Label>
                         <Input
-                            id="cardQuestion"
+                            id="question"
                             className="mb-4"
                             placeholder="Physics"
-                            {...register("cardQuestion", {required: "A Flashcard question is required."})}
+                            {...register("question", {required: "A Flashcard question is required."})}
                         />
-                        {errors.cardQuestion && <p className="py-4 px-8">{errors.cardQuestion.message}</p>}
+                        {errors.question && <p className="py-2 text-red-500">{errors.question.message}</p>}
                     </div>
                     <div>
-                        <Label htmlFor="cardAnswer" className="mb-2 block">
+                        <Label htmlFor="answer" className="mb-2 block">
                             Answer
                         </Label>
                         <Textarea
-                            id="cardAnswer"
+                            id="answer"
                             className="mb-7"
                             placeholder="Add the answer to your flashcard here."
-                            {...register("cardAnswer", {required: "A flashcard answer is required"})}
+                            {...register("answer", {required: "A flashcard answer is required"})}
                         />
-                        {errors.cardAnswer && <p className="py-4 px-8">{errors.cardAnswer.message}</p>}
+                        {errors.answer && <p className="py-2 text-red-500">{errors.answer.message}</p>}
                     </div>
+                    <DialogFooter>
+                        <DialogClose asChild>
+                            <Button variant="outline">Cancel</Button>
+                        </DialogClose>
+                        <Button type="submit">Create</Button>
+                    </DialogFooter>
                 </form>
             </DialogContent>
         </Dialog>

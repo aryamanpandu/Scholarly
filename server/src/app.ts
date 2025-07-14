@@ -637,8 +637,6 @@ app.post('/api/flashcards/:deckId', async (req: Request, res: Response) => {
     const deckId = req.params.deckId;
     const correctCheck = false;
 
- 
-
     if (!deckId || !question || !answer) {
         res.status(400).send({message: "Invalid Request. Deck ID, question, answer is required to create a new Flashcard"});
     }

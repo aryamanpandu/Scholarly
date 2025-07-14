@@ -79,8 +79,8 @@ function ShowExtraActionMenu({question, answer, flashcardId, deckId, onRefresh}:
             </DropdownMenu>
 
             <EditFlashcard
-                cardQuestion={question}
-                cardAnswer={answer}
+                question={question}
+                answer={answer}
                 flashcardId={flashcardId}
                 deckId={deckId}
                 open={editDialogOpen}
