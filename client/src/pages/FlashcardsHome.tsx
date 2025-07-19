@@ -97,7 +97,7 @@ export default function FlashcardsHome() {
             <>
             <FlashcardsHomeBreadCrumb topicId={Number(sessionStorage.getItem("topicId"))} topicName={sessionStorage.getItem("topicName") || "Topic"} deckId={deckId} deckName={sessionStorage.getItem("deckName") || "Deck"}/>
             <div className="flex justify-center">
-                <h1 className="m-4 text-3xl border-b-2">{sessionStorage.getItem("deckName") || "Deck"}</h1>
+                <h1 className="m-4 text-3xl">{sessionStorage.getItem("deckName") || "Deck"}</h1>
             </div>
             <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,0px))] gap-5 m-5 auto-rows-fr">
                 {flashcardArr}
@@ -111,7 +111,7 @@ export default function FlashcardsHome() {
                 <>
                     <FlashcardsHomeBreadCrumb topicId={Number(sessionStorage.getItem("topicId"))} topicName={sessionStorage.getItem("topicName") || "Topic"} deckId={deckId} deckName={sessionStorage.getItem("deckName") || "Deck"}/>
                     <div className="flex justify-center">
-                        <h1 className="m-4 text-3xl border-b-2">{sessionStorage.getItem("deckName") || "Deck"}</h1>
+                        <h1 className="m-4 text-3xl">{sessionStorage.getItem("deckName") || "Deck"}</h1>
                     </div>
                     <div className="flex justify-center items-center h-[calc(100vh-16rem)] text-3xl text-neutral-400">You have no Flashcards. Click the plus icon to create one!</div>
                     <CreateFlashcard onSuccess={handleRefreshFlashcards} deckId={deckId} open={createDialogOpen} onOpenChange={setCreateDialogOpen}/>

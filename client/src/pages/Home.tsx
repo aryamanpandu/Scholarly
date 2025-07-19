@@ -84,7 +84,7 @@ export default function Home() {
             <>
                 <HomeBreadCrumb/>
                 <div className="flex justify-center">
-                    <h1 className="m-4 text-3xl border-b-2">
+                    <h1 className="m-4 text-3xl">
                         Topics
                     </h1>
                 </div>
@@ -101,7 +101,7 @@ export default function Home() {
             <> 
                 <HomeBreadCrumb/>
                 <div className="flex justify-center">
-                    <h1 className="m-4 text-3xl border-b-2">
+                    <h1 className="m-4 text-3xl">
                         Topics
                     </h1>
                 </div>
