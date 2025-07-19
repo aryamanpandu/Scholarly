@@ -7,6 +7,7 @@ import DecksHome from "@/pages/DecksHome";
 import FlashcardsHome from "@/pages/FlashcardsHome";
 
 import FlashcardNavBar from "@/components/Flashcards/FlashcardNavBar";
+import FlashcardViewerPage from "@/pages/FlashcardViewerPage";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         <Route path="/deckHome/:topicId" element= { <DecksHome /> } />
         <Route path="/flashcardHome/:deckId" element= { <FlashcardsHome /> } />
         <Route path="/flashNav" element= {<FlashcardNavBar />} />
+        <Route path="/flashcardViewer" element= {<FlashcardViewerPage/>} />
       </Routes>
     </BrowserRouter>
     </>

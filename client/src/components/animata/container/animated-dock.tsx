@@ -100,7 +100,7 @@ function DockIcon({
         style={{ width, height }} // Set dynamic width and height
         onMouseEnter={() => setIsHovered(true)} // Handle mouse enter
         onMouseLeave={() => setIsHovered(false)} // Handle mouse leave
-        className="relative flex aspect-square items-center justify-center rounded-full bg-gray-500 text-black shadow-lg backdrop-blur-md dark:bg-black/20 dark:text-white"
+        className="relative flex aspect-square items-center justify-center rounded-full bg-white text-black shadow-lg backdrop-blur-md dark:bg-black/20 dark:text-white"
       >
         <AnimatePresence>
           {/* Tooltip that appears on hover */}
