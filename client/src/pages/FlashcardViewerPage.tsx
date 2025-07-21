@@ -1,11 +1,11 @@
 import FlashcardViewer from "@/components/Flashcards/FlashcardViewer";
 import NavigationButtons from "@/components/Flashcards/NavigationButtons";
 import NavBar from "@/components/NavBar";
+import { Breadcrumb, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
+import { FlashcardsHomeRes } from "@/pages/FlashcardsHome";
+
+import { Link } from "react-router-dom"
 import { useParams, useSearchParams } from "react-router-dom"; 
-
-//IF you have the flashcard objects already, what you can do is send the data to them but then how does the navigation work?
-
-import { FlashcardsHomeRes } from "./FlashcardsHome";
 import { useEffect, useState } from "react";
 
 interface FlashcardViewerPageProps {
@@ -14,6 +14,37 @@ interface FlashcardViewerPageProps {
     answer: string,
     correctCheck: boolean,
     idx: number
+}
+
+interface BreadCrumbProps {
+    topicId: number,
+    topicName: string,
+    deckId: number,
+    deckName: string
+}
+
+export function FlashcardViewerBreadCrumb({topicId, topicName, deckId, deckName}: BreadCrumbProps) {
+    return (
+        <Breadcrumb className="px-6 pt-3">
+            <BreadcrumbList>
+                <BreadcrumbLink asChild>
+                    <Link to={`/home`}>Home</Link>
+                </BreadcrumbLink>
+                <BreadcrumbSeparator />
+                <BreadcrumbLink asChild>
+                    <Link to={`/deckHome/${topicId}`}>{topicName}</Link>
+                </BreadcrumbLink>
+                <BreadcrumbSeparator />
+                <BreadcrumbLink asChild>
+                    <Link to={`/flashcardHome/${deckId}`}>{deckName}</Link>
+                </BreadcrumbLink>
+                <BreadcrumbSeparator /> 
+                <BreadcrumbLink asChild>
+                    <Link to='#'>Flashcard Viewer</Link>
+                </BreadcrumbLink>
+            </BreadcrumbList>
+        </Breadcrumb>
+    );
 }
 
 async function getFlashcards(deckId: number, type: string, setFlashcards: (flashcards: (FlashcardViewerPageProps[] | null)) => void) {
@@ -71,6 +102,7 @@ export default function FlashcardViewerPage() {
 
         return (
             <div className="w-full h-screen bg-gray-50 bg-opacity-25">
+                <FlashcardViewerBreadCrumb topicId={Number(sessionStorage.getItem("topicId"))} topicName={sessionStorage.getItem("topicName") || "Topic"} deckId={deckId} deckName={sessionStorage.getItem("deckName") || "Deck"}/>
                     <div className="flex justify-center items-center h-[calc(100vh-16rem)]" >
                     {firstFlashcard &&  <FlashcardViewer id={firstFlashcard.id} question={firstFlashcard.question} answer={firstFlashcard.answer} correctCheck={firstFlashcard.correctCheck}/>}
                 </div>
@@ -80,7 +112,7 @@ export default function FlashcardViewerPage() {
     } else {
 
         return (
-            <p>You're in the wrong page mate.</p>
+            <p>You're in the wrong page mate :P</p>
         );
     }
     

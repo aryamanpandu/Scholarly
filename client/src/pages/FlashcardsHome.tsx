@@ -23,7 +23,7 @@ interface FlashcardsHomeBreadCrumbProps {
 
 
 
-function FlashcardsHomeBreadCrumb({topicId, topicName, deckId, deckName}: FlashcardsHomeBreadCrumbProps) {
+export function FlashcardsBreadCrumb({topicId, topicName, deckId, deckName}: FlashcardsHomeBreadCrumbProps) {
     return (
         <Breadcrumb className="px-6 pt-3">
             <BreadcrumbList>
@@ -103,7 +103,7 @@ export default function FlashcardsHome() {
 
         return (
             <>
-            <FlashcardsHomeBreadCrumb topicId={Number(sessionStorage.getItem("topicId"))} topicName={sessionStorage.getItem("topicName") || "Topic"} deckId={deckId} deckName={sessionStorage.getItem("deckName") || "Deck"}/>
+            <FlashcardsBreadCrumb topicId={Number(sessionStorage.getItem("topicId"))} topicName={sessionStorage.getItem("topicName") || "Topic"} deckId={deckId} deckName={sessionStorage.getItem("deckName") || "Deck"}/>
             <div className="flex justify-center">
                 <h1 className="m-4 text-3xl">{sessionStorage.getItem("deckName") || "Deck"}</h1>
             </div>
@@ -117,7 +117,7 @@ export default function FlashcardsHome() {
     } else {
             return(
                 <>
-                    <FlashcardsHomeBreadCrumb topicId={Number(sessionStorage.getItem("topicId"))} topicName={sessionStorage.getItem("topicName") || "Topic"} deckId={deckId} deckName={sessionStorage.getItem("deckName") || "Deck"}/>
+                    <FlashcardsBreadCrumb topicId={Number(sessionStorage.getItem("topicId"))} topicName={sessionStorage.getItem("topicName") || "Topic"} deckId={deckId} deckName={sessionStorage.getItem("deckName") || "Deck"}/>
                     <div className="flex justify-center">
                         <h1 className="m-4 text-3xl">{sessionStorage.getItem("deckName") || "Deck"}</h1>
                     </div>
