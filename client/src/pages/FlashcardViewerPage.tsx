@@ -98,9 +98,10 @@ export default function FlashcardViewerPage() {
     let firstFlashcard;
     if (flashcards) {
         numOfCards = Object.keys(flashcards).length;
-        firstFlashcard = flashcards[cardIdx];
 
-        return (
+        if (numOfCards > 0) {
+            firstFlashcard = flashcards[cardIdx];
+            return (
             <div className="w-full h-screen bg-gray-50 bg-opacity-25">
                 <FlashcardViewerBreadCrumb topicId={Number(sessionStorage.getItem("topicId"))} topicName={sessionStorage.getItem("topicName") || "Topic"} deckId={deckId} deckName={sessionStorage.getItem("deckName") || "Deck"}/>
                     <div className="flex justify-center items-center h-[calc(100vh-16rem)]" >
@@ -108,7 +109,17 @@ export default function FlashcardViewerPage() {
                 </div>
                 <NavigationButtons currIdx={cardIdx} setCardIdx={setCardIdx} maxIdx={numOfCards-1} className="fixed bottom-5 left-1/2 -translate-x-1/2" />
             </div>
-        );
+            );
+        } else {
+            return (
+                 <div className="w-full h-screen bg-gray-50 bg-opacity-25">
+                    <NavBar isLoggedIn={true}/>
+                    <FlashcardViewerBreadCrumb topicId={Number(sessionStorage.getItem("topicId"))} topicName={sessionStorage.getItem("topicName") || "Topic"} deckId={deckId} deckName={sessionStorage.getItem("deckName") || "Deck"}/>
+                     <div className="flex justify-center items-center h-[calc(100vh-16rem)] text-3xl text-neutral-400">No flashcards to review! Well done.</div>
+                </div>
+            );
+        }
+        
     } else {
 
         return (
