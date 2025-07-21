@@ -9,9 +9,15 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import ResponseButtons from "@/components/Flashcards/ResponseButtons";
-import NavigationButtons from "@/components/Flashcards/NavigationButtons";
 
-export default function FlashcardViewer() {
+interface FlashcardViewerProps {
+    id: number,
+    question: string,
+    answer: string,
+    correctCheck: boolean
+}
+
+export default function FlashcardViewer({id, question, answer, correctCheck}: FlashcardViewerProps) {
     const [showAnswer, setShowAnswer] = useState(false);
     
     return (
@@ -30,9 +36,9 @@ export default function FlashcardViewer() {
                 }}
                 onClick={() => setShowAnswer(prev => !prev)}
             >
-                <FlashcardQuestion className="absolute"/>
+                <FlashcardQuestion className="absolute" question={question}/>
 
-                <FlashcardAnswer className="absolute" />
+                <FlashcardAnswer className="absolute" answer={answer}/>
 
             </motion.div>
             
@@ -42,8 +48,12 @@ export default function FlashcardViewer() {
     );
 }
 
+interface FlashcardQuestionProps {
+    question: string,
+    className?: string
+}
 
-function FlashcardQuestion({className }: {className? : string}) {
+function FlashcardQuestion({question, className}: FlashcardQuestionProps) {
     return (
         <Card className={cn("w-full h-full box-border flex", className)}
             style={{
@@ -53,13 +63,18 @@ function FlashcardQuestion({className }: {className? : string}) {
                 <CardTitle>Question</CardTitle>
             </CardHeader>
             <CardContent className="flex justify-center items-center w-full grow">
-                <div className="md:text-xl font-semibold sm:text-sm">What is a flashcard?</div>
+                <div className="md:text-xl font-semibold sm:text-sm">{question}</div>
             </CardContent>
         </Card> 
     );
 }
 
-function FlashcardAnswer({className} : {className? : string}) {
+interface FlashcardAnswerProps {
+    answer: string,
+    className?: string
+}
+
+function FlashcardAnswer({answer, className} : FlashcardAnswerProps) {
     return (
         <Card className={cn("w-full h-full box-border flex", className)}
             style={{
@@ -71,7 +86,7 @@ function FlashcardAnswer({className} : {className? : string}) {
                 <CardTitle>Answer</CardTitle>
             </CardHeader>
             <CardContent className="flex justify-center items-center grow">
-                <div className="md:text-xl break-words font-medium sm:text-sm">A flashcard is a note to test your knowledge. You write the question on one side, and the answer on the other. you flip it to find the answer</div>
+                <div className="md:text-xl break-words font-medium sm:text-sm">{answer}</div>
             </CardContent>
         </Card>  
     );

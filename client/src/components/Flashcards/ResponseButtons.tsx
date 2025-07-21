@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button"
 import {motion} from "framer-motion";
 
-const MotionButton = motion(Button);
+export const MotionButton = motion.create(Button);
 
 export default function ResponseButtons({showAnswer} : {showAnswer: boolean}) {
     return(

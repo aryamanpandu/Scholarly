@@ -722,8 +722,6 @@ app.delete('/api/flashcards/:flashcardId/:deckId', async (req: Request, res: Res
 });
 
 
-
-
 // TODO: log the user out if the user doesn't have the session ID in any API call. 
 
 async function logOutUser(req: Request): Promise<void> {

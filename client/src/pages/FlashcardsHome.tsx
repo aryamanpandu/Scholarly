@@ -7,10 +7,11 @@ import { Link } from "react-router-dom"
 import CreateFlashcard from "@/components/Flashcards/CreateFlashcard";
 import FlashcardNavBar from "@/components/Flashcards/FlashcardNavBar";
 
-interface FlashcardsHomeRes {
+export interface FlashcardsHomeRes {
     flashcard_id: number,
     question: string,
-    answer: string
+    answer: string,
+    correct_check: boolean
 }
 
 interface FlashcardsHomeBreadCrumbProps {
@@ -51,9 +52,15 @@ export async function refreshFlashcards(ignore: boolean, setResult: (result: [Fl
 
         const resData = await res.json();
 
+        //Converting the correct_check TINYINT sent by MySQL to boolean in JS. 
+        const fixedData = resData.map((flashcard: any) => ({
+            ...flashcard,
+            correct_check: !!flashcard.correct_check
+        }));
+
         if (!ignore) {
-            console.log(`resData value: ${JSON.stringify(resData)}`);
-            setResult(resData);
+            console.log(`resData value: ${JSON.stringify(fixedData)}`);
+            setResult(fixedData);
         }
     } catch (e) {
         console.error(`Fetch failed: ${e}`);
@@ -83,6 +90,7 @@ export default function FlashcardsHome() {
         let flashcardArr = result.map((flashcard: FlashcardsHomeRes) => {
             return (
                 <Flashcard
+                    key={flashcard.flashcard_id}
                     flashcardId={flashcard.flashcard_id}
                     deckId={deckId}
                     question={flashcard.question}
@@ -102,7 +110,7 @@ export default function FlashcardsHome() {
             <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,0px))] gap-5 m-5 auto-rows-fr">
                 {flashcardArr}
             </div>
-            <FlashcardNavBar />
+            <FlashcardNavBar deckId={deckId}/>
             <CreateFlashcard onSuccess={handleRefreshFlashcards} deckId={deckId} open={createDialogOpen} onOpenChange={setCreateDialogOpen} />
             </>
         );
