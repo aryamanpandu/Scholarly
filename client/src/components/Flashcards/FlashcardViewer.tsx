@@ -14,10 +14,11 @@ interface FlashcardViewerProps {
     id: number,
     question: string,
     answer: string,
-    correctCheck: boolean
+    correctCheck: boolean,
+    onResponse: (flashcardId: number, correct: boolean) => void
 }
 
-export default function FlashcardViewer({id, question, answer, correctCheck}: FlashcardViewerProps) {
+export default function FlashcardViewer({id, question, answer, correctCheck, onResponse}: FlashcardViewerProps) {
     const [showAnswer, setShowAnswer] = useState(false);
     
     return (
@@ -42,7 +43,11 @@ export default function FlashcardViewer({id, question, answer, correctCheck}: Fl
 
             </motion.div>
             
-            <ResponseButtons showAnswer={showAnswer}/>
+            <ResponseButtons 
+                showAnswer={showAnswer}
+                onGotIt={() => onResponse(id, true)}
+                onMissedIt={() => onResponse(id, false)}
+            />
             
         </div>
     );

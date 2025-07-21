@@ -377,8 +377,9 @@ app.delete('/api/topics/:topicId/:topicName', async (req: Request, res: Response
         return;
     }
 
-    await conn.beginTransaction();
+    
     try {
+        await conn.beginTransaction();
        
         const [decksRes] = await conn.execute(
             `SELECT deck_id FROM decks WHERE topic_id = ?`, [topicId]
@@ -411,6 +412,8 @@ app.delete('/api/topics/:topicId/:topicName', async (req: Request, res: Response
         );
 
         console.log(`Topic with ID: ${topicId} Deleted successfully`);
+
+        await conn.commit();
 
         res.status(200).send({ message: `Successfully deleted topic: ${topicName}` });
         return;
@@ -546,7 +549,7 @@ app.delete('/api/decks/:deckId/:topicId', async (req: Request, res: Response) =>
     if (!topicId || !deckId) {
         res.status(401).send({message: "Invalid request. The topic ID and the deck ID is required to delete a deck"});
     }
-    await conn.beginTransaction();
+
     try {
 
         await deleteFlashcardsForDeck(deckId);
@@ -654,9 +657,46 @@ app.post('/api/flashcards/:deckId', async (req: Request, res: Response) => {
         res.status(500).send({ message: 'Internal server error. Please try later.'});
         return;
     }
-
-
 });
+
+interface FlashcardsResult {
+    id: number,
+    correctCheck: boolean
+}
+
+app.put('/api/flashcards/flashcard-result/:deckId', async (req: Request, res: Response) => {
+    
+    if (!req.session?.user || !req.session.user.id || !req.session.user.email) {
+        res.status(401).send({ message: "User is not authorized to create a flashcard."});
+        return;
+    }
+
+    const deckId = req.params.deckId;
+    const { responses }  = req.body as { responses: FlashcardsResult[]};
+
+    if (!deckId || !responses || (responses.length <= 0)) {
+        res.status(400).send({message: "Invalid Request. Please try again later."});
+    }
+    
+    try {
+        await conn.beginTransaction();
+
+        for (const response of responses) {
+            await conn.execute(
+                `UPDATE FLASHCARDS
+                    SET correct_check = ? WHERE flashcard_id = ? AND deck_id = ?`, [response.correctCheck, response.id, deckId]
+            );
+        }
+
+        await conn.commit();
+
+    } catch (e) {
+        console.log(e);
+        res.status(500).send({ message: 'Internal server error. Please try later.'});
+        return;
+    }
+
+})
 
 app.put('/api/flashcards/:flashcardId/:deckId', async (req: Request, res: Response) => {
 

@@ -3,6 +3,9 @@ import NavigationButtons from "@/components/Flashcards/NavigationButtons";
 import NavBar from "@/components/NavBar";
 import { Breadcrumb, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { FlashcardsHomeRes } from "@/pages/FlashcardsHome";
+import { toast } from "sonner";
+import { MotionButton } from "@/components/Flashcards/ResponseButtons";
+
 
 import { Link } from "react-router-dom"
 import { useParams, useSearchParams } from "react-router-dom"; 
@@ -21,6 +24,11 @@ interface BreadCrumbProps {
     topicName: string,
     deckId: number,
     deckName: string
+}
+
+interface FlashcardsResult {
+    id: number,
+    correctCheck: boolean
 }
 
 export function FlashcardViewerBreadCrumb({topicId, topicName, deckId, deckName}: BreadCrumbProps) {
@@ -88,6 +96,10 @@ export default function FlashcardViewerPage() {
     const type = searchParams.get('type') || 'all';
     const [flashcards, setFlashcards] = useState<FlashcardViewerPageProps[] | null>(null);
     const [cardIdx, setCardIdx] = useState(0);
+    
+    const [responses, setResponses] = useState<FlashcardsResult[]>([]);
+    const [showFinishButton, setShowFinishButton] = useState(false);
+    
     let numOfCards = -1;
 
 
@@ -95,31 +107,77 @@ export default function FlashcardViewerPage() {
         getFlashcards(deckId, type, setFlashcards);
     }, []);
     
+    const handleResponse = (flashcardId: number, correct: boolean) => {
+        setResponses(prev => {
+            const existingIdx = prev.findIndex(r => r.id === flashcardId);
+            const newResult: FlashcardsResult = {
+                id: flashcardId,
+                correctCheck: correct
+            };
+
+            if (existingIdx >= 0) {
+                const updated = [...prev];
+                updated[existingIdx] = newResult;
+                return updated; 
+            } else {
+                return [...prev, newResult];
+            }
+        });
+
+        if (cardIdx < numOfCards - 1) {
+            setCardIdx(cardIdx+1);        
+        } else {
+            setShowFinishButton(true);
+        }
+    }
+
+    const finishSession = async () => {
+        try {
+            const res = await fetch(`http://localhost:3000/api/flashcards/flashcard-result/${deckId}`,{
+                method: 'PUT',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(responses)
+            });
+
+            if (res.ok) {
+                console.log('Session results saved successfully');
+            } else {
+                console.error('Failed to save session results');
+                toast.error('Failed to save session results. Please try again later');
+            }
+        } catch (e) {
+            console.error(`Some error occoured: ${e}`);
+        }
+    }
+
     let firstFlashcard;
     if (flashcards) {
         numOfCards = Object.keys(flashcards).length;
+        firstFlashcard = flashcards[cardIdx];
 
-        if (numOfCards > 0) {
-            firstFlashcard = flashcards[cardIdx];
-            return (
+        return (
             <div className="w-full h-screen bg-gray-50 bg-opacity-25">
                 <FlashcardViewerBreadCrumb topicId={Number(sessionStorage.getItem("topicId"))} topicName={sessionStorage.getItem("topicName") || "Topic"} deckId={deckId} deckName={sessionStorage.getItem("deckName") || "Deck"}/>
-                    <div className="flex justify-center items-center h-[calc(100vh-16rem)]" >
-                    {firstFlashcard &&  <FlashcardViewer id={firstFlashcard.id} question={firstFlashcard.question} answer={firstFlashcard.answer} correctCheck={firstFlashcard.correctCheck}/>}
+                <div className="flex justify-center items-center h-[calc(100vh-16rem)]" >
+                    {firstFlashcard &&  <FlashcardViewer id={firstFlashcard.id} question={firstFlashcard.question} answer={firstFlashcard.answer} correctCheck={firstFlashcard.correctCheck} onResponse={handleResponse}/>}
                 </div>
                 <NavigationButtons currIdx={cardIdx} setCardIdx={setCardIdx} maxIdx={numOfCards-1} className="fixed bottom-5 left-1/2 -translate-x-1/2" />
+
+                {showFinishButton &&
+                    <div className="flex justify-center">
+                        <MotionButton
+                            className=""
+                            whileTap={{scale: 0.8}}
+                            onClick={finishSession}>
+                                Finish Session
+                        </MotionButton>
+                    </div>
+                }
             </div>
-            );
-        } else {
-            return (
-                 <div className="w-full h-screen bg-gray-50 bg-opacity-25">
-                    <NavBar isLoggedIn={true}/>
-                    <FlashcardViewerBreadCrumb topicId={Number(sessionStorage.getItem("topicId"))} topicName={sessionStorage.getItem("topicName") || "Topic"} deckId={deckId} deckName={sessionStorage.getItem("deckName") || "Deck"}/>
-                     <div className="flex justify-center items-center h-[calc(100vh-16rem)] text-3xl text-neutral-400">No flashcards to review! Well done.</div>
-                </div>
-            );
-        }
-        
+        );
     } else {
 
         return (
