@@ -9,10 +9,14 @@ import { FlashcardsHomeRes } from "./FlashcardsHome";
 import { useEffect, useState } from "react";
 
 interface FlashcardViewerPageProps {
-
+    id: number,
+    question: string,
+    answer: string,
+    correctCheck: boolean,
+    idx: number
 }
 
-async function getFlashcards(deckId: number, type: string, setFlashcards: (flashcards: (FlashcardsHomeRes[] | null)) => void) {
+async function getFlashcards(deckId: number, type: string, setFlashcards: (flashcards: (FlashcardViewerPageProps[] | null)) => void) {
     
 
     try {
@@ -23,15 +27,23 @@ async function getFlashcards(deckId: number, type: string, setFlashcards: (flash
 
         const resData = await res.json();
 
+        const flashcards: FlashcardViewerPageProps[] = resData.map((flashcard: FlashcardsHomeRes, idx: number) => ({
+            id: flashcard.flashcard_id,
+            question: flashcard.question,
+            answer: flashcard.answer,
+            correctCheck: flashcard.correct_check,
+            idx: idx
+        }));
+
         console.log(resData);
 
-        let filteredData = resData;
+        let filteredFlashcards = flashcards;
 
         if (type === 'incorrect') {
-            filteredData = filteredData.filter((flashcard: FlashcardsHomeRes) => flashcard.correct_check == false);
+            filteredFlashcards = filteredFlashcards.filter((flashcard: FlashcardViewerPageProps) => flashcard.correctCheck === false);
         }
 
-        setFlashcards(filteredData);
+        setFlashcards(filteredFlashcards);
 
     } catch (e) {
         console.error(`Some error occoured: ${e}`);
@@ -43,25 +55,33 @@ export default function FlashcardViewerPage() {
     const [searchParams] = useSearchParams();
     const deckId = Number(params.deckId);
     const type = searchParams.get('type') || 'all';
-    const [flashcards, setFlashcards] = useState<FlashcardsHomeRes[] | null>(null);
+    const [flashcards, setFlashcards] = useState<FlashcardViewerPageProps[] | null>(null);
+    const [cardIdx, setCardIdx] = useState(0);
+    let numOfCards = -1;
 
 
     useEffect(() => {
         getFlashcards(deckId, type, setFlashcards);
     }, []);
     
-    let firstFlashcard = null;
+    let firstFlashcard;
     if (flashcards) {
-        firstFlashcard = flashcards[0];
+        numOfCards = Object.keys(flashcards).length;
+        firstFlashcard = flashcards[cardIdx];
+
+        return (
+            <div className="w-full h-screen bg-gray-50 bg-opacity-25">
+                    <div className="flex justify-center items-center h-[calc(100vh-16rem)]" >
+                    {firstFlashcard &&  <FlashcardViewer id={firstFlashcard.id} question={firstFlashcard.question} answer={firstFlashcard.answer} correctCheck={firstFlashcard.correctCheck}/>}
+                </div>
+                <NavigationButtons currIdx={cardIdx} setCardIdx={setCardIdx} maxIdx={numOfCards-1} className="fixed bottom-5 left-1/2 -translate-x-1/2" />
+            </div>
+        );
+    } else {
+
+        return (
+            <p>You're in the wrong page mate.</p>
+        );
     }
     
-
-    return (
-        <div className="w-full h-screen bg-gray-50 bg-opacity-25">
-            <div className="flex justify-center items-center h-[calc(100vh-16rem)]" >
-                {firstFlashcard &&  <FlashcardViewer id={firstFlashcard.flashcard_id} question={firstFlashcard.question} answer={firstFlashcard.answer} correctCheck={firstFlashcard.correct_check}/>}
-            </div>
-            <NavigationButtons className="fixed bottom-5 left-1/2 -translate-x-1/2"/>
-        </div>
-    );
 }
