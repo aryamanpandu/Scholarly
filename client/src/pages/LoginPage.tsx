@@ -4,8 +4,11 @@ import Login from "@/components/Login"
 
 export default function LoginPage() {
     return (
-        <>
-            <Login />
-        </>
+        <div className="w-full h-screen bg-gray-50 bg-opacity-25">
+            <div className="flex justify-center">
+                <Login />
+            </div>
+            
+        </div>
     );
 }
