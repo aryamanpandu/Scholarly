@@ -30,7 +30,6 @@ export default function Login() {
 
     const onSubmit: SubmitHandler<LoginFormData> = async (data) => {
         try {
-            console.log(data.email);
             const res = await fetch("http://localhost:3000/api/login", {
                 method: "POST",
                 credentials: "include",

@@ -28,8 +28,6 @@ export default function Signup() {
 
     const onSubmit: SubmitHandler<SignUpFormData> = async (data) => {
         try {
-
-            console.log(`Data provided to the api/signup: ${JSON.stringify(data)}`);
             const res = await fetch("http://localhost:3000/api/signup", {
                 method: "POST",
                 body: JSON.stringify(data),
@@ -44,7 +42,6 @@ export default function Signup() {
                 toast.success(resData.message);
                 setTimeout(() => {
                     console.log("Completed the user sign up");
-                    // window.location.href = "/login";
                     navigate("/login");
                 }, 1000); 
             } else {

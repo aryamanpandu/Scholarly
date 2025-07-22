@@ -43,7 +43,6 @@ export async function refreshDecks(ignore: boolean, setResult: (result: [DecksHo
         const resData = await res.json();
 
         if (!ignore) {
-            console.log(`resData value: ${JSON.stringify(resData)}`);
             setResult(resData);
         }
     } catch (e) {

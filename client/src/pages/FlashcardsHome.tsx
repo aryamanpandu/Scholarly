@@ -59,7 +59,6 @@ export async function refreshFlashcards(ignore: boolean, setResult: (result: [Fl
         }));
 
         if (!ignore) {
-            console.log(`resData value: ${JSON.stringify(fixedData)}`);
             setResult(fixedData);
         }
     } catch (e) {

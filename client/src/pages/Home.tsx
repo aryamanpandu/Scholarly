@@ -33,7 +33,6 @@ export async function refreshTopics(ignore: boolean, setResult: (result: [TopicR
         const resData = await res.json();
 
         if (!ignore) {
-            console.log(`resData value: ${JSON.stringify(resData)}`);
             setResult(resData);
         }    
     } catch (e) {

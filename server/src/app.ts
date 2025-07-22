@@ -92,11 +92,6 @@ interface User {
     lockedUntil: Date | null
 }
 
-app.get('/test', (req: Request, res: Response) => {
-    console.log("Hello");
-    res.status(200).send("Testing! The server is working as intended.");
-}); 
-
 //Use cookies and sessionsx
 app.post('/api/signup', async (req: Request, res: Response) => {
     const {firstName, lastName, email, password, confirmPassword} = req.body;
@@ -125,7 +120,6 @@ app.post('/api/signup', async (req: Request, res: Response) => {
             return;
         }
 
-        console.log(`Password hashed: ${hash}`);
 
         //Now store the hashed password into the database tables.
         const [userRes] = await conn.execute<ResultSetHeader>(
@@ -133,7 +127,6 @@ app.post('/api/signup', async (req: Request, res: Response) => {
                 VALUES (?, ?, ?)`, [email, firstName, lastName]
         );
 
-        console.log(userRes);
         const userId = userRes.insertId;
 
         const [loginRes] = await conn.execute<ResultSetHeader>(
@@ -141,7 +134,7 @@ app.post('/api/signup', async (req: Request, res: Response) => {
                 VALUES (?, ?)`, [userId, hash]
         );
 
-        console.log("Completed Sign Up");
+        console.log("Completed Sign Up for user with ID: " + loginRes.insertId);
         res.status(200).send({message: `Completed user sign up for ${firstName} ${lastName} with email: ${email}`});
     });
 });
@@ -174,7 +167,6 @@ app.post('/api/login', async (req: Request, res: Response) => {
         lockedUntil: row.locked_until
     }));
 
-    console.log(rows);
     //user with this email does not exist
     if (!rows.length) {
         res.status(409).send({message: `user with the email: ${email} does not yet exist.`, loginSuccess: false});
@@ -277,7 +269,6 @@ app.get('/api/topics', async (req: Request, res: Response) => {
                 WHERE u.user_id = ? and u.email = ?`, [userId, email]
         );
 
-        console.log(`Topics received for user with id: ${userId}`);
 
         res.status(200).send(JSON.stringify(result));
         return;
@@ -313,8 +304,6 @@ app.post('/api/topics', async (req: Request, res: Response) => {
             `INSERT INTO topics (user_id, topic_name, topic_desc)
                 VALUES (?,?,?)`, [req.session.user.id, topicName, topicDesc]
         );
-
-        console.log(`New topic created with name ${topicName}`);
         
         res.status(200).send({ message: `Successfully created topic with name: ${topicName}` });
         return; 
