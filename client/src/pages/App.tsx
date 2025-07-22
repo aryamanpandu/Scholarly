@@ -67,7 +67,7 @@ function AnimatedRoutes() {
         />
 
         <Route 
-          path="/flashcardViewer"
+          path="/flashcardViewer/:deckId"
           element={
             <PageWrapper>
               <FlashcardViewerPage/>

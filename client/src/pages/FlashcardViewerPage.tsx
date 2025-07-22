@@ -1,6 +1,5 @@
 import FlashcardViewer from "@/components/Flashcards/FlashcardViewer";
 import NavigationButtons from "@/components/Flashcards/NavigationButtons";
-import NavBar from "@/components/NavBar";
 import { Breadcrumb, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { FlashcardsHomeRes } from "@/pages/FlashcardsHome";
 import { toast } from "sonner";

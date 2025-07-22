@@ -1,7 +1,6 @@
 import Topic from "@/components/Topics/Topic"
 import { useCallback, useState } from "react"
 import { useEffect } from "react"
-import NavBar from "@/components/NavBar"
 import CreateTopic from "@/components/Topics/CreateTopic"
 import { Breadcrumb, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
 import { Link } from "react-router-dom"
