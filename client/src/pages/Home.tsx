@@ -65,7 +65,6 @@ export default function Home() {
         
         let topicArr = result.map((topic:TopicRes)  => 
             {
-                console.log(topic);
                 return (
                     <Topic
                     key={topic.topic_id}

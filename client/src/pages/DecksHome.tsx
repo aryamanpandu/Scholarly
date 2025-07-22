@@ -76,6 +76,7 @@ export default function DecksHome() {
             {
                 return (
                     <Deck
+                        key={deck.deck_id}
                         id={deck.deck_id}
                         topicId={topicId}
                         name={deck.deck_name}

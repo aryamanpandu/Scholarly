@@ -152,7 +152,7 @@ export default function FlashcardViewerPage() {
     console.log(`Flashcards: ${flashcards}`)
     if (flashcards) {
         numOfCards = Object.keys(flashcards).length;
-
+        console.log(`Number of flashcards: ${numOfCards}`);
         if (numOfCards > 0) {
             firstFlashcard = flashcards[cardIdx];
 
@@ -177,14 +177,15 @@ export default function FlashcardViewerPage() {
                 </div>
             );
         } else {
+            return(
             <div className="w-full h-screen bg-gray-50 bg-opacity-25">
                 <FlashcardViewerBreadCrumb topicId={Number(sessionStorage.getItem("topicId"))} topicName={sessionStorage.getItem("topicName") || "Topic"} deckId={deckId} deckName={sessionStorage.getItem("deckName") || "Deck"}/>
                 <div className="flex justify-center items-center h-[calc(100vh-16rem)] text-3xl text-neutral-400">You have no Flashcards to review. Well Done!</div>
             </div>
+            );
         }  
         
     } else {
-
         return (
             <p>You're in the wrong page mate :P</p>
         );
