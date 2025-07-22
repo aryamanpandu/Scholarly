@@ -82,7 +82,6 @@ export default function Home() {
 
         return (
             <>
-                <NavBar isLoggedIn={true}/>
                 <HomeBreadCrumb/>
                 <div className="flex justify-center">
                     <h1 className="m-4 text-3xl border-b-2">
@@ -100,7 +99,6 @@ export default function Home() {
     else {
         return (
             <> 
-                <NavBar isLoggedIn={true}/>
                 <HomeBreadCrumb/>
                 <div className="flex justify-center">
                     <h1 className="m-4 text-3xl border-b-2">

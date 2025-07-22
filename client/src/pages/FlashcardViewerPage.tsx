@@ -5,7 +5,6 @@ import NavBar from "@/components/NavBar";
 export default function FlashcardViewerPage() {
     return (
         <div className="w-full h-screen bg-gray-50 bg-opacity-25">
-            <NavBar isLoggedIn={true}/>
             <div className="flex justify-center items-center h-[calc(100vh-16rem)]" >
                 <FlashcardViewer />
             </div>
