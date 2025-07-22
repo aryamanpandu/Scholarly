@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { MotionButton } from "@/components/Flashcards/ResponseButtons";
 
 
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { useParams, useSearchParams } from "react-router-dom"; 
 import { useEffect, useState } from "react";
 
@@ -69,7 +69,7 @@ async function getFlashcards(deckId: number, type: string, setFlashcards: (flash
             id: flashcard.flashcard_id,
             question: flashcard.question,
             answer: flashcard.answer,
-            correctCheck: flashcard.correct_check,
+            correctCheck: !!flashcard.correct_check,
             idx: idx
         }));
 
@@ -95,6 +95,8 @@ export default function FlashcardViewerPage() {
     const [cardIdx, setCardIdx] = useState(0);
     const [responses, setResponses] = useState<FlashcardsResult[]>([]);
     const [showFinishButton, setShowFinishButton] = useState(false);
+    
+    const navigate = useNavigate();
     
     let numOfCards = -1;
 
@@ -137,8 +139,13 @@ export default function FlashcardViewerPage() {
                 body: JSON.stringify(responses)
             });
 
+            const resData = await res.json();
+
             if (res.ok) {
                 console.log('Session results saved successfully');
+                toast.success(resData.message);
+                navigate(`flashcardHome/${deckId}`);
+                
             } else {
                 console.error('Failed to save session results');
                 toast.error('Failed to save session results. Please try again later');
@@ -148,26 +155,26 @@ export default function FlashcardViewerPage() {
         }
     }
 
-    let firstFlashcard;
-    console.log(`Flashcards: ${flashcards}`)
+    let flashcard;
+
     if (flashcards) {
         numOfCards = Object.keys(flashcards).length;
-        console.log(`Number of flashcards: ${numOfCards}`);
-        if (numOfCards > 0) {
-            firstFlashcard = flashcards[cardIdx];
 
+        if (numOfCards > 0) {
+
+            flashcard = flashcards[cardIdx];
             return (
                 <div className="w-full h-screen bg-gray-50 bg-opacity-25">
                     <FlashcardViewerBreadCrumb topicId={Number(sessionStorage.getItem("topicId"))} topicName={sessionStorage.getItem("topicName") || "Topic"} deckId={deckId} deckName={sessionStorage.getItem("deckName") || "Deck"}/>
                     <div className="flex justify-center items-center h-[calc(100vh-16rem)]" >
-                        {firstFlashcard &&  <FlashcardViewer id={firstFlashcard.id} question={firstFlashcard.question} answer={firstFlashcard.answer} correctCheck={firstFlashcard.correctCheck} onResponse={handleResponse}/>}
+                        {flashcard && <FlashcardViewer key={flashcard.id} id={flashcard.id} question={flashcard.question} answer={flashcard.answer} correctCheck={flashcard.correctCheck} onResponse={handleResponse} /> }
                     </div>
                     <NavigationButtons currIdx={cardIdx} setCardIdx={setCardIdx} maxIdx={numOfCards-1} className="fixed bottom-5 left-1/2 -translate-x-1/2" />
 
                     {showFinishButton &&
                         <div className="flex justify-center">
                             <MotionButton
-                                className=""
+                                className="bg-purple-600"
                                 whileTap={{scale: 0.8}}
                                 onClick={finishSession}>
                                     Finish Session

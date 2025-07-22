@@ -33,6 +33,7 @@ export interface ResponseButtonProps {
 export default function ResponseButtons({showAnswer, onGotIt, onMissedIt} : ResponseButtonProps) {
     return(
         <motion.div
+            initial={{opacity: 0}}
             animate={{opacity: showAnswer ? 1 : 0}}
             transition={{duration: 0.3}}
             className="flex gap-5 justify-center text-white mt-5"
