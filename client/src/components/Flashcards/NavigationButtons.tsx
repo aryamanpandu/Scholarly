@@ -44,4 +44,3 @@ function navigateRight(currIdx: number, maxIdx: number, setCardIdx: (idx: number
         setCardIdx(currIdx + 1);
     }
 }
-//
