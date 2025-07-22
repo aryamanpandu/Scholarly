@@ -15,16 +15,28 @@ interface FlashcardViewerProps {
     question: string,
     answer: string,
     correctCheck: boolean,
-    onResponse: (flashcardId: number, correct: boolean) => void
+    onResponse: (flashcardId: number, correct: boolean) => void,
+    enterFromRight: boolean
 }
 
-export default function FlashcardViewer({id, question, answer, correctCheck, onResponse}: FlashcardViewerProps) {
+
+//If the navigation is going right, it should do the opposite of the current animation
+export default function FlashcardViewer({id, question, answer, correctCheck, enterFromRight, onResponse}: FlashcardViewerProps) {
     const [showAnswer, setShowAnswer] = useState(false);
     
     return (
-        <div 
-        className="w-full max-w-xl m-5"
-        style={{perspective: 1000}}
+        <motion.div 
+            className="w-full max-w-xl m-5"
+            style={{perspective: 1000}}
+            initial={{x: enterFromRight ? "100vw": "-100vw"}}
+            animate={{x: "0"}}
+            exit={{x: enterFromRight ? "-100vw": "100vw"}} //for going left
+            transition={{
+                type: "spring",
+                stiffness: 200,
+                damping: 20,
+                duration: 0.2,
+            }}
         >
 
             <motion.div
@@ -49,7 +61,7 @@ export default function FlashcardViewer({id, question, answer, correctCheck, onR
                 onMissedIt={() => onResponse(id, false)}
             />
             
-        </div>
+        </motion.div>
     );
 }
 

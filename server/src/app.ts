@@ -661,16 +661,20 @@ app.put('/api/flashcards/flashcard-result/:deckId', async (req: Request, res: Re
     }
 
     const deckId = req.params.deckId;
-    const { responses }  = req.body as { responses: FlashcardsResult[]};
+    const flashcardResponse  = req.body as  FlashcardsResult[];
+    const numOfResponses = Object.keys(flashcardResponse).length;
 
-    if (!deckId || !responses || (responses.length <= 0)) {
+    if (!deckId || !flashcardResponse || (numOfResponses <= 0)) {
         res.status(400).send({message: "Invalid Request. Please try again later."});
+        return;
     }
     
     try {
         await conn.beginTransaction();
+        
+        for (const idx in flashcardResponse) {
+            const response = flashcardResponse[idx];
 
-        for (const response of responses) {
             await conn.execute(
                 `UPDATE FLASHCARDS
                     SET correct_check = ? WHERE flashcard_id = ? AND deck_id = ?`, [response.correctCheck, response.id, deckId]
@@ -679,7 +683,10 @@ app.put('/api/flashcards/flashcard-result/:deckId', async (req: Request, res: Re
 
         await conn.commit();
 
+        res.status(200).send({message: `Completed study session!`});
+
     } catch (e) {
+        await conn.rollback();
         console.log(e);
         res.status(500).send({ message: 'Internal server error. Please try later.'});
         return;

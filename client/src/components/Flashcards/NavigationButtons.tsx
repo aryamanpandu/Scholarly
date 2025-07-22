@@ -6,15 +6,19 @@ interface NavigationButtonsProps {
     className?: string,
     currIdx: number,
     maxIdx: number,
-    setCardIdx: (idx: number) => void
+    setCardIdx: (idx: number) => void,
+    setEnterFromRightAnimation: (goLeft: boolean) => void
 }
-export default function NavigationButtons({currIdx, maxIdx, setCardIdx, className}: NavigationButtonsProps) {
+export default function NavigationButtons({currIdx, maxIdx, setCardIdx, setEnterFromRightAnimation ,className}: NavigationButtonsProps) {
     return (
         <div className={cn("flex", className)}>
             <motion.button 
                 className="cursor-pointer"
                 whileTap={{scale: 0.8}}
-                onClick={() => navigateLeft(currIdx, setCardIdx)}
+                onClick={() => {
+                    setEnterFromRightAnimation(false);
+                    navigateLeft(currIdx, setCardIdx);
+                    }}
                 >
                 <i className="bi bi-chevron-left text-3xl"></i>
             </motion.button>
@@ -24,7 +28,10 @@ export default function NavigationButtons({currIdx, maxIdx, setCardIdx, classNam
             <motion.button
                 className="cursor-pointer"
                 whileTap={{scale: 0.8}}
-                onClick={() => navigateRight(currIdx, maxIdx, setCardIdx)}
+                onClick={() => {
+                    setEnterFromRightAnimation(true);
+                    navigateRight(currIdx, maxIdx, setCardIdx);
+                }}
                 >
                 <i className="bi bi-chevron-right text-3xl"></i>
             </motion.button>

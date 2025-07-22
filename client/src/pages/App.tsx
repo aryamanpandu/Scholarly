@@ -101,7 +101,7 @@ function App() {
   const hideNavBar = ["/login", "/signup"].includes(location.pathname);
   return (
     <div>
-      <Toaster expand={true} position='bottom-center' richColors/>
+      <Toaster expand={true} position='bottom-left' closeButton richColors/>
       {!hideNavBar && <NavBar />}
       <AnimatedRoutes />
 
