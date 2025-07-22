@@ -73,14 +73,11 @@ async function getFlashcards(deckId: number, type: string, setFlashcards: (flash
             idx: idx
         }));
 
-        console.log(resData);
-
         let filteredFlashcards = flashcards;
 
         if (type === 'incorrect') {
             filteredFlashcards = filteredFlashcards.filter((flashcard: FlashcardViewerPageProps) => flashcard.correctCheck === false);
         }
-
         setFlashcards(filteredFlashcards);
 
     } catch (e) {
@@ -93,14 +90,13 @@ export default function FlashcardViewerPage() {
     const [searchParams] = useSearchParams();
     const deckId = Number(params.deckId);
     const type = searchParams.get('type') || 'all';
+    
     const [flashcards, setFlashcards] = useState<FlashcardViewerPageProps[] | null>(null);
     const [cardIdx, setCardIdx] = useState(0);
-    
     const [responses, setResponses] = useState<FlashcardsResult[]>([]);
     const [showFinishButton, setShowFinishButton] = useState(false);
     
     let numOfCards = -1;
-
 
     useEffect(() => {
         getFlashcards(deckId, type, setFlashcards);
@@ -153,30 +149,40 @@ export default function FlashcardViewerPage() {
     }
 
     let firstFlashcard;
+    console.log(`Flashcards: ${flashcards}`)
     if (flashcards) {
         numOfCards = Object.keys(flashcards).length;
-        firstFlashcard = flashcards[cardIdx];
 
-        return (
+        if (numOfCards > 0) {
+            firstFlashcard = flashcards[cardIdx];
+
+            return (
+                <div className="w-full h-screen bg-gray-50 bg-opacity-25">
+                    <FlashcardViewerBreadCrumb topicId={Number(sessionStorage.getItem("topicId"))} topicName={sessionStorage.getItem("topicName") || "Topic"} deckId={deckId} deckName={sessionStorage.getItem("deckName") || "Deck"}/>
+                    <div className="flex justify-center items-center h-[calc(100vh-16rem)]" >
+                        {firstFlashcard &&  <FlashcardViewer id={firstFlashcard.id} question={firstFlashcard.question} answer={firstFlashcard.answer} correctCheck={firstFlashcard.correctCheck} onResponse={handleResponse}/>}
+                    </div>
+                    <NavigationButtons currIdx={cardIdx} setCardIdx={setCardIdx} maxIdx={numOfCards-1} className="fixed bottom-5 left-1/2 -translate-x-1/2" />
+
+                    {showFinishButton &&
+                        <div className="flex justify-center">
+                            <MotionButton
+                                className=""
+                                whileTap={{scale: 0.8}}
+                                onClick={finishSession}>
+                                    Finish Session
+                            </MotionButton>
+                        </div>
+                    }
+                </div>
+            );
+        } else {
             <div className="w-full h-screen bg-gray-50 bg-opacity-25">
                 <FlashcardViewerBreadCrumb topicId={Number(sessionStorage.getItem("topicId"))} topicName={sessionStorage.getItem("topicName") || "Topic"} deckId={deckId} deckName={sessionStorage.getItem("deckName") || "Deck"}/>
-                <div className="flex justify-center items-center h-[calc(100vh-16rem)]" >
-                    {firstFlashcard &&  <FlashcardViewer id={firstFlashcard.id} question={firstFlashcard.question} answer={firstFlashcard.answer} correctCheck={firstFlashcard.correctCheck} onResponse={handleResponse}/>}
-                </div>
-                <NavigationButtons currIdx={cardIdx} setCardIdx={setCardIdx} maxIdx={numOfCards-1} className="fixed bottom-5 left-1/2 -translate-x-1/2" />
-
-                {showFinishButton &&
-                    <div className="flex justify-center">
-                        <MotionButton
-                            className=""
-                            whileTap={{scale: 0.8}}
-                            onClick={finishSession}>
-                                Finish Session
-                        </MotionButton>
-                    </div>
-                }
+                <div className="flex justify-center items-center h-[calc(100vh-16rem)] text-3xl text-neutral-400">You have no Flashcards to review. Well Done!</div>
             </div>
-        );
+        }  
+        
     } else {
 
         return (

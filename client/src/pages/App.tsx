@@ -102,7 +102,7 @@ function App() {
   return (
     <div>
       <Toaster expand={true} position='bottom-center' richColors/>
-      {!hideNavBar && <NavBar isLoggedIn={true}/>}
+      {!hideNavBar && <NavBar />}
       <AnimatedRoutes />
 
     </div>
