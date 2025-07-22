@@ -89,7 +89,6 @@ export default function DecksHome() {
 
         return (
             <>
-                <NavBar isLoggedIn={true}/>
                 <DecksHomeBreadCrumb topicId={topicId} topicName={sessionStorage.getItem("topicName") || "Topic"}  />
                 <div className="flex justify-center">
                     <h1 className="m-4 text-3xl border-b-2">{sessionStorage.getItem("topicName") || "Topic"}</h1>
@@ -103,7 +102,6 @@ export default function DecksHome() {
     } else {
         return(
             <>
-                <NavBar isLoggedIn={true}/>
                 <DecksHomeBreadCrumb topicId={topicId} topicName={sessionStorage.getItem("topicName") || "Topic"}  />
                 <div className="flex justify-center">
                     <h1 className="m-4 text-3xl border-b-2">{sessionStorage.getItem("topicName") || "Topic"}</h1>

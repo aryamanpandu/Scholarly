@@ -1,7 +1,6 @@
 import Flashcard from "@/components/Flashcards/Flashcard";
 import { useCallback, useState } from "react";
 import { useEffect } from "react"
-import NavBar from "@/components/NavBar"
 import { useParams } from "react-router-dom"; 
 import { Breadcrumb, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { Link } from "react-router-dom"
@@ -96,7 +95,6 @@ export default function FlashcardsHome() {
 
         return (
             <>
-            <NavBar isLoggedIn={true} />
             <FlashcardsHomeBreadCrumb topicId={Number(sessionStorage.getItem("topicId"))} topicName={sessionStorage.getItem("topicName") || "Topic"} deckId={deckId} deckName={sessionStorage.getItem("deckName") || "Deck"}/>
             <div className="flex justify-center">
                 <h1 className="m-4 text-3xl border-b-2">{sessionStorage.getItem("deckName") || "Deck"}</h1>
@@ -111,7 +109,6 @@ export default function FlashcardsHome() {
     } else {
             return(
                 <>
-                    <NavBar isLoggedIn={true}/>
                     <FlashcardsHomeBreadCrumb topicId={Number(sessionStorage.getItem("topicId"))} topicName={sessionStorage.getItem("topicName") || "Topic"} deckId={deckId} deckName={sessionStorage.getItem("deckName") || "Deck"}/>
                     <div className="flex justify-center">
                         <h1 className="m-4 text-3xl border-b-2">{sessionStorage.getItem("deckName") || "Deck"}</h1>

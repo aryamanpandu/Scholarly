@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import Logout from "./Logout";
 
 interface NavBarProps {
-  isLoggedIn: boolean;
+  isLoggedIn?: boolean;
 } 
 //The navbar could take in a prop that would allow it conditionally render things
 export default function NavBar({ isLoggedIn=false }: NavBarProps) {
