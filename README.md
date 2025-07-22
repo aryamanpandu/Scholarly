@@ -1,22 +1,21 @@
-# 🎓 Scholarly
+# Scholarly
 
 **Scholarly** is a web-based flashcard application designed to help learners retain information more effectively through active recall and spaced repetition. Users can organize content into **Topics**, which contain **Decks** of **Flashcards**, making studying structured and engaging.
 
 ---
 
-## 🚀 Features
+## Features
 
-- 📚 **Topic-based organization** — Group related flashcards under meaningful categories.
-- 🗂️ **Decks within topics** — Manage flashcards in modular, reusable sets.
-- 🃏 **Flashcard system** — Each card has a front and back for Q&A-style learning.
-- 🌙 **Dark/light theme toggle** — Better UX for night owls and early birds.
-- ⚡ **Fast and responsive UI** — Built with performance-focused tools.
+- **Topic-based organization** — Group related flashcards under meaningful categories.
+- **Decks within topics** — Manage flashcards in modular, reusable sets.
+- **Flashcard system** — Each card has a front and back for Q&A-style learning.
+- **Fast and responsive UI** — Built with performance-focused tools.
 
 ---
 
-## 🧰 Tech Stack
+## Tech Stack
 
-### 🖥️ Frontend (`/client`)
+### Frontend (`/client`)
 Built using **React** and styled with **Tailwind CSS** and **Radix UI** components.
 
 - **React 19** with **TypeScript**
@@ -28,7 +27,7 @@ Built using **React** and styled with **Tailwind CSS** and **Radix UI** componen
 - **Lucide React** and **Bootstrap Icons** for sleek UI icons
 - **Dark mode support** via `next-themes`
 
-### ⚙️ Backend (`/server`)
+### Backend (`/server`)
 A RESTful API built with **Express.js** and **MySQL** for managing users, sessions, and flashcards.
 
 - **Express 5** with **TypeScript**
@@ -39,7 +38,7 @@ A RESTful API built with **Express.js** and **MySQL** for managing users, sessio
 
 ---
 
-## 📦 Installation
+## Installation
 
 ### Prerequisites
 
@@ -64,4 +63,4 @@ SESSION_SECRET=your_secret
 To start the development: 
 npm run dev
 
-Don't forget to connect to mysql😊.
+This will also require connecting to MySQL
