@@ -704,7 +704,7 @@ app.put('/api/flashcards/:flashcardId/:deckId', async (req: Request, res: Respon
     const flashcardId = req.params.flashcardId;
     const deckId = req.params.deckId;
     const {question, answer} = req.body;
-    const correctCheck = false; // Newly updated flashcard will not be considered as having been correctly answered.
+    const correctCheck = null; // Newly updated flashcard will not be considered as having been correctly answered.
 
     if (!flashcardId || !deckId || !question || !answer) {
         res.status(400).send({message: "Invalid Request. Deck ID, Flashcard ID, question, answer is required to upate a Flashcard"});
