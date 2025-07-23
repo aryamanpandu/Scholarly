@@ -15,7 +15,7 @@ function HomeBreadCrumb() {
     return (
         <Breadcrumb className="px-6 pt-3">
             <BreadcrumbList>
-                <BreadcrumbLink>
+                <BreadcrumbLink asChild>
                     <Link to={`/home`}>Home</Link>
                 </BreadcrumbLink>
                 <BreadcrumbSeparator/>

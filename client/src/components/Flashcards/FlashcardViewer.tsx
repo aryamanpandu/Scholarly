@@ -19,8 +19,6 @@ interface FlashcardViewerProps {
     enterFromRight: boolean
 }
 
-
-//If the navigation is going right, it should do the opposite of the current animation
 export default function FlashcardViewer({id, question, answer, correctCheck, enterFromRight, onResponse}: FlashcardViewerProps) {
     const [showAnswer, setShowAnswer] = useState(false);
     

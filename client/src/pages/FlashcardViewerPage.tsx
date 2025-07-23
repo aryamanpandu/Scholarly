@@ -123,6 +123,7 @@ export default function FlashcardViewerPage() {
         });
 
         if (cardIdx < numOfCards - 1) {
+            setEnterFromRightAnimation(true);
             setCardIdx(cardIdx+1);        
         } else {
             setShowFinishButton(true);
@@ -191,7 +192,7 @@ export default function FlashcardViewerPage() {
                     <div className="flex justify-center items-center h-[calc(100vh-16rem)] text-3xl text-neutral-400">You have no Flashcards to review. Well Done!</div>
                 </div>
             );
-        }  
+        }
         
     } else {
         return (
