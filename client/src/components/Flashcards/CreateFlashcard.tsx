@@ -15,6 +15,7 @@ import { toast } from "sonner";
 
 import { useForm, SubmitHandler} from "react-hook-form";
 
+import { MotionButton } from "@/components/Flashcards/ResponseButtons";
 
 interface CreateFlashcardData {
     question: string,
@@ -59,7 +60,14 @@ export default function CreateFlashcard({ onSuccess, deckId, open, onOpenChange}
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogTrigger hidden/>
-            <Button className="fixed bottom-2 right-2 text-2xl font-bold" variant="default" onClick={() => {onOpenChange(true)}}><i className="bi bi-plus-lg"></i></Button>
+            <MotionButton
+                className="fixed bottom-2 right-2 text-2xl font-bold" 
+                variant="default" 
+                onClick={() => {onOpenChange(true)}}
+                whileTap={{scale: 0.6}}
+            >
+                <i className="bi bi-plus-lg"></i>
+            </MotionButton>
             <DialogContent>
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <DialogHeader className="mb-4">

@@ -1,18 +1,22 @@
 import AnimatedDock from "@/components/animata/container/animated-dock"
 
-export default function FlashcardNavBar() {
+interface FlashcardNavBarProps {
+    deckId: number
+}
+
+export default function FlashcardNavBar({deckId}: FlashcardNavBarProps) {
     return (
         <div className="w-full flex justify-center h-40">
             <AnimatedDock
                 items={
                     [
                         {
-                            to: '/',
+                            to: `/flashcardViewer/${deckId}?type=incorrect`,
                             icon: <i className="bi bi-arrow-clockwise"></i>,
                             title: "Revise Incorrect Flashcards"
                         },
                         {
-                            to: '/',
+                            to: `/flashcardViewer/${deckId}?type=all`,
                             icon: <i className="bi bi-book"></i>,
                             title: "Revise All Flashcards"
                         }

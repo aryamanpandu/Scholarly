@@ -1,7 +1,6 @@
 import Deck from "@/components/Decks/Deck";
 import { useCallback, useState } from "react"
 import { useEffect } from "react"
-import NavBar from "@/components/NavBar"
 import CreateDeck from "@/components/Decks/CreateDeck";
 import { useParams } from "react-router-dom"; 
 import { Breadcrumb, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
@@ -44,7 +43,6 @@ export async function refreshDecks(ignore: boolean, setResult: (result: [DecksHo
         const resData = await res.json();
 
         if (!ignore) {
-            console.log(`resData value: ${JSON.stringify(resData)}`);
             setResult(resData);
         }
     } catch (e) {
@@ -78,6 +76,7 @@ export default function DecksHome() {
             {
                 return (
                     <Deck
+                        key={deck.deck_id}
                         id={deck.deck_id}
                         topicId={topicId}
                         name={deck.deck_name}
@@ -88,27 +87,27 @@ export default function DecksHome() {
         });
 
         return (
-            <>
+            <div className="h-[calc(100vh-5rem)] bg-gray-50 bg-opacity-25">
                 <DecksHomeBreadCrumb topicId={topicId} topicName={sessionStorage.getItem("topicName") || "Topic"}  />
                 <div className="flex justify-center">
-                    <h1 className="m-4 text-3xl border-b-2">{sessionStorage.getItem("topicName") || "Topic"}</h1>
+                    <h1 className="m-4 text-3xl">{sessionStorage.getItem("topicName") || "Topic"}</h1>
                 </div>
                 <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,0px))] gap-5 m-5 auto-rows-fr">
                     {deckArr}
                 </div>
                 <CreateDeck onSuccess={handleRefreshDecks} topicId={topicId} open={createDialogOpen} onOpenChange={setCreateDialogOpen}/>
-            </>
+            </div>
         );
     } else {
         return(
-            <>
+            <div className="h-[calc(100vh-5rem)] bg-gray-50 bg-opacity-25">
                 <DecksHomeBreadCrumb topicId={topicId} topicName={sessionStorage.getItem("topicName") || "Topic"}  />
                 <div className="flex justify-center">
-                    <h1 className="m-4 text-3xl border-b-2">{sessionStorage.getItem("topicName") || "Topic"}</h1>
+                    <h1 className="m-4 text-3xl">{sessionStorage.getItem("topicName") || "Topic"}</h1>
                 </div>
                 <div className="flex justify-center items-center h-[calc(100vh-16rem)] text-3xl text-neutral-400">You have no Decks. Click the plus icon to create one!</div>
                 <CreateDeck onSuccess={handleRefreshDecks} topicId={topicId} open={createDialogOpen} onOpenChange={setCreateDialogOpen}/>
-            </>
+            </div>
         )
     }
 }

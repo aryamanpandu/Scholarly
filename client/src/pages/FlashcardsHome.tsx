@@ -7,10 +7,11 @@ import { Link } from "react-router-dom"
 import CreateFlashcard from "@/components/Flashcards/CreateFlashcard";
 import FlashcardNavBar from "@/components/Flashcards/FlashcardNavBar";
 
-interface FlashcardsHomeRes {
+export interface FlashcardsHomeRes {
     flashcard_id: number,
     question: string,
-    answer: string
+    answer: string,
+    correct_check: boolean
 }
 
 interface FlashcardsHomeBreadCrumbProps {
@@ -22,7 +23,7 @@ interface FlashcardsHomeBreadCrumbProps {
 
 
 
-function FlashcardsHomeBreadCrumb({topicId, topicName, deckId, deckName}: FlashcardsHomeBreadCrumbProps) {
+export function FlashcardsBreadCrumb({topicId, topicName, deckId, deckName}: FlashcardsHomeBreadCrumbProps) {
     return (
         <Breadcrumb className="px-6 pt-3">
             <BreadcrumbList>
@@ -51,9 +52,14 @@ export async function refreshFlashcards(ignore: boolean, setResult: (result: [Fl
 
         const resData = await res.json();
 
+        //Converting the correct_check TINYINT sent by MySQL to boolean in JS. 
+        const fixedData = resData.map((flashcard: any) => ({
+            ...flashcard,
+            correct_check: flashcard.correct_check === null ? null: !!flashcard.correct_check
+        }));
+
         if (!ignore) {
-            console.log(`resData value: ${JSON.stringify(resData)}`);
-            setResult(resData);
+            setResult(fixedData);
         }
     } catch (e) {
         console.error(`Fetch failed: ${e}`);
@@ -83,10 +89,12 @@ export default function FlashcardsHome() {
         let flashcardArr = result.map((flashcard: FlashcardsHomeRes) => {
             return (
                 <Flashcard
+                    key={flashcard.flashcard_id}
                     flashcardId={flashcard.flashcard_id}
                     deckId={deckId}
                     question={flashcard.question}
                     answer={flashcard.answer}
+                    correctCheck={flashcard.correct_check}
                     onRefresh={handleRefreshFlashcards}
                 />  
             );
@@ -94,28 +102,28 @@ export default function FlashcardsHome() {
     
 
         return (
-            <>
-            <FlashcardsHomeBreadCrumb topicId={Number(sessionStorage.getItem("topicId"))} topicName={sessionStorage.getItem("topicName") || "Topic"} deckId={deckId} deckName={sessionStorage.getItem("deckName") || "Deck"}/>
-            <div className="flex justify-center">
-                <h1 className="m-4 text-3xl border-b-2">{sessionStorage.getItem("deckName") || "Deck"}</h1>
+            <div className="h-[calc(100vh-5rem)] bg-gray-50 bg-opacity-25">
+                <FlashcardsBreadCrumb topicId={Number(sessionStorage.getItem("topicId"))} topicName={sessionStorage.getItem("topicName") || "Topic"} deckId={deckId} deckName={sessionStorage.getItem("deckName") || "Deck"}/>
+                <div className="flex justify-center">
+                    <h1 className="m-4 text-3xl">{sessionStorage.getItem("deckName") || "Deck"}</h1>
+                </div>
+                <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,0px))] gap-5 m-5 auto-rows-fr">
+                    {flashcardArr}
+                </div>
+                <FlashcardNavBar deckId={deckId}/>
+                <CreateFlashcard onSuccess={handleRefreshFlashcards} deckId={deckId} open={createDialogOpen} onOpenChange={setCreateDialogOpen} />
             </div>
-            <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,0px))] gap-5 m-5 auto-rows-fr">
-                {flashcardArr}
-            </div>
-            <FlashcardNavBar />
-            <CreateFlashcard onSuccess={handleRefreshFlashcards} deckId={deckId} open={createDialogOpen} onOpenChange={setCreateDialogOpen} />
-            </>
         );
     } else {
             return(
-                <>
-                    <FlashcardsHomeBreadCrumb topicId={Number(sessionStorage.getItem("topicId"))} topicName={sessionStorage.getItem("topicName") || "Topic"} deckId={deckId} deckName={sessionStorage.getItem("deckName") || "Deck"}/>
+                <div className="h-[calc(100vh-5rem)] bg-gray-50 bg-opacity-25">
+                    <FlashcardsBreadCrumb topicId={Number(sessionStorage.getItem("topicId"))} topicName={sessionStorage.getItem("topicName") || "Topic"} deckId={deckId} deckName={sessionStorage.getItem("deckName") || "Deck"}/>
                     <div className="flex justify-center">
-                        <h1 className="m-4 text-3xl border-b-2">{sessionStorage.getItem("deckName") || "Deck"}</h1>
+                        <h1 className="m-4 text-3xl">{sessionStorage.getItem("deckName") || "Deck"}</h1>
                     </div>
                     <div className="flex justify-center items-center h-[calc(100vh-16rem)] text-3xl text-neutral-400">You have no Flashcards. Click the plus icon to create one!</div>
                     <CreateFlashcard onSuccess={handleRefreshFlashcards} deckId={deckId} open={createDialogOpen} onOpenChange={setCreateDialogOpen}/>
-                </>
+                </div>
             )
         }
 

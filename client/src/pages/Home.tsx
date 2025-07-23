@@ -1,7 +1,6 @@
 import Topic from "@/components/Topics/Topic"
 import { useCallback, useState } from "react"
 import { useEffect } from "react"
-import NavBar from "@/components/NavBar"
 import CreateTopic from "@/components/Topics/CreateTopic"
 import { Breadcrumb, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
 import { Link } from "react-router-dom"
@@ -16,7 +15,7 @@ function HomeBreadCrumb() {
     return (
         <Breadcrumb className="px-6 pt-3">
             <BreadcrumbList>
-                <BreadcrumbLink>
+                <BreadcrumbLink asChild>
                     <Link to={`/home`}>Home</Link>
                 </BreadcrumbLink>
                 <BreadcrumbSeparator/>
@@ -34,7 +33,6 @@ export async function refreshTopics(ignore: boolean, setResult: (result: [TopicR
         const resData = await res.json();
 
         if (!ignore) {
-            console.log(`resData value: ${JSON.stringify(resData)}`);
             setResult(resData);
         }    
     } catch (e) {
@@ -67,7 +65,6 @@ export default function Home() {
         
         let topicArr = result.map((topic:TopicRes)  => 
             {
-                console.log(topic);
                 return (
                     <Topic
                     key={topic.topic_id}
@@ -81,10 +78,10 @@ export default function Home() {
         )
 
         return (
-            <>
+            <div className="h-[calc(100vh-5rem)] bg-gray-50 bg-opacity-25">
                 <HomeBreadCrumb/>
                 <div className="flex justify-center">
-                    <h1 className="m-4 text-3xl border-b-2">
+                    <h1 className="m-4 text-3xl">
                         Topics
                     </h1>
                 </div>
@@ -92,22 +89,21 @@ export default function Home() {
                     {topicArr}
                 </div>
                 <CreateTopic onSuccess={handleRefreshTopics} open={createDialogOpen} onOpenChange={setCreateDialogOpen}/>
-            </>
-            
+            </div>
         )
     }
     else {
         return (
-            <> 
+            <div className="h-[calc(100vh-5rem)] bg-gray-50 bg-opacity-25"> 
                 <HomeBreadCrumb/>
                 <div className="flex justify-center">
-                    <h1 className="m-4 text-3xl border-b-2">
+                    <h1 className="m-4 text-3xl">
                         Topics
                     </h1>
                 </div>
                 <div className="flex justify-center items-center h-[calc(100vh-16rem)] text-3xl text-neutral-400">You have no Topics. Click the plus icon to create one!</div>
                 <CreateTopic onSuccess={handleRefreshTopics} open={createDialogOpen} onOpenChange={setCreateDialogOpen}/>
-            </>
+            </div>
         )
     }
     

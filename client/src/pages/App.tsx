@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import { ReactNode } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -67,7 +67,7 @@ function AnimatedRoutes() {
         />
 
         <Route 
-          path="/flashcardViewer"
+          path="/flashcardViewer/:deckId"
           element={
             <PageWrapper>
               <FlashcardViewerPage/>
@@ -101,8 +101,8 @@ function App() {
   const hideNavBar = ["/login", "/signup"].includes(location.pathname);
   return (
     <div>
-      <Toaster expand={true} position='bottom-center' richColors/>
-      {!hideNavBar && <NavBar isLoggedIn={true}/>}
+      <Toaster expand={true} position='bottom-left' closeButton richColors/>
+      {!hideNavBar && <NavBar />}
       <AnimatedRoutes />
 
     </div>

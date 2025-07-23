@@ -4,11 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Link } from "react-router-dom";
 import Logout from "./Logout";
 
-interface NavBarProps {
-  isLoggedIn?: boolean;
-} 
-//The navbar could take in a prop that would allow it conditionally render things
-export default function NavBar({ isLoggedIn=false }: NavBarProps) {
+export default function NavBar() {
   return (
     <header className="flex h-20 w-full shrink-0 items-center px-2 md:px-6 border sticky top-0">
       <Sheet>
@@ -24,27 +20,14 @@ export default function NavBar({ isLoggedIn=false }: NavBarProps) {
             <span className="sr-only">Scholarly</span>
           </Link>
           <div className="grid gap-2 py-6">
-            {!isLoggedIn && 
-              (<>
-                <Link to="/login" className="flex w-full items-center py-2 text-lg font-semibold">
-                  Login
-                </Link>
-                <Link to="/signup" className="flex w-full items-center py-2 text-lg font-semibold">
-                Sign Up
-                </Link>
-              </>)
-            }
-            {isLoggedIn &&
+            
+              <Link to="/home" className="flex w-full items-center py-2 text-lg font-semibold">
+                Home
+              </Link>
+              <div className="flex w-full items-center py-2 text-lg font-semibold">
+                <Logout/>
+              </div>
 
-              (<>
-                <Link to="/home" className="flex w-full items-center py-2 text-lg font-semibold">
-                  Home
-                </Link>
-                <div className="flex w-full items-center py-2 text-lg font-semibold">
-                  <Logout/>
-                </div>
-              </>)
-            }
           </div>
         </SheetContent>
       </Sheet>
@@ -53,26 +36,12 @@ export default function NavBar({ isLoggedIn=false }: NavBarProps) {
         <span className="sr-only">Scholarly</span>
       </Link>
       <nav className="ml-auto hidden lg:flex gap-6">
-        {!isLoggedIn && 
-          (<>
-            <Link to="/login" className="flex w-full items-center py-2 text-lg font-semibold">
-              Login
-            </Link> 
-            <Link to="/signup" className="flex w-full items-center py-2 text-lg font-semibold">
-              Sign Up
-            </Link>
-          </>)
-        }
-        {isLoggedIn &&
-         (<>
-            <Link to="/home" className="flex w-full items-center py-2 text-lg font-semibold">
-              Home
-            </Link> 
-            <div className="flex w-full items-center py-2 text-lg font-semibold">
-              <Logout/>
-            </div>
-          </>)
-        }
+        <Link to="/home" className="flex w-full items-center py-2 text-lg font-semibold">
+          Home
+        </Link> 
+        <div className="flex w-full items-center py-2 text-lg font-semibold">
+          <Logout/>
+        </div>
       </nav>
     </header>
   );
