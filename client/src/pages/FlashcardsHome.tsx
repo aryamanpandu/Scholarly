@@ -55,7 +55,7 @@ export async function refreshFlashcards(ignore: boolean, setResult: (result: [Fl
         //Converting the correct_check TINYINT sent by MySQL to boolean in JS. 
         const fixedData = resData.map((flashcard: any) => ({
             ...flashcard,
-            correct_check: !!flashcard.correct_check
+            correct_check: flashcard.correct_check === null ? null: !!flashcard.correct_check
         }));
 
         if (!ignore) {
@@ -94,6 +94,7 @@ export default function FlashcardsHome() {
                     deckId={deckId}
                     question={flashcard.question}
                     answer={flashcard.answer}
+                    correctCheck={flashcard.correct_check}
                     onRefresh={handleRefreshFlashcards}
                 />  
             );

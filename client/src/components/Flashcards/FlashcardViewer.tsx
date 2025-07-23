@@ -28,7 +28,7 @@ export default function FlashcardViewer({id, question, answer, correctCheck, ent
             style={{perspective: 1000}}
             initial={{x: enterFromRight ? "100vw": "-100vw"}}
             animate={{x: "0"}}
-            exit={{x: enterFromRight ? "-100vw": "100vw"}} //for going left
+            exit={{x: enterFromRight ? "-100vw": "100vw"}}
             transition={{
                 type: "spring",
                 stiffness: 200,
