@@ -78,7 +78,7 @@ export default function Home() {
         )
 
         return (
-            <>
+            <div className="h-[calc(100vh-5rem)] bg-gray-50 bg-opacity-25">
                 <HomeBreadCrumb/>
                 <div className="flex justify-center">
                     <h1 className="m-4 text-3xl">
@@ -89,13 +89,12 @@ export default function Home() {
                     {topicArr}
                 </div>
                 <CreateTopic onSuccess={handleRefreshTopics} open={createDialogOpen} onOpenChange={setCreateDialogOpen}/>
-            </>
-            
+            </div>
         )
     }
     else {
         return (
-            <> 
+            <div className="h-[calc(100vh-5rem)] bg-gray-50 bg-opacity-25"> 
                 <HomeBreadCrumb/>
                 <div className="flex justify-center">
                     <h1 className="m-4 text-3xl">
@@ -104,7 +103,7 @@ export default function Home() {
                 </div>
                 <div className="flex justify-center items-center h-[calc(100vh-16rem)] text-3xl text-neutral-400">You have no Topics. Click the plus icon to create one!</div>
                 <CreateTopic onSuccess={handleRefreshTopics} open={createDialogOpen} onOpenChange={setCreateDialogOpen}/>
-            </>
+            </div>
         )
     }
     

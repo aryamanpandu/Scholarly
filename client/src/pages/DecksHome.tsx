@@ -87,7 +87,7 @@ export default function DecksHome() {
         });
 
         return (
-            <>
+            <div className="h-[calc(100vh-5rem)] bg-gray-50 bg-opacity-25">
                 <DecksHomeBreadCrumb topicId={topicId} topicName={sessionStorage.getItem("topicName") || "Topic"}  />
                 <div className="flex justify-center">
                     <h1 className="m-4 text-3xl">{sessionStorage.getItem("topicName") || "Topic"}</h1>
@@ -96,18 +96,18 @@ export default function DecksHome() {
                     {deckArr}
                 </div>
                 <CreateDeck onSuccess={handleRefreshDecks} topicId={topicId} open={createDialogOpen} onOpenChange={setCreateDialogOpen}/>
-            </>
+            </div>
         );
     } else {
         return(
-            <>
+            <div className="h-[calc(100vh-5rem)] bg-gray-50 bg-opacity-25">
                 <DecksHomeBreadCrumb topicId={topicId} topicName={sessionStorage.getItem("topicName") || "Topic"}  />
                 <div className="flex justify-center">
                     <h1 className="m-4 text-3xl">{sessionStorage.getItem("topicName") || "Topic"}</h1>
                 </div>
                 <div className="flex justify-center items-center h-[calc(100vh-16rem)] text-3xl text-neutral-400">You have no Decks. Click the plus icon to create one!</div>
                 <CreateDeck onSuccess={handleRefreshDecks} topicId={topicId} open={createDialogOpen} onOpenChange={setCreateDialogOpen}/>
-            </>
+            </div>
         )
     }
 }

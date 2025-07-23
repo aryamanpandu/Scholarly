@@ -101,28 +101,28 @@ export default function FlashcardsHome() {
     
 
         return (
-            <>
-            <FlashcardsBreadCrumb topicId={Number(sessionStorage.getItem("topicId"))} topicName={sessionStorage.getItem("topicName") || "Topic"} deckId={deckId} deckName={sessionStorage.getItem("deckName") || "Deck"}/>
-            <div className="flex justify-center">
-                <h1 className="m-4 text-3xl">{sessionStorage.getItem("deckName") || "Deck"}</h1>
+            <div className="h-[calc(100vh-5rem)] bg-gray-50 bg-opacity-25">
+                <FlashcardsBreadCrumb topicId={Number(sessionStorage.getItem("topicId"))} topicName={sessionStorage.getItem("topicName") || "Topic"} deckId={deckId} deckName={sessionStorage.getItem("deckName") || "Deck"}/>
+                <div className="flex justify-center">
+                    <h1 className="m-4 text-3xl">{sessionStorage.getItem("deckName") || "Deck"}</h1>
+                </div>
+                <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,0px))] gap-5 m-5 auto-rows-fr">
+                    {flashcardArr}
+                </div>
+                <FlashcardNavBar deckId={deckId}/>
+                <CreateFlashcard onSuccess={handleRefreshFlashcards} deckId={deckId} open={createDialogOpen} onOpenChange={setCreateDialogOpen} />
             </div>
-            <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,0px))] gap-5 m-5 auto-rows-fr">
-                {flashcardArr}
-            </div>
-            <FlashcardNavBar deckId={deckId}/>
-            <CreateFlashcard onSuccess={handleRefreshFlashcards} deckId={deckId} open={createDialogOpen} onOpenChange={setCreateDialogOpen} />
-            </>
         );
     } else {
             return(
-                <>
+                <div className="h-[calc(100vh-5rem)] bg-gray-50 bg-opacity-25">
                     <FlashcardsBreadCrumb topicId={Number(sessionStorage.getItem("topicId"))} topicName={sessionStorage.getItem("topicName") || "Topic"} deckId={deckId} deckName={sessionStorage.getItem("deckName") || "Deck"}/>
                     <div className="flex justify-center">
                         <h1 className="m-4 text-3xl">{sessionStorage.getItem("deckName") || "Deck"}</h1>
                     </div>
                     <div className="flex justify-center items-center h-[calc(100vh-16rem)] text-3xl text-neutral-400">You have no Flashcards. Click the plus icon to create one!</div>
                     <CreateFlashcard onSuccess={handleRefreshFlashcards} deckId={deckId} open={createDialogOpen} onOpenChange={setCreateDialogOpen}/>
-                </>
+                </div>
             )
         }
 
