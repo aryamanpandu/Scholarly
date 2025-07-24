@@ -54,7 +54,7 @@ app.use(session.default({
     resave: false,
     store: sessionStore,
     cookie: {
-        secure: false,
+        secure: true,
         maxAge: 2 * 24 * 60 * 60 * 1000 // 2 days expiry
     }
     //Set secure to true if you want it in production for https access only
@@ -92,6 +92,10 @@ interface User {
     lockedUntil: Date | null
 }
 
+
+app.get('/', async (req:Request, res:Response) => {
+    res.status(200).send("Server is working");
+});
 //Use cookies and sessionsx
 app.post('/api/signup', async (req: Request, res: Response) => {
     const {firstName, lastName, email, password, confirmPassword} = req.body;
