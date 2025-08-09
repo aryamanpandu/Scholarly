@@ -6,12 +6,12 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
   DialogFooter,
   DialogClose
 } from "@/components/ui/dialog"
 import { Label } from "@radix-ui/react-label";
 import { toast } from "sonner";
+import { API_BASE_URL } from "@/config/configs";
 
 
 import { useState } from "react";
@@ -33,7 +33,7 @@ export default function EditTopic({topicName, topicDesc, topicId, open, onOpenCh
 
     const onSubmit: SubmitHandler<EditTopicProps> = async (data) => {
         try {
-            const res = await fetch(`http://localhost:3000/api/topics/${topicId}`, {
+            const res = await fetch(`${API_BASE_URL}/api/topics/${topicId}`, {
                 method: "PUT",
                 credentials: "include",
                 body: JSON.stringify(data),

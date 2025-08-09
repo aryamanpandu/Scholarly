@@ -4,6 +4,7 @@ import { Breadcrumb, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from 
 import { FlashcardsHomeRes } from "@/pages/FlashcardsHome";
 import { toast } from "sonner";
 import { MotionButton } from "@/components/Flashcards/ResponseButtons";
+import { API_BASE_URL } from "@/config/configs";
 
 
 import { Link, useNavigate } from "react-router-dom"
@@ -58,7 +59,7 @@ async function getFlashcards(deckId: number, type: string, setFlashcards: (flash
     
 
     try {
-        const res = await fetch(`http://localhost:3000/api/flashcards/${deckId}`, {
+        const res = await fetch(`${API_BASE_URL}/api/flashcards/${deckId}`, {
             method: "GET",
             credentials: "include"
         });
@@ -132,7 +133,7 @@ export default function FlashcardViewerPage() {
 
     const finishSession = async () => {
         try {
-            const res = await fetch(`http://localhost:3000/api/flashcards/flashcard-result/${deckId}`,{
+            const res = await fetch(`${API_BASE_URL}/api/flashcards/flashcard-result/${deckId}`,{
                 method: 'PUT',
                 credentials: 'include',
                 headers: {
@@ -169,7 +170,7 @@ export default function FlashcardViewerPage() {
                 <div className="w-full h-[calc(100vh-5rem)] bg-gray-50 bg-opacity-25 overflow-x-hidden">
                     <FlashcardViewerBreadCrumb topicId={Number(sessionStorage.getItem("topicId"))} topicName={sessionStorage.getItem("topicName") || "Topic"} deckId={deckId} deckName={sessionStorage.getItem("deckName") || "Deck"}/>
                     <div className="flex justify-center items-center h-[calc(100vh-16rem)]" >
-                        {flashcard && <FlashcardViewer key={flashcard.id} id={flashcard.id} question={flashcard.question} answer={flashcard.answer} correctCheck={flashcard.correctCheck} enterFromRight={enterFromRightAnimation} onResponse={handleResponse} />}
+                        {flashcard && <FlashcardViewer key={flashcard.id} id={flashcard.id} question={flashcard.question} answer={flashcard.answer} enterFromRight={enterFromRightAnimation} onResponse={handleResponse} />}
                     </div>
                     <NavigationButtons currIdx={cardIdx} setCardIdx={setCardIdx} maxIdx={numOfCards-1} setEnterFromRightAnimation={setEnterFromRightAnimation} className="fixed bottom-5 left-1/2 -translate-x-1/2" />
 

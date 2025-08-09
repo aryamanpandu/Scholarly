@@ -4,6 +4,7 @@ import { useEffect } from "react"
 import CreateTopic from "@/components/Topics/CreateTopic"
 import { Breadcrumb, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
 import { Link } from "react-router-dom"
+import { API_BASE_URL } from "@/config/configs"
 
 interface TopicRes {
     topic_id: number,
@@ -26,7 +27,7 @@ function HomeBreadCrumb() {
 
 export async function refreshTopics(ignore: boolean, setResult: (result: [TopicRes]| null) => void) {
     try {
-        const res = await fetch("http://localhost:3000/api/topics", {
+        const res = await fetch(`${API_BASE_URL}/api/topics`, {
             method: "GET",
             credentials: "include"
         });

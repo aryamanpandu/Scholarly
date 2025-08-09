@@ -14,12 +14,11 @@ interface FlashcardViewerProps {
     id: number,
     question: string,
     answer: string,
-    correctCheck: boolean,
     onResponse: (flashcardId: number, correct: boolean) => void,
     enterFromRight: boolean
 }
 
-export default function FlashcardViewer({id, question, answer, correctCheck, enterFromRight, onResponse}: FlashcardViewerProps) {
+export default function FlashcardViewer({id, question, answer, enterFromRight, onResponse}: FlashcardViewerProps) {
     const [showAnswer, setShowAnswer] = useState(false);
     
     return (

@@ -19,7 +19,16 @@ declare module 'express-session' {
 
 dotenv.config();
 const app = express();
-const port = 3000;
+const port = 4000;
+
+// CORS configuration
+app.use(cors({
+    origin: "http://localhost:5173",
+    credentials: true
+}));
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 const MySQLStore = connectMySQL(session);
 
@@ -32,35 +41,73 @@ const access: ConnectionOptions = {
 }
 
 const sessionStore = new MySQLStore(access);
-const conn = await mysql.createConnection(access);
-
-app.use(cors({
-    origin: "http://localhost:5173",
-    credentials: true
-})); //allows cross origin requests for localhost:5173 vite react frontend
-
-console.log("Connected to Mysql!");
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
 app.use(session.default({
     name: 'SessionCookie',
     genid: function(req) {
-        return uuidv4();
+    return uuidv4();
     },
     saveUninitialized: false,
     secret: process.env.SESSION_SECRET as string,
     resave: false,
     store: sessionStore,
     cookie: {
-        secure: false,
-        maxAge: 2 * 24 * 60 * 60 * 1000 // 2 days expiry
+    secure: false, // Set to true in production with HTTPS
+    maxAge: 2 * 24 * 60 * 60 * 1000 // 2 days expiry
     }
-    //Set secure to true if you want it in production for https access only
 }));
 
+async function connectToDatabase(): Promise<mysql.Connection> {
+  const maxRetries = 10;
+  const retryDelay = 3000;
 
+  console.log('Attempting to connect to MySQL database...');
+
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      console.log(`Connection attempt ${attempt}/${maxRetries}`);
+      
+      const connection = await mysql.createConnection(access);
+      await connection.ping();
+      
+      console.log('Successfully connected to MySQL database!');
+      return connection;
+      
+    } catch (error) {
+      console.log(`Connection attempt ${attempt} failed:`, error);
+      
+      if (attempt === maxRetries) {
+        throw new Error(`Failed to connect to database after ${maxRetries} attempts`);
+      }
+      
+      console.log(`Waiting ${retryDelay/1000} seconds before retry...`);
+      await new Promise(resolve => setTimeout(resolve, retryDelay));
+    }
+  }
+  
+  throw new Error('Should never reach here');
+}
+
+let conn: mysql.Connection;
+
+async function initializeApp() {
+  try {
+    // Connect to database with retry logic
+    conn = await connectToDatabase();
+    
+    console.log("Connected to MySQL!");
+    
+  } catch (error) {
+    console.error('Failed to initialize application:', error);
+    process.exit(1);
+  }
+}
+
+initializeApp();
+    
+app.get('/health', (req: Request, res: Response) => {
+    res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
 
 app.listen(port, () => {
     console.log(`server running at localhost:${port}`);
@@ -143,7 +190,7 @@ app.post('/api/signup', async (req: Request, res: Response) => {
 //TODO: use cookies and sessions 
 app.post('/api/login', async (req: Request, res: Response) => {
     const {email, password} = req.body;
-    
+    console.log(`Request Session: ${req.session}`);
     if (!email || !password) {
         res.status(400).send({message: "All fields are required", loginSuccess: false});
         return;

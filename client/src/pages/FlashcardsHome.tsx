@@ -6,6 +6,7 @@ import { Breadcrumb, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from 
 import { Link } from "react-router-dom"
 import CreateFlashcard from "@/components/Flashcards/CreateFlashcard";
 import FlashcardNavBar from "@/components/Flashcards/FlashcardNavBar";
+import { API_BASE_URL } from "@/config/configs";
 
 export interface FlashcardsHomeRes {
     flashcard_id: number,
@@ -45,7 +46,7 @@ export function FlashcardsBreadCrumb({topicId, topicName, deckId, deckName}: Fla
 
 export async function refreshFlashcards(ignore: boolean, setResult: (result: [FlashcardsHomeRes] | null) => void, deck_id: number) {
     try {
-        const res = await fetch(`http://localhost:3000/api/flashcards/${deck_id}`, {
+        const res = await fetch(`${API_BASE_URL}/api/flashcards/${deck_id}`, {
             method: "GET",
             credentials: "include"
         });

@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
+import { API_BASE_URL } from "@/config/configs";
 
 import { useForm, SubmitHandler} from "react-hook-form";
 
@@ -33,7 +34,7 @@ export default function CreateFlashcard({ onSuccess, deckId, open, onOpenChange}
 
     const onSubmit: SubmitHandler<CreateFlashcardData> = async (data) => {
         try {
-            const res = await fetch(`http://localhost:3000/api/flashcards/${deckId}`, {
+            const res = await fetch(`${API_BASE_URL}/api/flashcards/${deckId}`, {
                 method: "POST",
                 credentials: "include",
                 body: JSON.stringify(data),
