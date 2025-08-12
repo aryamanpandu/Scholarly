@@ -1,0 +1,41 @@
+services:
+  db:
+    image: mysql:8
+    container_name: flashcard-mysql
+    env_file:
+      - server/.env      
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql                    # Named volume for data persistence
+      - "./server/scholarly_database.sql:/docker-entrypoint-initdb.d/scholarly_database.sql"  # Bind mount for initialization
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  backend:
+    build: ./server
+    container_name: flashcard-server
+    depends_on:
+      - db
+    ports:
+      - "4000:4000"
+    env_file:
+      - ./server/.env
+    # volumes:
+    #   - ./server:/usr/src/app
+    # command: npm start
+
+  frontend:
+    build: ./client
+    container_name: flashcard-client
+    depends_on:
+      - backend
+    ports:
+      - "3000:80"
+    env_file:
+      - ./client/.env
+
+volumes:
+  db_data:

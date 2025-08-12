@@ -40,7 +40,10 @@ const access: ConnectionOptions = {
     port: Number(process.env.DB_PORT)
 }
 
-const sessionStore = new MySQLStore(access);
+const sessionStore = new MySQLStore({
+    ...access,
+    createDatabaseTable: true
+});
 
 app.use(session.default({
     name: 'SessionCookie',
@@ -723,7 +726,7 @@ app.put('/api/flashcards/flashcard-result/:deckId', async (req: Request, res: Re
             const response = flashcardResponse[idx];
 
             await conn.execute(
-                `UPDATE FLASHCARDS
+                `UPDATE flashcards
                     SET correct_check = ? WHERE flashcard_id = ? AND deck_id = ?`, [response.correctCheck, response.id, deckId]
             );
         }
