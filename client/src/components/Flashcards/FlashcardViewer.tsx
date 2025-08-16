@@ -62,12 +62,12 @@ export default function FlashcardViewer({id, question, answer, enterFromRight, o
     );
 }
 
-interface FlashcardQuestionProps {
+export interface FlashcardQuestionProps {
     question: string,
     className?: string
 }
 
-function FlashcardQuestion({question, className}: FlashcardQuestionProps) {
+export function FlashcardQuestion({question, className}: FlashcardQuestionProps) {
     return (
         <Card className={cn("w-full h-full box-border flex", className)}
             style={{
@@ -83,12 +83,12 @@ function FlashcardQuestion({question, className}: FlashcardQuestionProps) {
     );
 }
 
-interface FlashcardAnswerProps {
-    answer: string,
+export interface FlashcardAnswerProps {
+    answer: string | React.ReactNode,
     className?: string
 }
 
-function FlashcardAnswer({answer, className} : FlashcardAnswerProps) {
+export function FlashcardAnswer({answer, className} : FlashcardAnswerProps) {
     return (
         <Card className={cn("w-full h-full box-border flex", className)}
             style={{

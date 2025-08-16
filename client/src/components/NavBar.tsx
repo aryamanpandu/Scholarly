@@ -33,7 +33,7 @@ export default function NavBar() {
       </Sheet>
       <Link to="#" className="mr-6 hidden lg:flex">
         <ScholarlyIcon className="h-6 w-6" />
-        <span className="sr-only">Scholarly</span>
+        <span className="pl-2">Scholarly</span>
       </Link>
       <nav className="ml-auto hidden lg:flex gap-6">
         <Link to="/home" className="flex w-full items-center py-2 text-lg font-semibold">
