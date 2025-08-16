@@ -84,7 +84,7 @@ export function FlashcardQuestion({question, className}: FlashcardQuestionProps)
 }
 
 export interface FlashcardAnswerProps {
-    answer: string,
+    answer: string | React.ReactNode,
     className?: string
 }
 
