@@ -103,7 +103,7 @@ export default function FlashcardsHome() {
     
 
         return (
-            <div className="h-[calc(100vh-5rem)] bg-gray-50 bg-opacity-25">
+            <div className="h-[calc(100vh-5rem)] bg-gray-200 bg-opacity-25">
                 <FlashcardsBreadCrumb topicId={Number(sessionStorage.getItem("topicId"))} topicName={sessionStorage.getItem("topicName") || "Topic"} deckId={deckId} deckName={sessionStorage.getItem("deckName") || "Deck"}/>
                 <div className="flex justify-center">
                     <h1 className="m-4 text-3xl">{sessionStorage.getItem("deckName") || "Deck"}</h1>
@@ -117,7 +117,7 @@ export default function FlashcardsHome() {
         );
     } else {
             return(
-                <div className="h-[calc(100vh-5rem)] bg-gray-50 bg-opacity-25">
+                <div className="h-[calc(100vh-5rem)] bg-gray-200 bg-opacity-25">
                     <FlashcardsBreadCrumb topicId={Number(sessionStorage.getItem("topicId"))} topicName={sessionStorage.getItem("topicName") || "Topic"} deckId={deckId} deckName={sessionStorage.getItem("deckName") || "Deck"}/>
                     <div className="flex justify-center">
                         <h1 className="m-4 text-3xl">{sessionStorage.getItem("deckName") || "Deck"}</h1>

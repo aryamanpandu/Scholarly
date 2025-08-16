@@ -88,7 +88,7 @@ export default function DecksHome() {
         });
 
         return (
-            <div className="h-[calc(100vh-5rem)] bg-gray-50 bg-opacity-25">
+            <div className="h-[calc(100vh-5rem)] bg-gray-200 bg-opacity-25">
                 <DecksHomeBreadCrumb topicId={topicId} topicName={sessionStorage.getItem("topicName") || "Topic"}  />
                 <div className="flex justify-center">
                     <h1 className="m-4 text-3xl">{sessionStorage.getItem("topicName") || "Topic"}</h1>
@@ -101,7 +101,7 @@ export default function DecksHome() {
         );
     } else {
         return(
-            <div className="h-[calc(100vh-5rem)] bg-gray-50 bg-opacity-25">
+            <div className="h-[calc(100vh-5rem)] bg-gray-200 bg-opacity-25">
                 <DecksHomeBreadCrumb topicId={topicId} topicName={sessionStorage.getItem("topicName") || "Topic"}  />
                 <div className="flex justify-center">
                     <h1 className="m-4 text-3xl">{sessionStorage.getItem("topicName") || "Topic"}</h1>

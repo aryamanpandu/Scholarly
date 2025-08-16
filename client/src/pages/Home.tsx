@@ -79,7 +79,7 @@ export default function Home() {
         )
 
         return (
-            <div className="h-[calc(100vh-5rem)] bg-gray-50 bg-opacity-25">
+            <div className="h-[calc(100vh-5rem)] bg-gray-200 bg-opacity-25">
                 <HomeBreadCrumb/>
                 <div className="flex justify-center">
                     <h1 className="m-4 text-3xl">
@@ -95,7 +95,7 @@ export default function Home() {
     }
     else {
         return (
-            <div className="h-[calc(100vh-5rem)] bg-gray-50 bg-opacity-25"> 
+            <div className="h-[calc(100vh-5rem)] bg-gray-200 bg-opacity-25"> 
                 <HomeBreadCrumb/>
                 <div className="flex justify-center">
                     <h1 className="m-4 text-3xl">
