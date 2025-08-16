@@ -20,7 +20,8 @@ export default function LandingPage() {
     }
     return (
         <div className="bg-gray-200">
-            <div className="h-screen flex items-center justify-center">  
+            <div className="h-screen flex flex-col md:flex-row items-center justify-center">  
+
                 <div className="flex  justify-center items-center flex-col">
                     <div className="text-5xl">
                         Master Anything.
@@ -38,11 +39,12 @@ export default function LandingPage() {
                             Learn more <i className="bi bi-arrow-down"></i>
                         </span>
                     </div>
-
-                    
                 </div>
+
                 <ScholarlyLandingPageImage />
+
             </div>
+
             <div 
                 ref={flashcardSectionRef}
                 className="h-screen flex flex-col items-center justify-center">
@@ -56,13 +58,10 @@ export default function LandingPage() {
                     setEnterFromRightAnimation={setEnterFromRight} 
                     className=""/>
             </div>
+
         </div>
         
     );
-}
-
-export function GuestNavBar() {
-
 }
 
 interface LandingPageFlashcardViewerProps {
