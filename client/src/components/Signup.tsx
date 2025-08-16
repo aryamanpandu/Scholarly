@@ -39,12 +39,12 @@ export default function Signup() {
             
             const resData = await res.json();
             
-            if (resData.loginSuccess) {
+            if (res.ok) {
                 toast.success(resData.message);
                 setTimeout(() => {
                     console.log("Completed the user sign up");
                     navigate("/login");
-                }, 1000); 
+                }, 500); 
             } else {
                 toast.info(resData.message);
             }
