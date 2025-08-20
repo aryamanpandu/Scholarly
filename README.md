@@ -64,7 +64,11 @@ DB_PASSWORD=your_password
 DB_NAME=scholarly
 SESSION_SECRET=your_secret
 
+Setup .env file in the /client directory:
+
+VITE_API_BASE_URL="http://localhost:4000"
+
 To start the development: 
-npm run dev
+`npm run dev` in both /client and /server directories
 
 This will also require connecting to MySQL
