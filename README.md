@@ -11,6 +11,10 @@
 - **Flashcard system** — Each card has a front and back for Q&A-style learning.
 - **Fast and responsive UI** — Built with performance-focused tools.
 
+### Scholarly Example Walkthrough
+
+https://github.com/user-attachments/assets/ca8406ea-36c7-413b-8e7b-eb9275a4ac09
+
 ---
 
 ## Tech Stack
