@@ -66,7 +66,10 @@ SESSION_SECRET=your_secret
 
 Setup .env file in the /client directory:
 
-VITE_API_BASE_URL="http://localhost:4000"
+
+VITE_API_BASE_URL=BASE_API_URL
+
+Example: VITE_API_BASE_URL="http://localhost:4000"
 
 To start the development: 
 `npm run dev` in both /client and /server directories
