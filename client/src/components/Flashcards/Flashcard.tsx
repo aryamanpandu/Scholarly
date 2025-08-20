@@ -17,6 +17,7 @@ import EditFlashcard from "@/components/Flashcards/EditFlashcard";
 import DeleteFlashcard from "@/components/Flashcards/DeleteFlashcard";
 
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 interface FlashcardProps {
     question: string,
@@ -84,6 +85,9 @@ function ShowExtraActionMenu({question, answer, flashcardId, deckId, onRefresh}:
                         <DropdownMenuItem
                             onSelect= {() => {setDeleteDialogOpen(true)}}>
                             <i className="bi bi-trash"/> Delete Flashcard
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                            <Link to={`/flashcardViewer/${flashcardId}/${deckId}`}><i className="bi bi-eye"></i> View Flashcard</Link>
                         </DropdownMenuItem>
                     </DropdownMenuGroup>
                 </DropdownMenuContent>

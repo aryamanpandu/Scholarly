@@ -14,7 +14,7 @@ interface FlashcardViewerProps {
     id: number,
     question: string,
     answer: string,
-    onResponse: (flashcardId: number, correct: boolean) => void,
+    onResponse?: (flashcardId: number, correct: boolean) => void,
     enterFromRight: boolean
 }
 
@@ -52,17 +52,20 @@ export default function FlashcardViewer({id, question, answer, enterFromRight, o
 
             </motion.div>
             
-            <ResponseButtons 
-                showAnswer={showAnswer}
-                onGotIt={() => onResponse(id, true)}
-                onMissedIt={() => onResponse(id, false)}
-            />
+            {onResponse && (
+                <ResponseButtons 
+                    showAnswer={showAnswer}
+                    onGotIt={() => onResponse(id, true)}
+                    onMissedIt={() => onResponse(id, false)}
+                />
+            )}
+            
             
         </motion.div>
     );
 }
 
-export interface FlashcardQuestionProps {
+interface FlashcardQuestionProps {
     question: string,
     className?: string
 }
@@ -83,7 +86,7 @@ export function FlashcardQuestion({question, className}: FlashcardQuestionProps)
     );
 }
 
-export interface FlashcardAnswerProps {
+interface FlashcardAnswerProps {
     answer: string | React.ReactNode,
     className?: string
 }

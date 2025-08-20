@@ -22,8 +22,6 @@ interface FlashcardsHomeBreadCrumbProps {
     deckName: string
 }
 
-
-
 export function FlashcardsBreadCrumb({topicId, topicName, deckId, deckName}: FlashcardsHomeBreadCrumbProps) {
     return (
         <Breadcrumb className="px-6 pt-3">
@@ -46,7 +44,7 @@ export function FlashcardsBreadCrumb({topicId, topicName, deckId, deckName}: Fla
 
 export async function refreshFlashcards(ignore: boolean, setResult: (result: [FlashcardsHomeRes] | null) => void, deck_id: number) {
     try {
-        const res = await fetch(`${API_BASE_URL}/api/flashcards/${deck_id}`, {
+        const res = await fetch(`${API_BASE_URL}/api/flashcards/${deck_id}/flashcards`, {
             method: "GET",
             credentials: "include"
         });

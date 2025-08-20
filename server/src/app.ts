@@ -634,7 +634,7 @@ interface Flashcard extends RowDataPacket {
     answer: string
 }
 
-app.get('/api/flashcards/:deckId', async (req: Request, res: Response) => {
+app.get('/api/flashcards/:deckId/flashcards', async (req: Request, res: Response) => {
 
     if (!req.session?.user || !req.session.user.id || !req.session.user.email) {
         res.status(401).send({ message: "User is not authorized to see these flashcards."});
@@ -666,8 +666,33 @@ app.get('/api/flashcards/:deckId', async (req: Request, res: Response) => {
     }
 });
 
-//What things are needed when creating a flashcard?
-// deck_id, question, answer 
+app.get('/api/flashcards/:flashcardId/:deckId', async (req: Request, res: Response) => {
+
+    if (!req.session?.user || !req.session.user.id || !req.session.user.email) {
+        res.status(401).send({ message: "User is not authorized to see this flashcard"});
+    }
+
+    const flashcardId = req.params.flashcardId;
+    const deckId = req.params.deckId;
+
+    if (!flashcardId || !deckId) {
+        res.status(401).send({message: "Invalid Request. Flaschard ID is required"});
+    }
+
+    try {
+        const [result] = await conn.execute<Flashcard[]>(
+            `SELECT flashcard_id, question, answer FROM flashcards WHERE flashcard_id = ? AND deck_id = ?`, [flashcardId, deckId]
+        );
+
+        const flashcard = result[0];
+        res.status(200).send(JSON.stringify(result));
+        
+    } catch (e) {
+        console.log(e);
+        res.status(500).send({ message: `Internal Server error. Cannot load flashcard with id: ${flashcardId}. Please try again later.`});
+    }
+ });
+
 app.post('/api/flashcards/:deckId', async (req: Request, res: Response) => {
     
     if (!req.session?.user || !req.session.user.id || !req.session.user.email) {

@@ -59,7 +59,7 @@ async function getFlashcards(deckId: number, type: string, setFlashcards: (flash
     
 
     try {
-        const res = await fetch(`${API_BASE_URL}/api/flashcards/${deckId}`, {
+        const res = await fetch(`${API_BASE_URL}/api/flashcards/${deckId}/flashcards`, {
             method: "GET",
             credentials: "include"
         });
