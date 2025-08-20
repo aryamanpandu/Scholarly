@@ -1,6 +1,8 @@
 # Scholarly
 
-**Scholarly** is a web-based flashcard application designed to help learners retain information more effectively through active recall and spaced repetition. Users can organize content into **Topics**, which contain **Decks** of **Flashcards**, making studying structured and engaging.
+**Scholarly** is a web-based flashcard application designed to help learners retain information more effectively through active recall and spaced repetition. Users can organize content into **Topics**, which contain **Decks** of **Flashcards**, making studying structured and engaging. 
+
+To **self-host** Scholarly using _docker_ please check out [Self Hosting using Docker](SELF_HOST_SCHOLARLY_USING_DOCKER.md)
 
 ---
 
