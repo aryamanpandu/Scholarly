@@ -685,7 +685,6 @@ app.get('/api/flashcards/:flashcardId/:deckId', async (req: Request, res: Respon
         );
 
         const flashcard = result[0];
-        console.log(`Result for single flashcard: ${flashcard}`);
         res.status(200).send(JSON.stringify(result));
         
     } catch (e) {
