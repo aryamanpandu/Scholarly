@@ -41,7 +41,7 @@ Each service has its own `.env` file for configuration.
 - **Frontend**: `client/.env`  
   Example values:
   ```env
-  NEXT_PUBLIC_API_URL=http://localhost:4000
+  VITE_API_BASE_URL=http://localhost:4000
   ```
 
 Make sure these files exist before running Docker.
