@@ -31,9 +31,12 @@ Each service has its own `.env` file for configuration.
   Example values:
   ```env
   MYSQL_ROOT_PASSWORD=yourpassword
-  MYSQL_DATABASE=scholarly_db
-  MYSQL_USER=scholarly_user
-  MYSQL_PASSWORD=yourpassword
+  MYSQL_DATABASE=Scholarly
+  
+  DB_USER=root
+  DB_NAME=Scholarly
+  DB_HOST=db
+  DB_PASSWORD=yourpassword
 
   PORT=4000
   ```
