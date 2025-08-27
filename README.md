@@ -1,6 +1,8 @@
 # Scholarly
 
-**Scholarly** is a web-based flashcard application designed to help learners retain information more effectively through active recall and spaced repetition. Users can organize content into **Topics**, which contain **Decks** of **Flashcards**, making studying structured and engaging.
+**Scholarly** is a web-based flashcard application designed to help learners retain information more effectively through active recall and spaced repetition. Users can organize content into **Topics**, which contain **Decks** of **Flashcards**, making studying structured and engaging. 
+
+To **self-host** Scholarly using _docker_ please check out [Self Hosting using Docker](SELF_HOST_SCHOLARLY_USING_DOCKER.md)
 
 ---
 
@@ -10,6 +12,10 @@
 - **Decks within topics** — Manage flashcards in modular, reusable sets.
 - **Flashcard system** — Each card has a front and back for Q&A-style learning.
 - **Fast and responsive UI** — Built with performance-focused tools.
+
+### Scholarly Example Walkthrough
+
+https://github.com/user-attachments/assets/ca8406ea-36c7-413b-8e7b-eb9275a4ac09
 
 ---
 
@@ -60,7 +66,14 @@ DB_PASSWORD=your_password
 DB_NAME=scholarly
 SESSION_SECRET=your_secret
 
+Setup .env file in the /client directory:
+
+
+VITE_API_BASE_URL=BASE_API_URL
+
+Example: VITE_API_BASE_URL="http://localhost:4000"
+
 To start the development: 
-npm run dev
+`npm run dev` in both /client and /server directories
 
 This will also require connecting to MySQL

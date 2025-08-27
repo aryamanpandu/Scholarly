@@ -14,6 +14,7 @@ import NavBar from "@/components/NavBar";
 import FlashcardViewerPage from "@/pages/FlashcardViewerPage";
 
 import { Toaster } from "sonner";
+import SingleFlashcardViewerPage from "@/pages/SingleFlashcardViewerPage";
 
 
 function AnimatedRoutes() {
@@ -81,6 +82,15 @@ function AnimatedRoutes() {
           element={
             <PageWrapper>
               <LandingPage/>
+            </PageWrapper>
+          }
+        />
+
+        <Route
+          path="/flashcardViewer/:flashcardId/:deckId"
+          element={
+            <PageWrapper>
+              <SingleFlashcardViewerPage />
             </PageWrapper>
           }
         />
