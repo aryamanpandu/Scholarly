@@ -18,7 +18,8 @@ services:
     build: ./server
     container_name: flashcard-server
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     ports:
       - "4000:4000"
     env_file:
