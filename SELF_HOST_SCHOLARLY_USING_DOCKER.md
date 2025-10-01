@@ -37,6 +37,7 @@ Each service has its own `.env` file for configuration.
   DB_NAME=Scholarly
   DB_HOST=db
   DB_PASSWORD=yourpassword
+  SESSION_SECRET=asdlkfjasldkjer123433413
 
   PORT=4000
   ```
