@@ -1,42 +1,54 @@
+version: "3.8"
+
 services:
+
   db:
     image: mysql:8
     container_name: flashcard-mysql
     env_file:
-      - server/.env      
-    ports:
-      - "3306:3306"
+      - server/.env
     volumes:
-      - db_data:/var/lib/mysql                    # Named volume for data persistence
+      - db_data:/var/lib/mysql
       - "./server/scholarly_database.sql:/docker-entrypoint-initdb.d/scholarly_database.sql"  # Bind mount for initialization
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       timeout: 20s
       retries: 10
-
+    expose:
+      - "3306"  # Internal only (no longer exposed to public)
+  
   backend:
     build: ./server
     container_name: flashcard-server
     depends_on:
       db:
         condition: service_healthy
-    ports:
-      - "4000:4000"
     env_file:
-      - ./server/.env
-    # volumes:
-    #   - ./server:/usr/src/app
-    # command: npm start
-
+      ./server/.env
+    expose:
+      "4000"
+    restart: always
+  
   frontend:
     build: ./client
     container_name: flashcard-client
     depends_on:
       - backend
+    expose:
+      - "80"
+  
+  nginx:
+    image: nginx:latest
+    container_name: flashcard-nginx
+    depends_on:
+      - frontend
+      - backend
     ports:
-      - "3000:80"
-    env_file:
-      - ./client/.env
+      - "80:80"
+    volumes:
+      - ./client/build:/usr/share/nginx/html:ro
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    restart: always
 
 volumes:
-  db_data:
+  db_data: 
