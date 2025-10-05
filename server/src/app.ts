@@ -55,7 +55,7 @@ app.use(session.default({
     resave: false,
     store: sessionStore,
     cookie: {
-        secure: true,
+        secure: false,
         maxAge: 2 * 24 * 60 * 60 * 1000 // 2 days expiry
     }
 }));
