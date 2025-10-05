@@ -12,6 +12,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Link } from "react-router-dom";
+import { API_BASE_URL } from "@/config/configs";
 
 type SignUpFormData = {
     firstName: string,
@@ -28,7 +29,7 @@ export default function Signup() {
 
     const onSubmit: SubmitHandler<SignUpFormData> = async (data) => {
         try {
-            const res = await fetch("http://localhost:3000/api/signup", {
+            const res = await fetch(`${API_BASE_URL}/api/signup`, {
                 method: "POST",
                 body: JSON.stringify(data),
                 headers: {
@@ -38,12 +39,12 @@ export default function Signup() {
             
             const resData = await res.json();
             
-            if (resData.loginSuccess) {
+            if (res.ok) {
                 toast.success(resData.message);
                 setTimeout(() => {
                     console.log("Completed the user sign up");
                     navigate("/login");
-                }, 1000); 
+                }, 500); 
             } else {
                 toast.info(resData.message);
             }

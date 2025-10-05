@@ -19,7 +19,16 @@ declare module 'express-session' {
 
 dotenv.config();
 const app = express();
-const port = 3000;
+const port = 4000;
+
+// CORS configuration
+app.use(cors({
+    origin: ["http://localhost:5173", "http://localhost:3000"],
+    credentials: true
+}));
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 const MySQLStore = connectMySQL(session);
 
@@ -31,23 +40,15 @@ const access: ConnectionOptions = {
     port: Number(process.env.DB_PORT)
 }
 
-const sessionStore = new MySQLStore(access);
-const conn = await mysql.createConnection(access);
-
-app.use(cors({
-    origin: "http://localhost:5173",
-    credentials: true
-})); //allows cross origin requests for localhost:5173 vite react frontend
-
-console.log("Connected to Mysql!");
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+const sessionStore = new MySQLStore({
+    ...access,
+    createDatabaseTable: true
+});
 
 app.use(session.default({
     name: 'SessionCookie',
     genid: function(req) {
-        return uuidv4();
+    return uuidv4();
     },
     saveUninitialized: false,
     secret: process.env.SESSION_SECRET as string,
@@ -57,10 +58,59 @@ app.use(session.default({
         secure: true,
         maxAge: 2 * 24 * 60 * 60 * 1000 // 2 days expiry
     }
-    //Set secure to true if you want it in production for https access only
 }));
 
+async function connectToDatabase(): Promise<mysql.Connection> {
+  const maxRetries = 10;
+  const retryDelay = 3000;
 
+  console.log('Attempting to connect to MySQL database...');
+
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      console.log(`Connection attempt ${attempt}/${maxRetries}`);
+      
+      const connection = await mysql.createConnection(access);
+      await connection.ping();
+      
+      console.log('Successfully connected to MySQL database!');
+      return connection;
+      
+    } catch (error) {
+      console.log(`Connection attempt ${attempt} failed:`, error);
+      
+      if (attempt === maxRetries) {
+        throw new Error(`Failed to connect to database after ${maxRetries} attempts`);
+      }
+      
+      console.log(`Waiting ${retryDelay/1000} seconds before retry...`);
+      await new Promise(resolve => setTimeout(resolve, retryDelay));
+    }
+  }
+  
+  throw new Error('Should never reach here');
+}
+
+let conn: mysql.Connection;
+
+async function initializeApp() {
+  try {
+    // Connect to database with retry logic
+    conn = await connectToDatabase();
+    
+    console.log("Connected to MySQL!");
+    
+  } catch (error) {
+    console.error('Failed to initialize application:', error);
+    process.exit(1);
+  }
+}
+
+initializeApp();
+    
+app.get('/health', (req: Request, res: Response) => {
+    res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
 
 app.listen(port, () => {
     console.log(`server running at localhost:${port}`);
@@ -147,7 +197,7 @@ app.post('/api/signup', async (req: Request, res: Response) => {
 //TODO: use cookies and sessions 
 app.post('/api/login', async (req: Request, res: Response) => {
     const {email, password} = req.body;
-    
+    console.log(`Request Session: ${req.session}`);
     if (!email || !password) {
         res.status(400).send({message: "All fields are required", loginSuccess: false});
         return;
@@ -588,7 +638,7 @@ interface Flashcard extends RowDataPacket {
     answer: string
 }
 
-app.get('/api/flashcards/:deckId', async (req: Request, res: Response) => {
+app.get('/api/flashcards/:deckId/flashcards', async (req: Request, res: Response) => {
 
     if (!req.session?.user || !req.session.user.id || !req.session.user.email) {
         res.status(401).send({ message: "User is not authorized to see these flashcards."});
@@ -620,8 +670,33 @@ app.get('/api/flashcards/:deckId', async (req: Request, res: Response) => {
     }
 });
 
-//What things are needed when creating a flashcard?
-// deck_id, question, answer 
+app.get('/api/flashcards/:flashcardId/:deckId', async (req: Request, res: Response) => {
+
+    if (!req.session?.user || !req.session.user.id || !req.session.user.email) {
+        res.status(401).send({ message: "User is not authorized to see this flashcard"});
+    }
+
+    const flashcardId = req.params.flashcardId;
+    const deckId = req.params.deckId;
+
+    if (!flashcardId || !deckId) {
+        res.status(401).send({message: "Invalid Request. Flaschard ID is required"});
+    }
+
+    try {
+        const [result] = await conn.execute<Flashcard[]>(
+            `SELECT flashcard_id, question, answer FROM flashcards WHERE flashcard_id = ? AND deck_id = ?`, [flashcardId, deckId]
+        );
+
+        const flashcard = result[0];
+        res.status(200).send(JSON.stringify(result));
+        
+    } catch (e) {
+        console.log(e);
+        res.status(500).send({ message: `Internal Server error. Cannot load flashcard with id: ${flashcardId}. Please try again later.`});
+    }
+ });
+
 app.post('/api/flashcards/:deckId', async (req: Request, res: Response) => {
     
     if (!req.session?.user || !req.session.user.id || !req.session.user.email) {
@@ -680,7 +755,7 @@ app.put('/api/flashcards/flashcard-result/:deckId', async (req: Request, res: Re
             const response = flashcardResponse[idx];
 
             await conn.execute(
-                `UPDATE FLASHCARDS
+                `UPDATE flashcards
                     SET correct_check = ? WHERE flashcard_id = ? AND deck_id = ?`, [response.correctCheck, response.id, deckId]
             );
         }

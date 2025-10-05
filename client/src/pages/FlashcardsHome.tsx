@@ -6,6 +6,7 @@ import { Breadcrumb, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from 
 import { Link } from "react-router-dom"
 import CreateFlashcard from "@/components/Flashcards/CreateFlashcard";
 import FlashcardNavBar from "@/components/Flashcards/FlashcardNavBar";
+import { API_BASE_URL } from "@/config/configs";
 
 export interface FlashcardsHomeRes {
     flashcard_id: number,
@@ -20,8 +21,6 @@ interface FlashcardsHomeBreadCrumbProps {
     deckId: number,
     deckName: string
 }
-
-
 
 export function FlashcardsBreadCrumb({topicId, topicName, deckId, deckName}: FlashcardsHomeBreadCrumbProps) {
     return (
@@ -45,7 +44,7 @@ export function FlashcardsBreadCrumb({topicId, topicName, deckId, deckName}: Fla
 
 export async function refreshFlashcards(ignore: boolean, setResult: (result: [FlashcardsHomeRes] | null) => void, deck_id: number) {
     try {
-        const res = await fetch(`http://localhost:3000/api/flashcards/${deck_id}`, {
+        const res = await fetch(`${API_BASE_URL}/api/flashcards/${deck_id}/flashcards`, {
             method: "GET",
             credentials: "include"
         });
@@ -102,7 +101,7 @@ export default function FlashcardsHome() {
     
 
         return (
-            <div className="h-[calc(100vh-5rem)] bg-gray-50 bg-opacity-25">
+            <div className="h-[calc(100vh-5rem)] bg-gray-200 bg-opacity-25">
                 <FlashcardsBreadCrumb topicId={Number(sessionStorage.getItem("topicId"))} topicName={sessionStorage.getItem("topicName") || "Topic"} deckId={deckId} deckName={sessionStorage.getItem("deckName") || "Deck"}/>
                 <div className="flex justify-center">
                     <h1 className="m-4 text-3xl">{sessionStorage.getItem("deckName") || "Deck"}</h1>
@@ -116,7 +115,7 @@ export default function FlashcardsHome() {
         );
     } else {
             return(
-                <div className="h-[calc(100vh-5rem)] bg-gray-50 bg-opacity-25">
+                <div className="h-[calc(100vh-5rem)] bg-gray-200 bg-opacity-25">
                     <FlashcardsBreadCrumb topicId={Number(sessionStorage.getItem("topicId"))} topicName={sessionStorage.getItem("topicName") || "Topic"} deckId={deckId} deckName={sessionStorage.getItem("deckName") || "Deck"}/>
                     <div className="flex justify-center">
                         <h1 className="m-4 text-3xl">{sessionStorage.getItem("deckName") || "Deck"}</h1>

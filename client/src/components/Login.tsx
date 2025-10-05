@@ -12,25 +12,21 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Link } from "react-router-dom";
+import { API_BASE_URL } from "@/config/configs";
 
 type LoginFormData = {
     email: string, 
     password: string
 }
-/*
-Now I want to submit the data  as a post to localhost:3000/api/login
-Two cases, how do I handle the data. 
-Now I need to use useEffect react hook to get data from API so that I know if I am logged in or not
-Then I can use that loginSuccess boolean to show the message using a toast. 
-Do I need the loginSuccess boolean for that? If I am showing the message anyway.
-*/
+
 export default function Login() {
     const { register, handleSubmit, formState: { errors } } = useForm<LoginFormData>();
     const navigate = useNavigate();
 
     const onSubmit: SubmitHandler<LoginFormData> = async (data) => {
         try {
-            const res = await fetch("http://localhost:3000/api/login", {
+            
+            const res = await fetch(`${API_BASE_URL}/api/login`, {
                 method: "POST",
                 credentials: "include",
                 body: JSON.stringify(data),

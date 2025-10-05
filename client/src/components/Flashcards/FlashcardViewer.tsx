@@ -14,12 +14,11 @@ interface FlashcardViewerProps {
     id: number,
     question: string,
     answer: string,
-    correctCheck: boolean,
-    onResponse: (flashcardId: number, correct: boolean) => void,
+    onResponse?: (flashcardId: number, correct: boolean) => void,
     enterFromRight: boolean
 }
 
-export default function FlashcardViewer({id, question, answer, correctCheck, enterFromRight, onResponse}: FlashcardViewerProps) {
+export default function FlashcardViewer({id, question, answer, enterFromRight, onResponse}: FlashcardViewerProps) {
     const [showAnswer, setShowAnswer] = useState(false);
     
     return (
@@ -53,11 +52,14 @@ export default function FlashcardViewer({id, question, answer, correctCheck, ent
 
             </motion.div>
             
-            <ResponseButtons 
-                showAnswer={showAnswer}
-                onGotIt={() => onResponse(id, true)}
-                onMissedIt={() => onResponse(id, false)}
-            />
+            {onResponse && (
+                <ResponseButtons 
+                    showAnswer={showAnswer}
+                    onGotIt={() => onResponse(id, true)}
+                    onMissedIt={() => onResponse(id, false)}
+                />
+            )}
+            
             
         </motion.div>
     );
@@ -68,7 +70,7 @@ interface FlashcardQuestionProps {
     className?: string
 }
 
-function FlashcardQuestion({question, className}: FlashcardQuestionProps) {
+export function FlashcardQuestion({question, className}: FlashcardQuestionProps) {
     return (
         <Card className={cn("w-full h-full box-border flex", className)}
             style={{
@@ -85,11 +87,11 @@ function FlashcardQuestion({question, className}: FlashcardQuestionProps) {
 }
 
 interface FlashcardAnswerProps {
-    answer: string,
+    answer: string | React.ReactNode,
     className?: string
 }
 
-function FlashcardAnswer({answer, className} : FlashcardAnswerProps) {
+export function FlashcardAnswer({answer, className} : FlashcardAnswerProps) {
     return (
         <Card className={cn("w-full h-full box-border flex", className)}
             style={{

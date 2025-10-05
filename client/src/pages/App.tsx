@@ -8,11 +8,13 @@ import Home from "@/pages/Home";
 import SignUpPage from "@/pages/SignUpPage";
 import DecksHome from "@/pages/DecksHome";
 import FlashcardsHome from "@/pages/FlashcardsHome";
+import LandingPage from "@/pages/LandingPage";
 
 import NavBar from "@/components/NavBar";
 import FlashcardViewerPage from "@/pages/FlashcardViewerPage";
 
 import { Toaster } from "sonner";
+import SingleFlashcardViewerPage from "@/pages/SingleFlashcardViewerPage";
 
 
 function AnimatedRoutes() {
@@ -74,6 +76,24 @@ function AnimatedRoutes() {
             </PageWrapper>
           } 
         />
+
+        <Route 
+          path="/"
+          element={
+            <PageWrapper>
+              <LandingPage/>
+            </PageWrapper>
+          }
+        />
+
+        <Route
+          path="/flashcardViewer/:flashcardId/:deckId"
+          element={
+            <PageWrapper>
+              <SingleFlashcardViewerPage />
+            </PageWrapper>
+          }
+        />
       </Routes>
     </AnimatePresence>
   )
@@ -98,7 +118,7 @@ function PageWrapper({children}: {children: ReactNode}) {
 function App() {
   const location = useLocation();
 
-  const hideNavBar = ["/login", "/signup"].includes(location.pathname);
+  const hideNavBar = ["/login", "/signup", "/"].includes(location.pathname);
   return (
     <div>
       <Toaster expand={true} position='bottom-left' closeButton richColors/>

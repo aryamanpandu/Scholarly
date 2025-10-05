@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dialog"
 import { Label } from "@radix-ui/react-label";
 import { toast } from "sonner";
+import { API_BASE_URL } from "@/config/configs";
 
 import { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
@@ -34,7 +35,7 @@ export default function EditFlashcard({question: cardQuestion, answer: cardAnswe
     const onSubmit: SubmitHandler<EditFlashcardProps> = async (data) => {
         try {
 
-            const res = await fetch(`http://localhost:3000/api/flashcards/${flashcardId}/${deckId}`, {
+            const res = await fetch(`${API_BASE_URL}/api/flashcards/${flashcardId}/${deckId}`, {
                 method: "PUT",
                 credentials: "include",
                 body: JSON.stringify(data),

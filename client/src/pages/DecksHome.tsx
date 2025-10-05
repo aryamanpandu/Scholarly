@@ -4,7 +4,8 @@ import { useEffect } from "react"
 import CreateDeck from "@/components/Decks/CreateDeck";
 import { useParams } from "react-router-dom"; 
 import { Breadcrumb, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
-import { Link } from "react-router-dom"
+import { Link } from "react-router-dom";
+import { API_BASE_URL } from "@/config/configs";
 
 interface DecksHomeRes {
     deck_id: number,
@@ -35,7 +36,7 @@ function DecksHomeBreadCrumb({topicId , topicName}: DecksHomeBreadCrumbProps) {
 
 export async function refreshDecks(ignore: boolean, setResult: (result: [DecksHomeRes] | null) => void, topic_id: number) {
     try {
-        const res = await fetch(`http://localhost:3000/api/decks/${topic_id}`, {
+        const res = await fetch(`${API_BASE_URL}/api/decks/${topic_id}`, {
             method: "GET",
             credentials: "include"
         });
@@ -87,7 +88,7 @@ export default function DecksHome() {
         });
 
         return (
-            <div className="h-[calc(100vh-5rem)] bg-gray-50 bg-opacity-25">
+            <div className="h-[calc(100vh-5rem)] bg-gray-200 bg-opacity-25">
                 <DecksHomeBreadCrumb topicId={topicId} topicName={sessionStorage.getItem("topicName") || "Topic"}  />
                 <div className="flex justify-center">
                     <h1 className="m-4 text-3xl">{sessionStorage.getItem("topicName") || "Topic"}</h1>
@@ -100,7 +101,7 @@ export default function DecksHome() {
         );
     } else {
         return(
-            <div className="h-[calc(100vh-5rem)] bg-gray-50 bg-opacity-25">
+            <div className="h-[calc(100vh-5rem)] bg-gray-200 bg-opacity-25">
                 <DecksHomeBreadCrumb topicId={topicId} topicName={sessionStorage.getItem("topicName") || "Topic"}  />
                 <div className="flex justify-center">
                     <h1 className="m-4 text-3xl">{sessionStorage.getItem("topicName") || "Topic"}</h1>

@@ -1,13 +1,14 @@
 import { Button } from "./ui/button";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import { API_BASE_URL } from "@/config/configs";
 
 export default function Logout() {
   const navigate = useNavigate();
 
   const handleLogout = async () => {
     try {
-      const res = await fetch('http://localhost:3000/api/logout', {
+      const res = await fetch(`${API_BASE_URL}/api/logout`, {
         method: "POST",
         credentials: "include",
       });

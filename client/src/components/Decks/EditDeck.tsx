@@ -15,6 +15,7 @@ import { toast } from "sonner";
 
 import { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
+import { API_BASE_URL } from "@/config/configs";
 
 interface EditDeckProps {
     deckName: string,
@@ -36,7 +37,7 @@ export default function EditDeck({deckName, deckDesc, deckId, topicId, open, onO
     const onSubmit: SubmitHandler<EditDeckProps> = async (data) => {
         try {
 
-            const res = await fetch(`http://localhost:3000/api/decks/${deckId}/${topicId}`, {
+            const res = await fetch(`${API_BASE_URL}/api/decks/${deckId}/${topicId}`, {
                 method: "PUT",
                 credentials: "include",
                 body: JSON.stringify(data),

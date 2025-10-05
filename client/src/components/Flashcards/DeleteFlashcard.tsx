@@ -10,6 +10,7 @@ import {
 import { toast } from "sonner";
 import { buttonVariants } from "../ui/button";
 import { AlertDialogDescription } from "@radix-ui/react-alert-dialog";
+import { API_BASE_URL } from "@/config/configs";
 
 interface DeleteFlashcardProps {
     flashcardId: number,
@@ -23,7 +24,7 @@ export default function DeleteFlashcard({flashcardId, deckId, open, onOpenChange
     
     const deleteFlashcardCall = async () => {
         try {
-            const res = await fetch(`http://localhost:3000/api/flashcards/${flashcardId}/${deckId}`, {
+            const res = await fetch(`${API_BASE_URL}/api/flashcards/${flashcardId}/${deckId}`, {
                 method: "DELETE",
                 credentials: "include"
             });

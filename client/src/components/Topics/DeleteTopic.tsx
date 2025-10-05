@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import { toast } from "sonner";
 import { buttonVariants } from "@/components/ui/button";
+import { API_BASE_URL } from "@/config/configs";
 
 
 interface DeleteTopicData {
@@ -25,7 +26,7 @@ export default function DeleteTopic({topicId, topicName, open, onOpenChange, onS
     
     const deleteTopicCall = async () => {
         try {
-            const res = await fetch(`http://localhost:3000/api/topics/${topicId}/${topicName}`, {
+            const res = await fetch(`${API_BASE_URL}/api/topics/${topicId}/${topicName}`, {
                 method: "DELETE",
                 credentials: "include",
             })

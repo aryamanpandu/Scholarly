@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
+import { API_BASE_URL } from "@/config/configs";
 
 import { useForm, SubmitHandler} from "react-hook-form";
 
@@ -33,7 +34,7 @@ export default function CreateDeck({onSuccess, topicId, open, onOpenChange}: Cre
 
     const onSubmit: SubmitHandler<CreateDeckData> = async (data) => {
         try {
-            const res = await fetch(`http://localhost:3000/api/decks/${topicId}`, {
+            const res = await fetch(`${API_BASE_URL}/api/decks/${topicId}`, {
                 method: "POST",
                 credentials: "include",
                 body: JSON.stringify(data),

@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
+import { API_BASE_URL } from "@/config/configs";
 
 import { useForm, SubmitHandler} from "react-hook-form";
 
@@ -32,7 +33,7 @@ export default function CreateTopic({onSuccess, open, onOpenChange}: CreateTopic
     const onSubmit: SubmitHandler<CreateTopicData> = async (data) => {
         try {
 
-            const res = await fetch(`http://localhost:3000/api/topics`, {
+            const res = await fetch(`${API_BASE_URL}/api/topics`, {
                 method: "POST",
                 credentials: "include",
                 body: JSON.stringify(data),

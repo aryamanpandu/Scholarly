@@ -10,6 +10,7 @@ import {
 import { toast } from "sonner";
 import { buttonVariants } from "../ui/button";
 import { AlertDialogDescription } from "@radix-ui/react-alert-dialog";
+import { API_BASE_URL } from "@/config/configs";
 
 interface DeleteDeckProps {
     deckId: number,
@@ -23,7 +24,7 @@ export default function DeleteDeck({deckId, topicId, open, onOpenChange, onSucce
     
     const deleteDeckCall = async () => {
         try {
-            const res= await fetch(`http://localhost:3000/api/decks/${deckId}/${topicId}`, {
+            const res= await fetch(`${API_BASE_URL}/api/decks/${deckId}/${topicId}`, {
                 method: "DELETE",
                 credentials: "include"
             });
