@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "tsx src/app.ts",
-    "build": "tsc",
+    "build": "npm install; tsc",
     "start": "node dist/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -31,7 +31,6 @@
     "@types/express-session": "^1.18.1",
     "@types/node": "^22.15.3",
     "@types/uuid": "^10.0.0",
-    "nodemon": "^3.1.10",
     "tsx": "^4.19.3",
     "typescript": "^5.8.3"
   }

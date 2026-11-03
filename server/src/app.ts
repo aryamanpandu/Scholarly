@@ -55,8 +55,8 @@ app.use(session.default({
     resave: false,
     store: sessionStore,
     cookie: {
-    secure: false, // Set to true in production with HTTPS
-    maxAge: 2 * 24 * 60 * 60 * 1000 // 2 days expiry
+        secure: false,
+        maxAge: 2 * 24 * 60 * 60 * 1000 // 2 days expiry
     }
 }));
 
@@ -142,6 +142,10 @@ interface User {
     lockedUntil: Date | null
 }
 
+
+app.get('/', async (req:Request, res:Response) => {
+    res.status(200).send("Server is working");
+});
 //Use cookies and sessionsx
 app.post('/api/signup', async (req: Request, res: Response) => {
     const {firstName, lastName, email, password, confirmPassword} = req.body;
@@ -230,11 +234,8 @@ app.post('/api/login', async (req: Request, res: Response) => {
         return;
     }
 
-    bcrypt.compare(password, user.passwordHash, async (err, result) => {
-        if (err) {
-            res.status(500).send({message: "Error with checking password", loginSuccess: false});
-            return;
-        }
+    try {
+        const result = await bcrypt.compare(password, user.passwordHash);
 
         if (result) {
 
@@ -243,7 +244,15 @@ app.post('/api/login', async (req: Request, res: Response) => {
                 email: user.email
             }
 
-            console.log("User authenticated!");
+            await new Promise((resolve, reject) => {
+                req.session.save((err) => {
+                    if (err) reject(err);
+                    else resolve(true);
+                }); 
+            });
+
+            console.log("User Authenticated! Session saved.");
+
             await conn.execute(
                 `UPDATE logins
                 SET failed_attempts = 0,
@@ -255,6 +264,7 @@ app.post('/api/login', async (req: Request, res: Response) => {
             return;
 
         } else {
+
             console.log("User not allowed!");
 
             if (user.failedAttempts + 1 >= 5) {
@@ -276,9 +286,10 @@ app.post('/api/login', async (req: Request, res: Response) => {
             res.status(401).send({message: "Incorrect email or password", loginSuccess: false});
             return;
         }
-
-    });
-
+    } catch (error) {
+        console.error("Login error: " + error);
+        res.status(500).send({message: "Error Logging in. Please try again later.", loginSuccess: false});
+    }
 });
 
 app.post('/api/logout', async (req: Request, res: Response) => {

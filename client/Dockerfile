@@ -1,27 +1,13 @@
-# Build stage
-FROM node:18 as build
-
+# client/Dockerfile
+# Stage 1: build the React app
+FROM node:22 AS build
 WORKDIR /app
-
-# Copy package files and install dependencies
 COPY package*.json ./
-RUN npm install
-
-# Copy source files and build
+RUN npm ci
 COPY . .
 RUN npm run build
 
-# Production stage
-FROM nginx:alpine
-
-# Copy the build output to nginx html directory
+# Stage 2: serve the built files with nginx (also proxies /api to the backend)
+FROM nginx:1.27-alpine
 COPY --from=build /app/dist /usr/share/nginx/html
-
-# Copy custom nginx configuration for SPA
 COPY nginx.conf /etc/nginx/conf.d/default.conf
-
-# Expose port 80
-EXPOSE 80
-
-# Start nginx
-CMD ["nginx", "-g", "daemon off;"]

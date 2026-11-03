@@ -1,126 +1,117 @@
-# Self-Hosting Flashcard App with Docker
+# Self-Hosting Scholarly with Docker
 
-This guide explains how to set up and run the Flashcard App locally or on your own server using **Docker Compose**. The application consists of three services:
+This guide explains how to run Scholarly locally or on your own server using **Docker Compose**. The application runs as three containers:
 
-- **Database (MySQL 8)**
-- **Backend (Node.js / Express server)**
-- **Frontend (React / Next.js client)**
+- **db**: MySQL 8 database
+- **backend**: Node.js / Express API
+- **frontend**: nginx, which serves the built React app and proxies API requests to the backend
+
+```
+Browser ──► frontend (nginx, port 80) ──┬── /, /home, *.js ...  → built React files
+                                        └── /api/*              → backend:4000 ──► db:3306
+```
+
+Only port **80** is published. The backend and database are reachable only from inside the Docker network.
 
 ---
 
 ## Prerequisites
 
-Before starting, make sure you have:
-
-- [Docker](https://docs.docker.com/get-docker/) installed  
-- [Docker Compose](https://docs.docker.com/compose/install/) installed  
+- [Docker](https://docs.docker.com/get-docker/) with Docker Compose v2 (included with Docker Desktop)
 - A clone of this repository:
   ```bash
   git clone <your-repo-url>
-  cd <your-project-folder>
+  cd Scholarly
   ```
 
 ---
 
 ## Configuration
 
-### 1. Environment Files
-Each service has its own `.env` file for configuration.
+### Environment file
 
-- **Database & Backend**: `server/.env`  
-  Example values:
-  ```env
-  MYSQL_ROOT_PASSWORD=yourpassword
-  MYSQL_DATABASE=Scholarly
-  
-  DB_USER=root
-  DB_NAME=Scholarly
-  DB_HOST=db
-  DB_PASSWORD=yourpassword
-  SESSION_SECRET=asdlkfjasldkjer123433413
+Create `server/.env`. Both the database and the backend containers read it.
 
-  PORT=4000
-  ```
+```env
+# MySQL container
+MYSQL_ROOT_PASSWORD=yourpassword
+MYSQL_DATABASE=Scholarly
 
-- **Frontend**: `client/.env`  
-  Example values:
-  ```env
-  VITE_API_BASE_URL=http://localhost:4000
-  ```
+# Backend connection
+DB_USER=root
+DB_PASSWORD=yourpassword
+DB_NAME=Scholarly
+DB_HOST=db          # the Compose service name, not localhost
+DB_PORT=3306
 
-Make sure these files exist before running Docker.
-
----
-
-### 2. Database Initialization
-On the first run, MySQL will automatically initialize the schema using:
-
-```
-server/scholarly_database.sql
+SESSION_SECRET=a-long-random-string
 ```
 
-The database files are persisted in a named Docker volume called `db_data`.
+`server/.env` is passed in at runtime and is **not** copied into the images.
 
----
+The frontend needs no configuration for Docker. Because nginx serves the app and proxies `/api`, the frontend calls the API on the same origin. `client/.env` (with `VITE_API_BASE_URL`) is only used for local development with `npm run dev` and is excluded from the Docker build.
 
-## Running the Application
+### Database initialization
 
-From the project root, run:
+On first start, MySQL creates the schema from `server/scholarly_database.sql`. Data is stored in the named volume `db_data`, so it survives restarts and rebuilds.
+
+The SQL script only runs when the volume is **empty**. If the first start failed partway and the tables are missing, reset the volume (this deletes all data):
 
 ```bash
-docker-compose up --build
-```
-
-- `--build` ensures the frontend and backend images are rebuilt.
-- Containers will start in the following order:
-  1. **MySQL database** (`flashcard-mysql`)
-  2. **Backend API** (`flashcard-server`)
-  3. **Frontend client** (`flashcard-client`)
-
----
-
-## Accessing the App
-
-- **Frontend**: [http://localhost:3000](http://localhost:3000)  
-- **Backend API**: [http://localhost:4000](http://localhost:4000)  
-- **Database (MySQL)**: accessible on port `3306`
-
----
-
-## Managing Containers
-
-- Start in detached mode:
-  ```bash
-  docker-compose up -d
-  ```
-- Stop services:
-  ```bash
-  docker-compose down
-  ```
-- Stop and remove volumes (e.g., reset database):
-  ```bash
-  docker-compose down -v
-  ```
-
----
-
-## Healthchecks
-
-The database service includes a healthcheck to ensure MySQL is ready before the backend connects:
-
-```yaml
-healthcheck:
-  test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-  timeout: 20s
-  retries: 10
+docker compose down -v
 ```
 
 ---
 
-## Notes
+## Running the application
 
-- If you change code in the backend or frontend, you may need to rebuild:
-  ```bash
-  docker-compose up --build
-  ```
-- For development, you can uncomment the `volumes` and `command` section in the backend service to enable hot-reloading with `npm start`.
+From the project root:
+
+```bash
+docker compose up --build -d
+```
+
+- `--build` rebuilds the images. The backend compiles its TypeScript and the frontend runs the Vite build during this step.
+- `-d` runs the containers in the background.
+
+Startup order:
+1. `flashcard-mysql`: waits until the healthcheck passes
+2. `flashcard-server`: connects to MySQL (it retries if the database isn't ready yet)
+3. `flashcard-client`: starts nginx on port 80
+
+Then open **http://localhost** (or your server's IP or domain).
+
+---
+
+## Managing containers
+
+| Task | Command |
+| --- | --- |
+| See status | `docker compose ps` |
+| Follow backend logs | `docker compose logs -f backend` |
+| Stop everything | `docker compose down` |
+| Stop and delete the database | `docker compose down -v` |
+| Apply code changes | `docker compose up --build -d` |
+
+---
+
+## How the images are built
+
+- **Backend** (`server/Dockerfile`): installs dependencies with `npm ci`, compiles `src/` to `dist/` with `tsc`, and runs `node dist/app.js`. Local `node_modules`, `dist` and `.env` are excluded by `server/.dockerignore`.
+- **Frontend** (`client/Dockerfile`): a two-stage build. A Node stage runs `npm run build`, then only the output (`dist/`) and `client/nginx.conf` are copied into a small `nginx:alpine` image.
+
+### nginx (`client/nginx.conf`)
+
+- Serves the React build and falls back to `index.html` for client-side routes like `/home`.
+- Forwards everything under `/api/` to `http://backend:4000`, keeping the `/api` prefix.
+- Caches hashed static assets (JS, CSS, images, fonts) for 6 months.
+- Adds `X-Content-Type-Options` and `X-Frame-Options` security headers.
+
+---
+
+## Troubleshooting
+
+- **Backend keeps restarting**: run `docker compose logs backend`. `ENOTFOUND db` or `ECONNREFUSED` means it can't reach MySQL. Check that `DB_HOST=db` and that the `db` container is healthy.
+- **Login works but you're immediately logged out**: make sure you're using the app through nginx (port 80), not calling the backend directly.
+- **Tables are missing**: the volume was created before the schema loaded. See [Database initialization](#database-initialization).
+- **Port 80 already in use**: change the mapping in `docker-compose.yml`, for example `"8080:80"`, and open `http://localhost:8080`.
